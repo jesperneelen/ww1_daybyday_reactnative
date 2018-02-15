@@ -1,0 +1,3 @@
+rootProject.name = 'WO1_daybyday'
+
+include ':app'

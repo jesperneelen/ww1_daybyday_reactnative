@@ -1,11 +1,14 @@
 import {
 	LOGIN_BUSY,
 	LOGIN_COMPLETED,
+	LOGIN_FB_COMPLETE,
 	LOGIN_ERROR,
 	LOGGED_OUT,
 	FETCHING_PROFILE,
 	SET_PROFILE,
-	FETCHING_PROFILE_ERROR
+	FETCHING_PROFILE_ERROR,
+	REGISTERING_USER,
+	REGISTERING_COMPLETE
 } from '../actions/session';
 
 const initialState = {
@@ -14,7 +17,8 @@ const initialState = {
 	error: null,
 	user: null,
 	fetchingProfile: true,
-	fetchingProfileError: false
+	fetchingProfileError: false,
+	registeringUser: false
 };
 
 export function session(state = initialState, action) {
@@ -23,6 +27,7 @@ export function session(state = initialState, action) {
 			return Object.assign({}, state, {
 				authenticating: true
 			});
+		case LOGIN_FB_COMPLETE:
 		case LOGIN_COMPLETED:
 			return Object.assign({}, state, {
 				authenticating: false,
@@ -60,6 +65,16 @@ export function session(state = initialState, action) {
 				fetchingProfileError: true,
 				fetchingProfile: false,
 				user: null
+			});
+		case REGISTERING_USER:
+			return Object.assign({}, state, {
+				registeringUser: true
+			});
+		case REGISTERING_COMPLETE:
+			return Object.assign({}, state, {
+				registeringUser: false,
+				user: action.user,
+				authenticated: true
 			});
 		default:
 			return Object.assign({}, state);

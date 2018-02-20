@@ -16,3 +16,16 @@ export function loginUser() {
 export function logoutUser() {
 	return getBasePath() + '/logout';
 }
+
+export function loginFbUser(userId) {
+	return getBasePath() + `/login-fb/${userId}`;
+}
+
+export function register() {
+	return getBasePath() + '/register';
+}
+
+//EVENTS
+export function getEvents() {
+	return getBasePath() + '/events';
+}

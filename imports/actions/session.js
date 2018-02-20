@@ -6,15 +6,40 @@ let usersService = new UsersService();
 export const LOGIN_BUSY = 'LOGIN//USER';
 export const LOGIN_COMPLETED = 'LOGIN/COMPLETED';
 export const LOGIN_ERROR = 'LOGIN/ERROR';
+export const LOGIN_FB_COMPLETE = 'LOGIN/FB/COMPLETED';
 export const LOGGED_OUT = 'LOGIN/LOGGED_OUT';
 export const FETCHING_PROFILE = 'FETCHING/PROFILE';
 export const FETCHING_PROFILE_ERROR = 'FETCHING/PROFILE/ERROR';
 export const SET_PROFILE = 'SET/PROFILE';
+export const REGISTERING_USER = 'REGISTERING/USER';
+export const REGISTERING_COMPLETE = 'REGISTERING/COMPLETE';
 
 export const LOGIN_SUCCESSFUL = 'Successfully logged in!';
 export const LOGIN_INTERNAL_ERROR = 'There was a server error while trying to log in';
 export const LOGOUT_SUCCESSFUL = 'Successfully logged out!';
 export const LOGOUT_ERROR = 'There was a server error while trying to log out';
+export const LOGIN_FB_SUCCESSFUL = 'Successfully logged in with Facebook!';
+export const LOGIN_FB_ERROR = 'There was a server error while trying to log in with Facebook';
+export const REGISTER_SUCCESSFUL = 'Successfully registered';
+export const REGISTER_ERROR = 'There was a server error while trying to register you as a new user';
+
+
+export function loginFbComplete(fbUserId) {
+	return dispatch => {
+		return usersService.loginFb(fbUserId)
+			.then(response => {
+				dispatch({
+					type: LOGIN_FB_COMPLETE,
+					profile: response
+				});
+				dispatch(handleException('success', LOGIN_FB_SUCCESSFUL));
+			})
+			.catch(error => {
+				console.log(error);
+				dispatch(handleException('error', LOGIN_FB_ERROR));
+			});
+	};
+}
 
 function loggingIn() {
 	return {
@@ -113,6 +138,39 @@ export function fetchProfile() {
 			})
 			.catch(() => {
 				dispatch(fetchingProfileError());
+			});
+	};
+}
+
+
+function registeringUser() {
+	return {
+		type: REGISTERING_USER
+	};
+}
+
+function registerComplete(newUserProfile) {
+	return {
+		type: REGISTERING_COMPLETE,
+		user: newUserProfile
+	};
+}
+
+export function register(newUser) {
+	return dispatch => {
+		dispatch(registeringUser());
+
+		return usersService.register(newUser)
+			.then(response => {
+				if(response.success) {
+					dispatch(registerComplete(response.user));
+					dispatch(handleException('success', REGISTER_SUCCESSFUL));
+				} else if(!response.success) {
+					dispatch(handleException('error', response.error));
+				}
+			})
+			.catch(error => {
+				dispatch(handleException('error', REGISTER_ERROR, error));
 			});
 	};
 }

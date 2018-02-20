@@ -1,5 +1,10 @@
 import React, { Component } from "react";
+import { connect } from 'react-redux';
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
+
+import {
+	fetchEvents
+} from '../../actions/events';
 
 class Screen1 extends Component {
 	static navigationOptions = ({ navigation, screenProps }) => ({
@@ -14,7 +19,21 @@ class Screen1 extends Component {
 		)
 	});
 
+	constructor(props) {
+		super(props);
+	}
+
+	componentDidMount() {
+		const {
+			fetchEvents
+		} = this.props;
+
+		if(fetchEvents) fetchEvents();
+	}
+
 	render() {
+		console.log(this.props.events);
+
 		return (
 			<View style={styles.container}>
 				<Text>Screen 1</Text>
@@ -34,4 +53,16 @@ const styles = StyleSheet.create({
 Screen1.defaultProps = {};
 Screen1.propTypes = {};
 
-export default Screen1;
+function mapStateToProps(state) {
+	return {
+		events: state.events.data
+	};
+}
+
+function mapDispatchToProps(dispatch) {
+	return {
+		fetchEvents: () => dispatch(fetchEvents())
+	};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Screen1);

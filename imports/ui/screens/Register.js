@@ -9,7 +9,8 @@ import {
 import Button from '../components/Button';
 import Input from '../components/Input';
 
-import { logInUser } from '../../actions/session';
+import { register } from '../../actions/session';
+import { handleException } from '../../actions/exceptions';
 
 class RegisterScreen extends Component {
 	constructor(props) {
@@ -24,12 +25,6 @@ class RegisterScreen extends Component {
 		this.onSignUp = this.onSignUp.bind(this);
 
 		this._validations = new Map();
-	}
-
-	componentWillReceiveProps(nextProps) {
-		/*if(nextProps.authenticated && nextProps.user !== null && !nextProps.authenticating) {
-			this.props.navigation.navigate('drawerStack');
-		}*/
 	}
 
 	onChangeText(text, valid, key) {
@@ -56,14 +51,38 @@ class RegisterScreen extends Component {
 		}));
 
 		if (this.state.valid) {
-			this.props.logInUser(this.state.email.toLowerCase(), this.state.password);
+			const {
+				Password,
+				ConfirmPassword,
+				FirstName,
+				LastName,
+				Email
+			} = this.state;
+
+			const {
+				handleException,
+				register
+			} = this.props;
+
+			if(Password && ConfirmPassword && Password.trim() !== ConfirmPassword.trim()) {
+				handleException('error', 'Passwords don\'t match');
+			} else if(register) {
+				let newUser = {
+					FirstName,
+					LastName,
+					Email,
+					_password: Password
+				};
+
+				register(newUser);
+			}
 		}
 	}
 
 	render() {
 		const {
 			navigation: {
-				navigate
+				goBack
 			},
 			authenticating
 		} = this.props;
@@ -73,8 +92,8 @@ class RegisterScreen extends Component {
 		} = this.state;
 
 		return (
-			<ImageBackground source={require('../../../assets/login.png')} style={styles.backgroundImage}>
-				<View style={styles.inputContainer}>
+			<ImageBackground source={require('../../../assets/register.png')} style={styles.backgroundImage}>
+				<View>
 					<Input placeholder="First name" onChange={(text, valid) => this.onChangeText(text, valid, 'FirstName')}
 								 validations={{required: true}} isSubmitted={saving} />
 					<Input placeholder="Last name" onChange={(text, valid) => this.onChangeText(text, valid, 'LastName')}
@@ -89,6 +108,7 @@ class RegisterScreen extends Component {
 
 				<View style={styles.actionContainer}>
 					<Button text="SIGN UP" onPress={this.onSignUp} loading={authenticating} />
+					<Button text="BACK" onPress={() => goBack()} inverted={true} noMarginTop={true} />
 				</View>
 			</ImageBackground>
 		);
@@ -100,20 +120,17 @@ const styles = StyleSheet.create({
 	backgroundImage: {
 		flex: 1,
 		alignItems: 'stretch',
-		flexDirection: 'column'
-	},
-	inputContainer: {
-		//flex: 1
+		flexDirection: 'column',
+		justifyContent: 'center'
 	},
 	actionContainer: {
-		//flex: 1,
-		marginTop: 20
+		marginTop: 40
 	}
 });
 
 function mapStateToProps(state) {
 	return {
-		authenticating: state.session.authenticating,
+		registeringUser: state.session.registeringUser,
 		authenticated: state.session.authenticated,
 		user: state.session.user
 	};
@@ -121,7 +138,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		logInUser: (username, password) => dispatch(logInUser(username, password))
+		register: (newUser) => dispatch(register(newUser)),
+		handleException: (type, message) => dispatch(handleException(type, message))
 	};
 }
 

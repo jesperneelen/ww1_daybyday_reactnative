@@ -32,6 +32,19 @@ export default class UsersService {
 			});
 	}
 
+	loginFb(userId) {
+		let url = api.loginFbUser(userId);
+
+		return fetch(url, this.baseService.GetInit('GET'))
+			.then(response => {
+				if(response.status >= 400) {
+					throw new Error('Bad response from server');
+				} else {
+					return response.json();
+				}
+			});
+	}
+
 	getUser() {
 		let url = api.getUser();
 
@@ -51,6 +64,19 @@ export default class UsersService {
 		return fetch(url, this.baseService.GetInit('GET'))
 			.then(response => {
 				return response.json();
+			});
+	}
+
+	register(newUser) {
+		let url = api.register();
+
+		return fetch(url, this.baseService.Add(newUser))
+			.then(response => {
+				if(response.status >= 500) {
+					throw new Error('Bad response from server');
+				} else {
+					return response.json();
+				}
 			});
 	}
 }

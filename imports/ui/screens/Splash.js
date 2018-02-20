@@ -34,7 +34,7 @@ class SplashScreen extends Component {
 					]
 				}));
 			}, 2000);
-		} else if(!nextProps.fetchingProfileError && !nextProps.fetchingProfile && nextProps.authenticated && nextProps.user !== null) {
+		} else if(!nextProps.fetchingProfileError && !nextProps.fetchingProfile && !nextProps.registeringUser && nextProps.authenticated && nextProps.user !== null) {
 			setTimeout(() => {
 				//Reset navigation, Splash screen was never here!
 				nextProps.navigation.dispatch(NavigationActions.reset({
@@ -79,7 +79,8 @@ function mapStateToProps(state) {
 		authenticated: state.session.authenticated,
 		user: state.session.user,
 		fetchingProfile: state.session.fetchingProfile,
-		fetchingProfileError: state.session.fetchingProfileError
+		fetchingProfileError: state.session.fetchingProfileError,
+		registeringUser: state.session.registeringUser
 	};
 }
 

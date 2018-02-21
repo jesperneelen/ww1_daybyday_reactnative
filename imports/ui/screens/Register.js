@@ -84,7 +84,7 @@ class RegisterScreen extends Component {
 			navigation: {
 				goBack
 			},
-			authenticating
+			registeringUser
 		} = this.props;
 
 		const {
@@ -99,7 +99,7 @@ class RegisterScreen extends Component {
 					<Input placeholder="Last name" onChange={(text, valid) => this.onChangeText(text, valid, 'LastName')}
 								 validations={{required: true}} isSubmitted={saving} />
 					<Input placeholder="Email address" onChange={(text, valid) => this.onChangeText(text, valid, 'Email')}
-								 validations={{required: true}} isSubmitted={saving} />
+								 validations={{required: true, format: 'email'}} isSubmitted={saving} f/>
 					<Input placeholder="Password" onChange={(text, valid) => this.onChangeText(text, valid, 'Password')}
 								 secureTextEntry={true} validations={{required: true}} isSubmitted={saving} />
 					<Input placeholder="Confirm password" onChange={(text, valid) => this.onChangeText(text, valid, 'ConfirmPassword')}
@@ -107,7 +107,7 @@ class RegisterScreen extends Component {
 				</View>
 
 				<View style={styles.actionContainer}>
-					<Button text="SIGN UP" onPress={this.onSignUp} loading={authenticating} />
+					<Button text="SIGN UP" onPress={this.onSignUp} loading={registeringUser} />
 					<Button text="BACK" onPress={() => goBack()} inverted={true} noMarginTop={true} />
 				</View>
 			</ImageBackground>

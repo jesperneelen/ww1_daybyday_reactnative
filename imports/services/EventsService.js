@@ -6,8 +6,8 @@ export default class EventsService {
 		this.baseService = new BaseService();
 	}
 
-	getEvents() {
-		let url = api.getEvents();
+	getEvents(skip, limit, totalCount) {
+		let url = api.getEvents(skip, limit, totalCount);
 
 		return fetch(url, this.baseService.GetInit('GET'))
 			.then(response => {

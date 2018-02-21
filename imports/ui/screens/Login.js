@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import SafariView from 'react-native-safari-view';
 import {
 	StyleSheet,
 	Text,
@@ -10,9 +11,6 @@ import {
 	Linking,
 	Platform
 } from 'react-native';
-
-//import Icon from 'react-native-vector-icons/FontAwesome';
-import SafariView from 'react-native-safari-view';
 
 import Button from '../components/Button';
 import Input from '../components/Input';
@@ -143,7 +141,7 @@ class LoginScreen extends Component {
 
 				<View style={styles.inputContainer}>
 					<Input placeholder="Email address" onChange={(text, valid) => this.onChangeText(text, valid, 'email')}
-								 validations={{required: true}} isSubmitted={saving} />
+								 validations={{required: true, format: 'email'}} isSubmitted={saving} />
 					<Input placeholder="Password" onChange={(text, valid) => this.onChangeText(text, valid, 'password')}
 								 secureTextEntry={true} validations={{required: true}} isSubmitted={saving} />
 				</View>

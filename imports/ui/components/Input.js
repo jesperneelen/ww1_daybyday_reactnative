@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import validator from 'validator';
+//import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {
 	TextInput,
@@ -52,6 +53,13 @@ export default class Input extends Component {
 		if(validations && Object.keys(validations).length > 0) {
 			if(validations.required && (!value || value === null || validator.isEmpty(value))) {
 				valid = false;
+			}
+
+			if(validations.format && valid) {
+				switch(validations.format) {
+					case 'email':
+						if(!validator.isEmail(value)) valid = false; break;
+				}
 			}
 		}
 

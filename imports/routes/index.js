@@ -36,7 +36,7 @@ const NotAuthenticatedStack = StackNavigator({
 const Routes = StackNavigator({
 	splash: {screen: Splash},
 	notAuthenticatedStack: { screen: NotAuthenticatedStack },
-	drawerStack: { screen: DrawerStack }
+	drawerStack: { screen: Screen1 }
 }, {
 	headerMode: 'none',
 	initialRouteName: 'splash'

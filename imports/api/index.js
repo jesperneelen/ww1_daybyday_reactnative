@@ -1,7 +1,11 @@
-import { baseUrl } from './config';
+import { baseUrl, baseAppUrl } from './config';
 
 export function getBasePath() {
 	return baseUrl;
+}
+
+export function getBaseAppPath() {
+	return baseAppUrl;
 }
 
 // USER SPECIFIC ROUTES
@@ -25,7 +29,7 @@ export function register() {
 	return getBasePath() + '/register';
 }
 
-//EVENTS
-export function getEvents() {
-	return getBasePath() + '/events';
+// EVENTS
+export function getEvents(skip=0, limit=50, totalCount=null) {
+	return getBaseAppPath() + `/events?skip=${skip}&limit=${limit}&totalCount=${totalCount}`;
 }

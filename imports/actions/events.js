@@ -1,7 +1,9 @@
 import { handleException } from './exceptions';
 import EventsService from '../services/EventsService';
+import UsersService from '../services/UsersService';
 
 let eventsService = new EventsService();
+let usersService = new UsersService();
 
 export const FETCH_EVENTS = 'FETCH/EVENTS';
 export const FETCH_EVENTS_SUCCESS = 'FETCH/EVENTS/SUCCESS';
@@ -16,9 +18,20 @@ function fetchingEvents() {
 	};
 }
 
-export function fetchEvents(skip, limit, totalCount) {
-	return dispatch => {
+export function fetchEvents(init, skip, limit, totalCount) {
+	return (dispatch, getState) => {
 		dispatch(fetchingEvents());
+
+		let state, rounded;
+		if(init) {
+			state = getState().session;
+
+			if(state && state.user && state.user.ActiveEventIndex !== null) {
+				skip = 0;
+				rounded = Math.round(state.user.ActiveEventIndex / 50) + 1;
+				limit = rounded * 50;
+			}
+		}
 
 		return eventsService.getEvents(skip, limit, totalCount)
 			.then(response => {
@@ -26,7 +39,11 @@ export function fetchEvents(skip, limit, totalCount) {
 					type: FETCH_EVENTS_SUCCESS,
 					events: response.events,
 					totalCount: response.totalCount,
-					receivedAt: Date.now()
+					receivedAt: Date.now(),
+					page: rounded - 1,
+					init,
+					activeEventIndex: state && state.user && state.user.ActiveEventIndex !== null ? state.user.ActiveEventIndex : null,
+					activeEventId: state && state.user && state.user.ActiveEvent ? state.user.ActiveEvent._id : null
 				});
 			})
 			.catch(error => {
@@ -35,13 +52,15 @@ export function fetchEvents(skip, limit, totalCount) {
 	};
 }
 
-export function setActiveEvent(idx) {
+export function setActiveEvent(idx, eventId) {
 	return (dispatch, getState) => {
 		const state = getState().events;
 		if(idx === state.data.length - 2 && idx < state.totalCount) {
 			dispatch(fetchEvents(state.data.length, 50, state.totalCount));
 			dispatch(setPage(state.page + 1));
 		}
+
+		updateActiveEvent(eventId, idx);
 
 		dispatch({
 			type: SET_ACTIVE_EVENT,
@@ -55,4 +74,16 @@ export function setPage(page) {
 		type: SET_PAGE,
 		page
 	};
+}
+
+function updateActiveEvent(activeEvent, activeEventIndex) {
+	return usersService.updateActiveEvent(activeEvent, activeEventIndex)
+		.then(response => {
+			if(response.success) {
+				//console.log('updateActiveEvent successful!', response);
+			}
+		})
+		.catch(error => {
+			console.log('updateActiveEvent error', error);
+		});
 }

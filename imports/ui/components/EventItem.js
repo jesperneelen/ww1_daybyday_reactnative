@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-	View,
 	Text,
 	StyleSheet,
 	TouchableOpacity
@@ -12,8 +11,8 @@ export default class EventItem extends React.Component {
 		super(props);
 	}
 
-	shouldComponentUpdate(nextProps, nextState) {
-		return false;
+	shouldComponentUpdate(nextProps) {
+		return nextProps.selected !== this.props.selected;
 	}
 
 	render() {
@@ -21,13 +20,14 @@ export default class EventItem extends React.Component {
 			DateOfEvent,
 			Front,
 			Nation,
-			onPress
+			onPress,
+			selected
 		} = this.props;
 
 		return (
-			<TouchableOpacity onPress={onPress} style={styles.EventItemContainer}>
+			<TouchableOpacity onPress={onPress} style={[styles.EventItemContainer, selected ? styles.Selected : null]}>
 				<Text style={styles.DateOfEvent}>{moment(DateOfEvent, 'DD/MM/YYYY').format('MMMM Do, YYYY')}</Text>
-				<Text style={styles.Test}>{Front} / {Nation}</Text>
+				<Text style={styles.FrontNation}>{`${Front} / ${Nation}`}</Text>
 			</TouchableOpacity>
 		);
 	}
@@ -35,10 +35,8 @@ export default class EventItem extends React.Component {
 
 const styles = StyleSheet.create({
 	EventItemContainer: {
-		marginTop: 10,
-		marginBottom: 10,
-		marginLeft: 5,
-		marginRight: 5,
+		paddingVertical: 10,
+		paddingHorizontal: 5,
 		flexDirection: 'column',
 		alignItems: 'center'
 	},
@@ -50,9 +48,12 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		fontSize: 20
 	},
-	Test: {
+	FrontNation: {
 		color: '#53565A',
 		fontSize: 15,
 		fontWeight: 'bold'
+	},
+	Selected: {
+		backgroundColor: 'rgba(139, 154, 97, .3)'
 	}
 });

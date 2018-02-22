@@ -79,4 +79,17 @@ export default class UsersService {
 				}
 			});
 	}
+
+	updateActiveEvent(activeEvent, activeEventIndex) {
+		let url = api.updateActiveEvent();
+
+		return fetch(url, this.baseService.Update({ActiveEvent: activeEvent, ActiveEventIndex: activeEventIndex}))
+			.then(response => {
+				if(response.status >= 400) {
+					throw new Error('Bad response from server');
+				} else {
+					return response.json();
+				}
+			});
+	}
 }

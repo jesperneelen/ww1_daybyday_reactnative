@@ -31,7 +31,9 @@ class EventsList extends Component {
 			events
 		} = this.props;
 
-		if(fetchEvents && events.length === 0) fetchEvents();
+		if(fetchEvents && events.length === 0) fetchEvents(true);
+
+		this.flatList.scrollToEnd();
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -40,12 +42,28 @@ class EventsList extends Component {
 				page: nextProps.page
 			}));
 		}
+
+		/*if(nextProps.activeEventIndex && nextProps.activeEventIndex !== null && !this.scrolledToMiddle && this.flatList) {
+			console.log('FLAT LIST', this.flatList, nextProps.activeEventIndex);
+			if(nextProps.activeEventIndex) {
+				this.flatList.scrollToIndex({
+					animated: true,
+					index: nextProps.activeEventIndex,
+					viewPosition: .5
+				});
+
+				this.flatList.scrollToEnd();
+
+				this.scrolledToMiddle = true;
+			}
+		}*/
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
 		return nextProps.lastUpdated > this.props.lastUpdated
 			|| this.state.page !== nextState.page
-			|| this.state.limit !== nextState.limit;
+			|| this.state.limit !== nextState.limit
+			|| this.props.activeEventIndex !== nextProps.activeEventIndex;
 	}
 
 	_keyExtractor(item, idx) {
@@ -53,16 +71,14 @@ class EventsList extends Component {
 	}
 
 	renderItem({item, index}) {
-		//selected={!!this.state.selected.get(item.id)}
-
 		return (
-			<EventItem {...item} onPress={() => this.onPressItem(index)} />
+			<EventItem {...item} onPress={() => this.onPressItem(index, item._id)} selected={this.props.activeEventIndex === index} />
 		);
 	}
 
-	onPressItem(index) {
+	onPressItem(index, eventId) {
 		if(this.props.activeEventIndex !== index) {
-			this.props.setActiveEvent(index);
+			this.props.setActiveEvent(index, eventId);
 		}
 	}
 
@@ -89,7 +105,7 @@ class EventsList extends Component {
 				nextPage++;
 
 				if((nextPage * prevState.limit) + prevState.limit < this.props.totalCount + prevState.limit) {
-					this.props.fetchEvents(nextPage * prevState.limit, prevState.limit, this.props.totalCount);
+					this.props.fetchEvents(false, nextPage * prevState.limit, prevState.limit, this.props.totalCount);
 					this.props.setPage(nextPage);
 				}
 
@@ -103,14 +119,15 @@ class EventsList extends Component {
 	render() {
 		const {
 			events,
-			height
+			height,
+			activeEventIndex
 		} = this.props;
 
 		return (
 			<List containerStyle={[styles.EventsContainer, {height}]}>
-				<FlatList data={events} keyExtractor={this._keyExtractor} renderItem={this.renderItem}
+				<FlatList ref={(flatList) => this.flatList = flatList} data={events} keyExtractor={this._keyExtractor} renderItem={this.renderItem}
 									ItemSeparatorComponent={this.renderSeparator} ListFooterComponent={this.renderFooter}
-									onEndReached={this.handleLoadMore} onEndReachedThreshold={0.3} />
+									onEndReached={this.handleLoadMore} onEndReachedThreshold={0.3} extraData={{activeEventIndex}} />
 			</List>
 		);
 	}
@@ -149,8 +166,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		fetchEvents: (skip, limit, totalCount) => dispatch(fetchEvents(skip, limit, totalCount)),
-		setActiveEvent: (idx) => dispatch(setActiveEvent(idx)),
+		fetchEvents: (init, skip, limit, totalCount) => dispatch(fetchEvents(init, skip, limit, totalCount)),
+		setActiveEvent: (idx, eventId) => dispatch(setActiveEvent(idx, eventId)),
 		setPage: (page) => dispatch(setPage(page))
 	};
 }

@@ -19,19 +19,19 @@ export default class JourneyControls extends Component {
 			<View style={styles.ControlsContainer}>
 				<View style={[styles.ActionWrapper, {borderLeftWidth: 0}]}>
 					<TouchableOpacity onPress={() => console.log('onPress play')}>
-						<Icon name={'play'} type="font-awesome" color={'#FFF'} size={25} />
+						<Icon name={'play'} type="font-awesome" color={'#C9E779'} size={25} />
 					</TouchableOpacity>
 				</View>
 
 				<View style={styles.ActionWrapper}>
 					<TouchableOpacity onPress={() => console.log('onPress pause')}>
-						<Icon name={'pause'} type="font-awesome" color={'#FFF'} size={25} />
+						<Icon name={'pause'} type="font-awesome" color={'#C9E779'} size={25} />
 					</TouchableOpacity>
 				</View>
 
 				<View style={styles.ActionWrapper}>
 					<TouchableOpacity onPress={() => console.log('onPress stop')}>
-						<Icon name={'stop'} type="font-awesome" color={'#FFF'} size={25} />
+						<Icon name={'stop'} type="font-awesome" color={'#C9E779'} size={25} />
 					</TouchableOpacity>
 				</View>
 

@@ -29,6 +29,10 @@ export function register() {
 	return getBasePath() + '/register';
 }
 
+export function updateActiveEvent() {
+	return getBaseAppPath() + '/user/active-event';
+}
+
 // EVENTS
 export function getEvents(skip=0, limit=50, totalCount=null) {
 	return getBaseAppPath() + `/events?skip=${skip}&limit=${limit}&totalCount=${totalCount}`;

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import { connect } from 'react-redux';
 import {
 	View,
@@ -24,22 +25,24 @@ class ActiveEvent extends Component {
 	previousEvent() {
 		let {
 			setActiveEvent,
-			activeEventIndex
+			activeEventIndex,
+			previousEvent
 		} = this.props;
 
 		if(setActiveEvent) {
-			setActiveEvent(activeEventIndex - 1);
+			setActiveEvent(activeEventIndex - 1, previousEvent._id);
 		}
 	}
 
 	nextEvent() {
 		let {
 			setActiveEvent,
-			activeEventIndex
+			activeEventIndex,
+			nextEvent
 		} = this.props;
 
 		if(setActiveEvent) {
-			setActiveEvent(activeEventIndex + 1);
+			setActiveEvent(activeEventIndex + 1, nextEvent._id);
 		}
 	}
 
@@ -56,7 +59,16 @@ class ActiveEvent extends Component {
 					<Icon type="font-awesome" name={'chevron-left'} color={'#FFF'} size={40} />
 				</TouchableOpacity>
 
-				<Text style={{color: 'white'}}>{activeEvent ? activeEvent.Front + '/' + activeEvent.Nation : 'No active event.'}</Text>
+				{
+					activeEvent ?
+						<View style={styles.ActiveEvent}>
+							<Text style={styles.DateOfEvent}>{moment(activeEvent.DateOfEvent, 'DD/MM/YYYY').format('MMMM Do, YYYY')}</Text>
+							<Text style={styles.NationFront}>{`${activeEvent.Front}/${activeEvent.Nation}`}</Text>
+							<Text style={styles.Description} ellipsizeMode="tail" numberOfLines={4}>{activeEvent.Description}</Text>
+						</View>
+						:
+						<Text>No active event</Text>
+				}
 
 				<TouchableOpacity onPress={this.nextEvent} disabled={!nextEvent}>
 					<Icon type="font-awesome" name={'chevron-right'} color={'#FFF'} size={40} />
@@ -69,16 +81,34 @@ class ActiveEvent extends Component {
 const styles = StyleSheet.create({
 	ActiveEventContainer: {
 		backgroundColor: 'rgb(68, 78, 41)',
-		flex: 2,
+		flex: 3,
 		alignItems: 'center',
 		justifyContent: 'space-between',
 		flexDirection: 'row',
 		paddingTop: Platform.OS === 'ios' ? 20 : 0,
 		padding: 5
 	},
-	chevron: {
-		width: 30,
-		height: 50
+	ActiveEvent: {
+		flexDirection: 'column',
+		alignItems: 'center',
+		flex: 1,
+		padding: 4
+	},
+	DateOfEvent: {
+		color: '#C9E779',
+		fontWeight: 'bold',
+		fontSize: 23
+	},
+	NationFront: {
+		color: '#BEDA73',
+		fontWeight: '500',
+		fontSize: 17
+	},
+	Description: {
+		color: '#FFF',
+		justifyContent: 'center',
+		fontSize: 12,
+		textAlign: 'center'
 	}
 });
 
@@ -93,7 +123,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		setActiveEvent: (idx) => dispatch(setActiveEvent(idx))
+		setActiveEvent: (idx, eventId) => dispatch(setActiveEvent(idx, eventId))
 	};
 }
 

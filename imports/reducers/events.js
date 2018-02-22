@@ -28,7 +28,12 @@ export function events(state = initialState, action) {
 				isFetching: false,
 				data: state.data.concat(action.events),
 				lastUpdated: action.receivedAt,
-				totalCount: action.totalCount
+				totalCount: action.totalCount,
+				page: action.init ? action.page : state.page,
+				activeEvent: action.init && action.activeEventId ? action.events.find(event => event._id === action.activeEventId) : state.activeEvent,
+				activeEventIndex: action.init && action.activeEventIndex !== null ? action.activeEventIndex : state.activeEventIndex,
+				previousEvent: action.init && action.activeEventIndex !== null && action.activeEventIndex !== 0 ? action.events[action.activeEventIndex - 1] : state.previousEvent,
+				nextEvent: action.init && action.activeEventIndex !== null && action.activeEventIndex < action.events.length - 1  ? action.events[action.activeEventIndex + 1] : state.nextEvent
 			});
 		case SET_ACTIVE_EVENT:
 			return Object.assign({}, state, {

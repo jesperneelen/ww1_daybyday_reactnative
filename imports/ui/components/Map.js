@@ -42,7 +42,7 @@ export default class Map extends Component {
 const styles = StyleSheet.create({
 	mapContainer: {
 		backgroundColor: 'red',
-		flex: 8,
+		flex: 9,
 		alignItems: 'stretch',
 	},
 	mapImage: {

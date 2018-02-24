@@ -23,6 +23,8 @@ class EventsList extends Component {
 		this.handleLoadMore = this.handleLoadMore.bind(this);
 		this.renderItem = this.renderItem.bind(this);
 		this.onPressItem = this.onPressItem.bind(this);
+
+		this.scrolledToMiddle = false;
 	}
 
 	componentDidMount() {
@@ -32,8 +34,6 @@ class EventsList extends Component {
 		} = this.props;
 
 		if(fetchEvents && events.length === 0) fetchEvents(true);
-
-		this.flatList.scrollToEnd();
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -43,20 +43,16 @@ class EventsList extends Component {
 			}));
 		}
 
-		/*if(nextProps.activeEventIndex && nextProps.activeEventIndex !== null && !this.scrolledToMiddle && this.flatList) {
-			console.log('FLAT LIST', this.flatList, nextProps.activeEventIndex);
-			if(nextProps.activeEventIndex) {
+		if(nextProps.activeEventIndex && nextProps.activeEventIndex !== null && !this.scrolledToMiddle && this.flatList && !nextProps.isFetching) {
+			setTimeout(() => {
 				this.flatList.scrollToIndex({
-					animated: true,
-					index: nextProps.activeEventIndex,
-					viewPosition: .5
-				});
-
-				this.flatList.scrollToEnd();
+					animated: false,
+					index: nextProps.activeEventIndex
+				}, 500);
 
 				this.scrolledToMiddle = true;
-			}
-		}*/
+			});
+		}
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -116,6 +112,10 @@ class EventsList extends Component {
 		}
 	}
 
+	getItemLayout = (data, index) => (
+		{ length: 69, offset: 69 * index, index }
+	);
+
 	render() {
 		const {
 			events,
@@ -127,7 +127,8 @@ class EventsList extends Component {
 			<List containerStyle={[styles.EventsContainer, {height}]}>
 				<FlatList ref={(flatList) => this.flatList = flatList} data={events} keyExtractor={this._keyExtractor} renderItem={this.renderItem}
 									ItemSeparatorComponent={this.renderSeparator} ListFooterComponent={this.renderFooter}
-									onEndReached={this.handleLoadMore} onEndReachedThreshold={0.3} extraData={{activeEventIndex}} />
+									onEndReached={this.handleLoadMore} onEndReachedThreshold={0.3} extraData={{activeEventIndex}}
+									getItemLayout={this.getItemLayout} />
 			</List>
 		);
 	}

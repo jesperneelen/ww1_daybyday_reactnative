@@ -6,20 +6,38 @@ import {
 	Text,
 	StyleSheet,
 	Platform,
-	TouchableOpacity
+	TouchableOpacity,
+	Modal,
+	ScrollView
 } from 'react-native';
+
 import {
 	Icon
 } from 'react-native-elements';
 
+import Button from './Button';
 import { setActiveEvent } from '../../actions/events';
 
 class ActiveEvent extends Component {
 	constructor(props) {
 		super(props);
 
+		this.state = {
+			modalVisible: false
+		};
+
 		this.previousEvent = this.previousEvent.bind(this);
 		this.nextEvent = this.nextEvent.bind(this);
+		this.openModal = this.openModal.bind(this);
+		this.closeModal = this.closeModal.bind(this);
+	}
+
+	openModal() {
+		this.setState(() => ({modalVisible: true}));
+	}
+
+	closeModal() {
+		this.setState(() => ({modalVisible: false}));
 	}
 
 	previousEvent() {
@@ -64,11 +82,25 @@ class ActiveEvent extends Component {
 						<View style={styles.ActiveEvent}>
 							<Text style={styles.DateOfEvent}>{moment(activeEvent.DateOfEvent, 'DD/MM/YYYY').format('MMMM Do, YYYY')}</Text>
 							<Text style={styles.NationFront}>{`${activeEvent.Front}/${activeEvent.Nation}`}</Text>
-							<Text style={styles.Description} ellipsizeMode="tail" numberOfLines={4}>{activeEvent.Description}</Text>
+							<TouchableOpacity onPress={this.openModal}>
+								<Text style={styles.Description} ellipsizeMode="tail" numberOfLines={4}>{activeEvent.Description}</Text>
+							</TouchableOpacity>
 						</View>
 						:
-						<Text>No active event</Text>
+						<Text style={styles.NoActiveEvent}>No active event</Text>
 				}
+
+				<Modal animationType={'fade'} transparent={true} visible={this.state.modalVisible}>
+					<View style={styles.ModalContainer}>
+						<View style={styles.ModalInnerContainer}>
+							<ScrollView>
+								<Text style={[styles.Description, {fontSize: 14}]}>{activeEvent && activeEvent.Description}</Text>
+							</ScrollView>
+
+							<Button text="CLOSE" onPress={this.closeModal} />
+						</View>
+					</View>
+				</Modal>
 
 				<TouchableOpacity onPress={this.nextEvent} disabled={!nextEvent}>
 					<Icon type="font-awesome" name={'chevron-right'} color={'#FFF'} size={40} />
@@ -109,6 +141,22 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		fontSize: 12,
 		textAlign: 'center'
+	},
+	NoActiveEvent: {
+		color: '#FFF'
+	},
+	ModalContainer: {
+		flex: 1,
+		justifyContent: 'center',
+		padding: 20,
+		backgroundColor: 'rgba(0, 0, 0, .5)'
+	},
+	ModalInnerContainer: {
+		alignItems: 'center',
+		//backgroundColor: '#FFF',
+		backgroundColor: 'rgb(139, 154, 97)',
+		padding: 20,
+		overflow: 'scroll'
 	}
 });
 

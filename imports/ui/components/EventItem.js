@@ -38,7 +38,8 @@ const styles = StyleSheet.create({
 		paddingVertical: 10,
 		paddingHorizontal: 5,
 		flexDirection: 'column',
-		alignItems: 'center'
+		alignItems: 'center',
+		height: 70
 	},
 	EventItemDetails: {
 		justifyContent: 'space-around'

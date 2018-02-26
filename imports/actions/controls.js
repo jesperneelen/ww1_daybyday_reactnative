@@ -2,13 +2,18 @@ import { setActiveEvent } from './events';
 
 export const ADJUST_CURRENT_CONTROL = 'ADJUST/CURRENT/CONTROL';
 export const SET_TIME_PASSED = 'SET/TIME/PASSED';
+export const SET_PAUSED_TIME = 'SET/PAUSED/TIME';
 
-let playInterval = null;
 let timerInterval = null;
 
-
 export function adjustCurrentControl(control) {
-	return dispatch => {
+	return (dispatch, getState) => {
+
+		let state = getState().controls;
+		let pausedAt = null;
+		if(state.current === 'PAUSE' && control === 'play') {
+			pausedAt = state.pausedAt;
+		}
 
 		dispatch({
 			type: ADJUST_CURRENT_CONTROL,
@@ -16,20 +21,21 @@ export function adjustCurrentControl(control) {
 		});
 
 		if(control === 'play') {
-			dispatch(play());
+			dispatch(play(pausedAt));
 		} else if(control === 'pause') {
-			console.log('ACTIVATE PAUSE');
+			let state = getState().controls;
+			clearInterval(timerInterval);
+			dispatch(setPausedTime(state.timePassed));
 		} else if(control === 'stop' && timerInterval) {
-			console.log('ACTIVATE STOP');
 			clearInterval(timerInterval);
 			dispatch(setTimePassed(0));
 		}
 	};
 }
 
-function play() {
+function play(pausedAt) {
 	return (dispatch, getState) => {
-		let timePassed = 0;
+		let timePassed = pausedAt && pausedAt !== null ? pausedAt : 0;
 		timerInterval = setInterval(() => {
 			timePassed += 1000;
 			dispatch(setTimePassed(timePassed));
@@ -48,5 +54,12 @@ function setTimePassed(timePassed) {
 	return {
 		type: SET_TIME_PASSED,
 		timePassed
+	};
+}
+
+function setPausedTime(pauseTime) {
+	return {
+		type: SET_PAUSED_TIME,
+		pauseTime
 	};
 }

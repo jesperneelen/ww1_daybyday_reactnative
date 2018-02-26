@@ -4,7 +4,8 @@ import {
 	View,
 	StyleSheet,
 	TouchableOpacity,
-	ProgressViewIOS
+	ProgressViewIOS,
+	Platform
 } from 'react-native';
 
 import {
@@ -35,29 +36,34 @@ class JourneyControls extends Component {
 
 	render() {
 		const {
-			timePassed
+			timePassed,
+			currentControl
 		} = this.props;
 
 		return (
 			<View style={{flexDirection: 'column', flex: 1}}>
-				<ProgressViewIOS progress={timePassed/10000} progressTintColor={'#C9E779'} trackTintColor={'#FFF'} />
+				{
+					Platform.OS === 'ios' ?
+						<ProgressViewIOS progress={timePassed/10000} progressTintColor={'#C9E779'} trackTintColor={'#FFF'} style={styles.ProgressView} />
+						: null
+				}
 
 				<View style={styles.ControlsContainer}>
 					<View style={[styles.ActionWrapper, {borderLeftWidth: 0}]}>
 						<TouchableOpacity onPress={() => this.onControlPress('play')}>
-							<Icon name={'play'} type="font-awesome" color={'#C9E779'} size={24} />
+							<Icon name={'play'} type="font-awesome" color={currentControl === 'PLAY' ? '#C9E779' : '#8B9A61'} size={24} />
 						</TouchableOpacity>
 					</View>
 
 					<View style={styles.ActionWrapper}>
 						<TouchableOpacity onPress={() => this.onControlPress('pause')}>
-							<Icon name={'pause'} type="font-awesome" color={'#C9E779'} size={24} />
+							<Icon name={'pause'} type="font-awesome" color={currentControl === 'PAUSE' ? '#C9E779' : '#8B9A61'} size={24} />
 						</TouchableOpacity>
 					</View>
 
 					<View style={styles.ActionWrapper}>
 						<TouchableOpacity onPress={() => this.onControlPress('stop')}>
-							<Icon name={'stop'} type="font-awesome" color={'#C9E779'} size={24} />
+							<Icon name={'stop'} type="font-awesome" color={currentControl === 'STOP' ? '#C9E779' : '#8B9A61'} size={24} />
 						</TouchableOpacity>
 					</View>
 
@@ -83,6 +89,10 @@ const styles = StyleSheet.create({
 		alignSelf: 'center',
 		borderLeftWidth: 1,
 		borderLeftColor: '#FFF'
+	},
+	ProgressView: {
+		height: 5,
+		padding: 0
 	}
 });
 

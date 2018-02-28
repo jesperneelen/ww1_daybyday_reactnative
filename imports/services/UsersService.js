@@ -80,10 +80,10 @@ export default class UsersService {
 			});
 	}
 
-	updateActiveEvent(activeEvent, activeEventIndex) {
+	updateActiveEvent(activeEvent, activeEventIndex, maxEventIndex) {
 		let url = api.updateActiveEvent();
 
-		return fetch(url, this.baseService.Update({ActiveEvent: activeEvent, ActiveEventIndex: activeEventIndex}))
+		return fetch(url, this.baseService.Update({ActiveEvent: activeEvent, ActiveEventIndex: activeEventIndex, MaxEventIndex: maxEventIndex}))
 			.then(response => {
 				if(response.status >= 400) {
 					throw new Error('Bad response from server');

@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import {
 	Text,
 	StyleSheet,
 	TouchableOpacity
 } from 'react-native';
-import moment from 'moment';
 
-export default class EventItem extends React.Component {
+export default class EventItem extends Component {
 	constructor(props) {
 		super(props);
 	}
 
 	shouldComponentUpdate(nextProps) {
-		return nextProps.selected !== this.props.selected;
+		return nextProps.selected !== this.props.selected
+			|| (nextProps.available && !this.props.available);
 	}
 
 	render() {
@@ -21,11 +22,13 @@ export default class EventItem extends React.Component {
 			Front,
 			Nation,
 			onPress,
-			selected
+			selected,
+			available
 		} = this.props;
 
 		return (
-			<TouchableOpacity onPress={onPress} style={[styles.EventItemContainer, selected ? styles.Selected : null]}>
+			<TouchableOpacity activeOpacity={available ? .2 : 1} onPress={available ? onPress : null}
+												style={[styles.EventItemContainer, selected ? styles.Selected : null, available ? null : styles.Unavailable]}>
 				<Text style={styles.DateOfEvent}>{moment(DateOfEvent, 'DD/MM/YYYY').format('MMMM Do, YYYY')}</Text>
 				<Text style={styles.FrontNation}>{`${Front} / ${Nation}`}</Text>
 			</TouchableOpacity>
@@ -56,5 +59,8 @@ const styles = StyleSheet.create({
 	},
 	Selected: {
 		backgroundColor: 'rgba(139, 154, 97, .3)'
+	},
+	Unavailable: {
+		backgroundColor: 'rgba(0, 0, 0, .1)'
 	}
 });

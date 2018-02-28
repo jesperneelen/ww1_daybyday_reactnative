@@ -11,12 +11,7 @@ import {
 	ScrollView
 } from 'react-native';
 
-import {
-	Icon
-} from 'react-native-elements';
-
 import Button from './Button';
-import { setActiveEvent } from '../../actions/events';
 
 class ActiveEvent extends Component {
 	constructor(props) {
@@ -26,8 +21,6 @@ class ActiveEvent extends Component {
 			modalVisible: false
 		};
 
-		this.previousEvent = this.previousEvent.bind(this);
-		this.nextEvent = this.nextEvent.bind(this);
 		this.openModal = this.openModal.bind(this);
 		this.closeModal = this.closeModal.bind(this);
 	}
@@ -40,43 +33,13 @@ class ActiveEvent extends Component {
 		this.setState(() => ({modalVisible: false}));
 	}
 
-	previousEvent() {
-		let {
-			setActiveEvent,
-			activeEventIndex,
-			previousEvent
-		} = this.props;
-
-		if(setActiveEvent) {
-			setActiveEvent(activeEventIndex - 1, previousEvent._id);
-		}
-	}
-
-	nextEvent() {
-		let {
-			setActiveEvent,
-			activeEventIndex,
-			nextEvent
-		} = this.props;
-
-		if(setActiveEvent) {
-			setActiveEvent(activeEventIndex + 1, nextEvent._id);
-		}
-	}
-
 	render() {
 		const {
-			activeEvent,
-			previousEvent,
-			nextEvent
+			activeEvent
 		} = this.props;
 
 		return (
 			<View style={styles.ActiveEventContainer}>
-				<TouchableOpacity onPress={this.previousEvent} disabled={!previousEvent}>
-					<Icon type="font-awesome" name={'chevron-left'} color={'#FFF'} size={40} />
-				</TouchableOpacity>
-
 				{
 					activeEvent ?
 						<View style={styles.ActiveEvent}>
@@ -101,10 +64,6 @@ class ActiveEvent extends Component {
 						</View>
 					</View>
 				</Modal>
-
-				<TouchableOpacity onPress={this.nextEvent} disabled={!nextEvent}>
-					<Icon type="font-awesome" name={'chevron-right'} color={'#FFF'} size={40} />
-				</TouchableOpacity>
 			</View>
 		);
 	}
@@ -153,7 +112,6 @@ const styles = StyleSheet.create({
 	},
 	ModalInnerContainer: {
 		alignItems: 'center',
-		//backgroundColor: '#FFF',
 		backgroundColor: 'rgb(139, 154, 97)',
 		padding: 20,
 		overflow: 'scroll'
@@ -163,16 +121,8 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
 	return {
 		activeEvent: state.events.activeEvent,
-		activeEventIndex: state.events.activeEventIndex,
-		previousEvent: state.events.previousEvent,
-		nextEvent: state.events.nextEvent
+		activeEventIndex: state.events.activeEventIndex
 	};
 }
 
-function mapDispatchToProps(dispatch) {
-	return {
-		setActiveEvent: (idx, eventId) => dispatch(setActiveEvent(idx, eventId))
-	};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ActiveEvent);
+export default connect(mapStateToProps, null)(ActiveEvent);

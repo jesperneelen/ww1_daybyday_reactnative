@@ -84,8 +84,8 @@ export default class OverviewEvents extends Component {
 				</Animated.View>
 
 				<Animated.View style={[styles.EventsWrapper, {transform: [{translateX: this.translateX}], height: componentHeight}]}>
-					<TouchableOpacity onPress={this.onToggle} underlayColor="#eee" style={[styles.CloseToggle, {height: 30}]}>
-						<Icon name={'ios-close-circle'} type="ionicon" color={'rgb(68, 78, 41)'} size={30} style={{alignSelf: 'center'}} />
+					<TouchableOpacity onPress={this.onToggle} underlayColor="#EEE" style={[styles.CloseToggle, {height: 30}]}>
+						<Icon type="ionicon" name={'ios-close-circle'} color={'rgb(68, 78, 41)'} size={30} style={{alignSelf: 'center'}} />
 					</TouchableOpacity>
 
 					<EventsList events={this.props.events} limit={50} height={componentHeight - 30} />

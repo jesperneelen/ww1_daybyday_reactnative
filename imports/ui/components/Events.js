@@ -59,7 +59,8 @@ class EventsList extends Component {
 		return nextProps.lastUpdated > this.props.lastUpdated
 			|| this.state.page !== nextState.page
 			|| this.state.limit !== nextState.limit
-			|| this.props.activeEventIndex !== nextProps.activeEventIndex;
+			|| this.props.activeEventIndex !== nextProps.activeEventIndex
+			|| this.props.maxEventIndex !== nextProps.maxEventIndex;
 	}
 
 	_keyExtractor(item, idx) {
@@ -67,8 +68,15 @@ class EventsList extends Component {
 	}
 
 	renderItem({item, index}) {
+		const {
+			activeEventIndex,
+			maxEventIndex
+		} = this.props;
+
 		return (
-			<EventItem {...item} onPress={() => this.onPressItem(index, item._id)} selected={this.props.activeEventIndex === index} />
+			<EventItem {...item} onPress={() => this.onPressItem(index, item._id)}
+								 selected={activeEventIndex === index}
+								 available={maxEventIndex >= index} />
 		);
 	}
 
@@ -120,15 +128,15 @@ class EventsList extends Component {
 		const {
 			events,
 			height,
-			activeEventIndex
+			activeEventIndex,
+			maxEventIndex
 		} = this.props;
 
 		return (
 			<List containerStyle={[styles.EventsContainer, {height}]}>
 				<FlatList ref={(flatList) => this.flatList = flatList} data={events} keyExtractor={this._keyExtractor} renderItem={this.renderItem}
-									ItemSeparatorComponent={this.renderSeparator} ListFooterComponent={this.renderFooter}
-									onEndReached={this.handleLoadMore} onEndReachedThreshold={0.3} extraData={{activeEventIndex}}
-									getItemLayout={this.getItemLayout} />
+									ItemSeparatorComponent={this.renderSeparator} ListFooterComponent={this.renderFooter} getItemLayout={this.getItemLayout}
+									onEndReached={this.handleLoadMore} onEndReachedThreshold={.3} extraData={{activeEventIndex, maxEventIndex}} />
 			</List>
 		);
 	}
@@ -161,7 +169,8 @@ function mapStateToProps(state) {
 		lastUpdated: state.events.lastUpdated,
 		totalCount: state.events.totalCount,
 		activeEventIndex: state.events.activeEventIndex,
-		page: state.events.page
+		page: state.events.page,
+		maxEventIndex: state.events.maxEventIndex
 	};
 }
 
@@ -172,6 +181,5 @@ function mapDispatchToProps(dispatch) {
 		setPage: (page) => dispatch(setPage(page))
 	};
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventsList);

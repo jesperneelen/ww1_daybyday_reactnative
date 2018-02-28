@@ -13,6 +13,7 @@ const initialState = {
 	previousEvent: null,
 	activeEvent: null,
 	activeEventIndex: null,
+	maxEventIndex: null,
 	nextEvent: null,
 	page: 0
 };
@@ -32,6 +33,7 @@ export function events(state = initialState, action) {
 				page: action.init ? action.page : state.page,
 				activeEvent: action.init && action.activeEventId ? action.events.find(event => event._id === action.activeEventId) : state.activeEvent,
 				activeEventIndex: action.init && action.activeEventIndex !== null ? action.activeEventIndex : state.activeEventIndex,
+				maxEventIndex: action.init && action.maxEventIndex !== null ? action.maxEventIndex : state.maxEventIndex,
 				previousEvent: action.init && action.activeEventIndex !== null && action.activeEventIndex !== 0 ? action.events[action.activeEventIndex - 1] : state.previousEvent,
 				nextEvent: action.init && action.activeEventIndex !== null && action.activeEventIndex < action.events.length - 1  ? action.events[action.activeEventIndex + 1] : state.nextEvent
 			});
@@ -39,6 +41,7 @@ export function events(state = initialState, action) {
 			return Object.assign({}, state, {
 				activeEvent: state.data[action.index],
 				activeEventIndex: action.index,
+				maxEventIndex: action.index > state.maxEventIndex ? action.index : state.maxEventIndex,
 				previousEvent: action.index === 0 ? null : state.data[action.index - 1],
 				nextEvent: action.index === state.data.length - 1 ? null : state.data[action.index + 1]
 			});

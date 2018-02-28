@@ -26,7 +26,7 @@ export function adjustCurrentControl(control) {
 			let state = getState().controls;
 			clearInterval(timerInterval);
 			dispatch(setPausedTime(state.timePassed));
-		} else if(control === 'stop' && timerInterval) {
+		} else if((control === 'stop' || control === 'next/previous') && timerInterval) {
 			clearInterval(timerInterval);
 			dispatch(setTimePassed(0));
 		}
@@ -40,7 +40,7 @@ function play(pausedAt) {
 			timePassed += 1000;
 			dispatch(setTimePassed(timePassed));
 
-			if(timePassed === 10000) {
+			if(timePassed === 10000 || timePassed > 10000) {
 				timePassed = 0;
 				let state = getState().events;
 				let activeEventId = state.data[state.activeEventIndex + 1]._id;

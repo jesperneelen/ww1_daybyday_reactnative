@@ -42,6 +42,7 @@ export function fetchEvents(init, skip, limit, totalCount) {
 					receivedAt: Date.now(),
 					page: rounded - 1,
 					init,
+					maxEventIndex: state && state.user && state.user.MaxEventIndex !== null ? state.user.MaxEventIndex : null,
 					activeEventIndex: state && state.user && state.user.ActiveEventIndex !== null ? state.user.ActiveEventIndex : null,
 					activeEventId: state && state.user && state.user.ActiveEvent ? state.user.ActiveEvent._id : null
 				});
@@ -60,7 +61,7 @@ export function setActiveEvent(idx, eventId) {
 			dispatch(setPage(state.page + 1));
 		}
 
-		updateActiveEvent(eventId, idx);
+		updateActiveEvent(eventId, idx, state.maxEventIndex <= idx ? idx : state.maxEventIndex);
 
 		dispatch({
 			type: SET_ACTIVE_EVENT,
@@ -76,8 +77,8 @@ export function setPage(page) {
 	};
 }
 
-function updateActiveEvent(activeEvent, activeEventIndex) {
-	return usersService.updateActiveEvent(activeEvent, activeEventIndex)
+function updateActiveEvent(activeEvent, activeEventIndex, maxEventIndex) {
+	return usersService.updateActiveEvent(activeEvent, activeEventIndex, maxEventIndex)
 		.then(response => {
 			if(response.success) {
 				//console.log('updateActiveEvent successful!', response);

@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Button from './Button';
 import {
 	View,
 	StyleSheet,
 	TouchableOpacity,
 	ProgressViewIOS,
-	Platform
+	Platform,
+	Modal,
+	Picker
 } from 'react-native';
 
 import {
@@ -16,11 +19,23 @@ import {
 	adjustCurrentControl
 } from '../../actions/controls';
 
+import {
+	setActiveEvent
+} from '../../actions/events';
+
 class JourneyControls extends Component {
 	constructor(props) {
 		super(props);
 
+		this.state = {
+			intervalModalVisible: false
+		};
+
 		this.onControlPress = this.onControlPress.bind(this);
+		this.previousEvent = this.previousEvent.bind(this);
+		this.nextEvent = this.nextEvent.bind(this);
+		this.onOpenIntervalModal = this.onOpenIntervalModal.bind(this);
+		this.saveInterval = this.saveInterval.bind(this);
 	}
 
 	onControlPress(control) {
@@ -34,11 +49,62 @@ class JourneyControls extends Component {
 		}
 	}
 
+	previousEvent() {
+		let {
+			setActiveEvent,
+			activeEventIndex,
+			previousEvent,
+			adjustCurrentControl
+		} = this.props;
+
+		if(setActiveEvent && adjustCurrentControl) {
+			setActiveEvent(activeEventIndex - 1, previousEvent._id);
+			adjustCurrentControl('next/previous');
+		}
+	}
+
+	nextEvent() {
+		let {
+			setActiveEvent,
+			activeEventIndex,
+			nextEvent,
+			adjustCurrentControl
+		} = this.props;
+
+		if(setActiveEvent && adjustCurrentControl) {
+			setActiveEvent(activeEventIndex + 1, nextEvent._id);
+			adjustCurrentControl('next/previous');
+		}
+	}
+
+	onOpenIntervalModal() {
+		this.setState(() => ({
+			intervalModalVisible: true
+		}));
+	}
+
+	saveInterval() {
+		this.setState(() => ({
+			intervalModalVisible: false
+		}));
+	}
+
 	render() {
 		const {
 			timePassed,
-			currentControl
+			currentControl,
+			maxEventIndex,
+			activeEventIndex,
+			previousEvent,
+			nextEvent
 		} = this.props;
+
+		const {
+			intervalModalVisible
+		} = this.state;
+
+		let enablePrevious = !!previousEvent;
+		let enableNext = nextEvent && activeEventIndex < maxEventIndex;
 
 		return (
 			<View style={{flexDirection: 'column', flex: 1}}>
@@ -50,28 +116,59 @@ class JourneyControls extends Component {
 
 				<View style={styles.ControlsContainer}>
 					<View style={[styles.ActionWrapper, {borderLeftWidth: 0}]}>
-						<TouchableOpacity onPress={() => this.onControlPress('play')}>
-							<Icon name={'play'} type="font-awesome" color={currentControl === 'PLAY' ? '#C9E779' : '#8B9A61'} size={24} />
+						<TouchableOpacity onPress={enablePrevious ? this.previousEvent : null} activeOpacity={enablePrevious ? .2 : 1}>
+							<Icon name={'step-backward'} type="font-awesome" color={enablePrevious ? '#C9E779' : '#8B9A61'} size={24} />
 						</TouchableOpacity>
 					</View>
 
-					<View style={styles.ActionWrapper}>
-						<TouchableOpacity onPress={() => this.onControlPress('pause')}>
-							<Icon name={'pause'} type="font-awesome" color={currentControl === 'PAUSE' ? '#C9E779' : '#8B9A61'} size={24} />
-						</TouchableOpacity>
-					</View>
+					{
+						currentControl === 'PLAY' ?
+							<View style={styles.ActionWrapper}>
+								<TouchableOpacity onPress={() => this.onControlPress('pause')}>
+									<Icon name={'pause'} type="font-awesome" color={'#C9E779'} size={24} />
+								</TouchableOpacity>
+							</View>
+							:
+							<View style={styles.ActionWrapper}>
+								<TouchableOpacity onPress={() => this.onControlPress('play')}>
+									<Icon name={'play'} type="font-awesome" color={'#C9E779'} size={24} />
+								</TouchableOpacity>
+							</View>
+					}
 
 					<View style={styles.ActionWrapper}>
 						<TouchableOpacity onPress={() => this.onControlPress('stop')}>
-							<Icon name={'stop'} type="font-awesome" color={currentControl === 'STOP' ? '#C9E779' : '#8B9A61'} size={24} />
+							<Icon name={'stop'} type="font-awesome" color={'#C9E779'} size={24} />
 						</TouchableOpacity>
 					</View>
 
 					<View style={styles.ActionWrapper}>
-						<TouchableOpacity onPress={() => console.log('onPress timer')}>
+						<TouchableOpacity onPress={enableNext ? this.nextEvent : null} activeOpacity={enableNext ? .2 : 1}>
+							<Icon name={'step-forward'} type="font-awesome" color={enableNext ? '#C9E779' : '#8B9A61'} size={24} />
+						</TouchableOpacity>
+					</View>
+
+					<View style={[styles.ActionWrapper, {borderLeftWidth: 2, borderLeftColor: '#FFF'}]}>
+						<TouchableOpacity onPress={this.onOpenIntervalModal}>
 							<Icon name={'ios-timer'} type="ionicon" color={'#FFF'} size={24} />
 						</TouchableOpacity>
 					</View>
+
+					<Modal animationType={'fade'} transparent={true} visible={intervalModalVisible}>
+						<View style={styles.ModalContainer}>
+							<View style={styles.ModalInnerContainer}>
+								<Picker itemStyle={{color: 'white'}}
+												selectedValue={this.state.language ? this.state.language: '30000'}
+												onValueChange={(itemValue, itemIndex) => this.setState({language: itemValue})}>
+									<Picker.Item label="10 seconds" value="10000" />
+									<Picker.Item label="30 seconds" value="30000" />
+									<Picker.Item label="60 seconds" value="60000" />
+								</Picker>
+
+								<Button text="SAVE" onPress={this.saveInterval} />
+							</View>
+						</View>
+					</Modal>
 				</View>
 			</View>
 		);
@@ -86,26 +183,39 @@ const styles = StyleSheet.create({
 	},
 	ActionWrapper: {
 		flex: 1,
-		alignSelf: 'center',
-		borderLeftWidth: 1,
-		borderLeftColor: '#FFF'
+		alignSelf: 'center'
 	},
 	ProgressView: {
 		height: 5,
 		padding: 0
+	},
+	ModalContainer: {
+		flex: 1,
+		justifyContent: 'center',
+		padding: 20,
+		backgroundColor: 'rgba(0, 0, 0, .5)'
+	},
+	ModalInnerContainer: {
+		backgroundColor: 'rgb(139, 154, 97)',
+		padding: 20
 	}
 });
 
 function mapStateToProps(state) {
 	return {
 		currentControl: state.controls.current,
-		timePassed: state.controls.timePassed
+		timePassed: state.controls.timePassed,
+		activeEventIndex: state.events.activeEventIndex,
+		maxEventIndex: state.events.maxEventIndex,
+		previousEvent: state.events.previousEvent,
+		nextEvent: state.events.nextEvent
 	};
 }
 
 function mapDispatchToProps(dispatch) {
 	return {
-		adjustCurrentControl: (control) => dispatch(adjustCurrentControl(control))
+		adjustCurrentControl: (control) => dispatch(adjustCurrentControl(control)),
+		setActiveEvent: (idx, eventId) => dispatch(setActiveEvent(idx, eventId))
 	};
 }
 

@@ -1,9 +1,14 @@
 import { setActiveEvent } from './events';
+import { handleException } from './exceptions';
+import UsersService from '../services/UsersService';
 
 export const ADJUST_CURRENT_CONTROL = 'ADJUST/CURRENT/CONTROL';
 export const SET_TIME_PASSED = 'SET/TIME/PASSED';
 export const SET_PAUSED_TIME = 'SET/PAUSED/TIME';
+export const SET_INTERVAL = 'SET/INTERVAL';
+export const SET_INTERVAL_ERROR = 'There was a server error while adjusting your journey interval.';
 
+let usersService = new UsersService();
 let timerInterval = null;
 
 export function adjustCurrentControl(control) {
@@ -26,7 +31,7 @@ export function adjustCurrentControl(control) {
 			let state = getState().controls;
 			clearInterval(timerInterval);
 			dispatch(setPausedTime(state.timePassed));
-		} else if((control === 'stop' || control === 'next/previous') && timerInterval) {
+		} else if((control === 'stop' || control === 'next/previous' || control === 'interval') && timerInterval) {
 			clearInterval(timerInterval);
 			dispatch(setTimePassed(0));
 		}
@@ -35,8 +40,13 @@ export function adjustCurrentControl(control) {
 
 function play(pausedAt) {
 	return (dispatch, getState) => {
+		console.log('pausedAt', pausedAt);
 		let timePassed = pausedAt && pausedAt !== null ? pausedAt : 0;
+		console.log('time passed 1', timePassed);
+
+		clearInterval(timerInterval);
 		timerInterval = setInterval(() => {
+			console.log('time passed 2', timePassed);
 			timePassed += 1000;
 			dispatch(setTimePassed(timePassed));
 
@@ -47,6 +57,12 @@ function play(pausedAt) {
 				dispatch(setActiveEvent(state.activeEventIndex + 1, activeEventId));
 			}
 		}, 1000);
+
+		console.log('end interval');
+
+		/*let state = getState().events;
+		let activeEventId = state.data[state.activeEventIndex + 1]._id;
+		dispatch(setActiveEvent(state.activeEventIndex + 1, activeEventId));*/
 	};
 }
 
@@ -61,5 +77,28 @@ function setPausedTime(pauseTime) {
 	return {
 		type: SET_PAUSED_TIME,
 		pauseTime
+	};
+}
+
+export function adjustJourneyInterval(interval) {
+	return dispatch => {
+		return usersService.updateJourneyInterval(interval)
+			.then(response => {
+				if(response.success) {
+					dispatch(setInterval(interval));
+				} else {
+					dispatch(handleException('error', SET_INTERVAL_ERROR));
+				}
+			})
+			.catch(error => {
+				dispatch(handleException('error', SET_INTERVAL_ERROR, error));
+			});
+	};
+}
+
+export function setInterval(interval) {
+	return {
+		type: SET_INTERVAL,
+		interval
 	};
 }

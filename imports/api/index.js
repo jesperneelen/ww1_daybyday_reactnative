@@ -33,6 +33,10 @@ export function updateActiveEvent() {
 	return getBaseAppPath() + '/user/active-event';
 }
 
+export function updateJourneyInterval() {
+	return getBaseAppPath() + '/user/journey-interval';
+}
+
 // EVENTS
 export function getEvents(skip=0, limit=50, totalCount=null) {
 	return getBaseAppPath() + `/events?skip=${skip}&limit=${limit}&totalCount=${totalCount}`;

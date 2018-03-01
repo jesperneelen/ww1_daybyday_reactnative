@@ -16,7 +16,8 @@ import {
 } from 'react-native-elements';
 
 import {
-	adjustCurrentControl
+	adjustCurrentControl,
+	adjustJourneyInterval
 } from '../../actions/controls';
 
 import {
@@ -28,14 +29,24 @@ class JourneyControls extends Component {
 		super(props);
 
 		this.state = {
-			intervalModalVisible: false
+			intervalModalVisible: false,
+			interval: props.interval.toString()
 		};
 
 		this.onControlPress = this.onControlPress.bind(this);
 		this.previousEvent = this.previousEvent.bind(this);
 		this.nextEvent = this.nextEvent.bind(this);
 		this.onOpenIntervalModal = this.onOpenIntervalModal.bind(this);
+		this.onCloseIntervalModal = this.onCloseIntervalModal.bind(this);
 		this.saveInterval = this.saveInterval.bind(this);
+	}
+
+	componentWillReceiveProps(nextProps) {
+		if(nextProps.interval && parseInt(this.state.interval) !== nextProps.interval) {
+			this.setState(() => ({
+				interval: nextProps.interval.toString()
+			}));
+		}
 	}
 
 	onControlPress(control) {
@@ -44,7 +55,7 @@ class JourneyControls extends Component {
 			currentControl
 		} = this.props;
 
-		if(adjustCurrentControl && control && currentControl !== control) {
+		if(adjustCurrentControl && control && currentControl !== control.toUpperCase()) {
 			adjustCurrentControl(control);
 		}
 	}
@@ -83,10 +94,30 @@ class JourneyControls extends Component {
 		}));
 	}
 
-	saveInterval() {
+	onCloseIntervalModal() {
 		this.setState(() => ({
 			intervalModalVisible: false
 		}));
+	}
+
+	saveInterval() {
+		const {
+			adjustJourneyInterval,
+			adjustCurrentControl
+		} = this.props;
+
+		const {
+			interval
+		} = this.state;
+
+		if(adjustJourneyInterval && interval) {
+			adjustJourneyInterval(parseInt(interval));
+			adjustCurrentControl('interval');
+
+			this.setState(() => ({
+				intervalModalVisible: false
+			}));
+		}
 	}
 
 	render() {
@@ -100,17 +131,20 @@ class JourneyControls extends Component {
 		} = this.props;
 
 		const {
-			intervalModalVisible
+			intervalModalVisible,
+			interval
 		} = this.state;
 
 		let enablePrevious = !!previousEvent;
 		let enableNext = nextEvent && activeEventIndex < maxEventIndex;
 
+		//console.log('Interval/TimePassed', timePassed/parseInt(interval));
+
 		return (
 			<View style={{flexDirection: 'column', flex: 1}}>
 				{
 					Platform.OS === 'ios' ?
-						<ProgressViewIOS progress={timePassed/10000} progressTintColor={'#C9E779'} trackTintColor={'#FFF'} style={styles.ProgressView} />
+						<ProgressViewIOS progress={timePassed/parseInt(interval)} progressTintColor={'#C9E779'} trackTintColor={'#FFF'} style={styles.ProgressView} />
 						: null
 				}
 
@@ -157,15 +191,15 @@ class JourneyControls extends Component {
 					<Modal animationType={'fade'} transparent={true} visible={intervalModalVisible}>
 						<View style={styles.ModalContainer}>
 							<View style={styles.ModalInnerContainer}>
-								<Picker itemStyle={{color: 'white'}}
-												selectedValue={this.state.language ? this.state.language: '30000'}
-												onValueChange={(itemValue, itemIndex) => this.setState({language: itemValue})}>
+								<Picker itemStyle={{color: 'white'}} selectedValue={this.state.interval}
+												onValueChange={(itemValue, itemIndex) => this.setState(() => ({interval: itemValue}))}>
 									<Picker.Item label="10 seconds" value="10000" />
 									<Picker.Item label="30 seconds" value="30000" />
 									<Picker.Item label="60 seconds" value="60000" />
 								</Picker>
 
 								<Button text="SAVE" onPress={this.saveInterval} />
+								<Button text="CLOSE" onPress={this.onCloseIntervalModal} />
 							</View>
 						</View>
 					</Modal>
@@ -205,6 +239,7 @@ function mapStateToProps(state) {
 	return {
 		currentControl: state.controls.current,
 		timePassed: state.controls.timePassed,
+		interval: state.controls.interval,
 		activeEventIndex: state.events.activeEventIndex,
 		maxEventIndex: state.events.maxEventIndex,
 		previousEvent: state.events.previousEvent,
@@ -215,7 +250,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 	return {
 		adjustCurrentControl: (control) => dispatch(adjustCurrentControl(control)),
-		setActiveEvent: (idx, eventId) => dispatch(setActiveEvent(idx, eventId))
+		setActiveEvent: (idx, eventId) => dispatch(setActiveEvent(idx, eventId)),
+		adjustJourneyInterval: (interval) => dispatch(adjustJourneyInterval(interval))
 	};
 }
 

@@ -92,4 +92,17 @@ export default class UsersService {
 				}
 			});
 	}
+
+	updateJourneyInterval(interval) {
+		let url = api.updateJourneyInterval();
+
+		return fetch(url, this.baseService.Update({JourneyInterval: interval}))
+			.then(response => {
+				if(response.status >= 400) {
+					throw new Error('Bad response from server');
+				} else {
+					return response.json();
+				}
+			});
+	}
 }

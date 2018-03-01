@@ -1,13 +1,15 @@
 import {
 	ADJUST_CURRENT_CONTROL,
 	SET_TIME_PASSED,
-	SET_PAUSED_TIME
+	SET_PAUSED_TIME,
+	SET_INTERVAL
 } from '../actions/controls';
 
 const initialState = {
 	current: 'STOP', // PLAY - PAUSE - STOP
 	timePassed: 0,
-	pausedAt: null
+	pausedAt: null,
+	interval: null
 };
 
 export function controls(state=initialState, action) {
@@ -23,6 +25,10 @@ export function controls(state=initialState, action) {
 		case SET_PAUSED_TIME:
 			return Object.assign({}, state, {
 				pausedAt: action.pauseTime
+			});
+		case SET_INTERVAL:
+			return Object.assign({}, state, {
+				interval: action.interval
 			});
 		default:
 			return Object.assign({}, state);

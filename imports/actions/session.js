@@ -1,5 +1,5 @@
 import { handleException } from './exceptions';
-import { setInterval } from './controls';
+import { setControlInterval } from './controls';
 import UsersService from '../services/UsersService';
 
 let usersService = new UsersService();
@@ -33,7 +33,7 @@ export function loginFbComplete(fbUserId) {
 					type: LOGIN_FB_COMPLETE,
 					profile: response
 				});
-				dispatch(setInterval(response.JourneyInterval));
+				dispatch(setControlInterval(response.JourneyInterval));
 				dispatch(handleException('success', LOGIN_FB_SUCCESSFUL));
 			})
 			.catch(error => {
@@ -69,7 +69,7 @@ export function logInUser(username, password) {
 		return usersService.login(username, password)
 			.then(response => {
 				dispatch(loginComplete(response));
-				dispatch(setInterval(response.JourneyInterval));
+				dispatch(setControlInterval(response.JourneyInterval));
 				dispatch(handleException('success', LOGIN_SUCCESSFUL));
 			})
 			.catch(error => {
@@ -136,7 +136,7 @@ export function fetchProfile() {
 		return usersService.getUser()
 			.then(response => {
 				setTimeout(() => {
-					dispatch(setInterval(response.JourneyInterval));
+					dispatch(setControlInterval(response.JourneyInterval));
 					dispatch(setProfile(response));
 				}, 750);
 			})
@@ -167,7 +167,7 @@ export function register(newUser) {
 		return usersService.register(newUser)
 			.then(response => {
 				if(response.success && response.user) {
-					dispatch(setInterval(response.user.JourneyInterval));
+					dispatch(setControlInterval(response.user.JourneyInterval));
 					dispatch(registerComplete(response.user));
 					dispatch(handleException('success', REGISTER_SUCCESSFUL));
 				} else if(!response.success) {

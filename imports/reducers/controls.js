@@ -2,7 +2,7 @@ import {
 	ADJUST_CURRENT_CONTROL,
 	SET_TIME_PASSED,
 	SET_PAUSED_TIME,
-	SET_INTERVAL
+	SET_CONTROL_INTERVAL
 } from '../actions/controls';
 
 const initialState = {
@@ -26,7 +26,7 @@ export function controls(state=initialState, action) {
 			return Object.assign({}, state, {
 				pausedAt: action.pauseTime
 			});
-		case SET_INTERVAL:
+		case SET_CONTROL_INTERVAL:
 			return Object.assign({}, state, {
 				interval: action.interval
 			});

@@ -41,12 +41,13 @@ class JourneyControls extends Component {
 		this.saveInterval = this.saveInterval.bind(this);
 	}
 
-	componentWillReceiveProps(nextProps) {
-		if(nextProps.interval && parseInt(this.state.interval) !== nextProps.interval) {
-			this.setState(() => ({
-				interval: nextProps.interval.toString()
-			}));
-		}
+	shouldComponentUpdate(nextProps, nextState) {
+		return nextState.intervalModalVisible !== this.state.intervalModalVisible
+				|| nextState.interval !== this.state.interval
+				|| nextProps.currentControl !== this.props.currentControl
+				|| nextProps.timePassed !== this.props.timePassed
+				|| nextProps.interval !== this.props.interval
+				|| nextProps.activeEventIndex !== this.props.activeEventIndex;
 	}
 
 	onControlPress(control) {
@@ -127,18 +128,16 @@ class JourneyControls extends Component {
 			maxEventIndex,
 			activeEventIndex,
 			previousEvent,
-			nextEvent
+			nextEvent,
+			interval
 		} = this.props;
 
 		const {
-			intervalModalVisible,
-			interval
+			intervalModalVisible
 		} = this.state;
 
 		let enablePrevious = !!previousEvent;
 		let enableNext = nextEvent && activeEventIndex < maxEventIndex;
-
-		//console.log('Interval/TimePassed', timePassed/parseInt(interval));
 
 		return (
 			<View style={{flexDirection: 'column', flex: 1}}>
@@ -191,7 +190,7 @@ class JourneyControls extends Component {
 					<Modal animationType={'fade'} transparent={true} visible={intervalModalVisible}>
 						<View style={styles.ModalContainer}>
 							<View style={styles.ModalInnerContainer}>
-								<Picker itemStyle={{color: 'white'}} selectedValue={this.state.interval}
+								<Picker itemStyle={{color: '#FFF'}} selectedValue={this.state.interval}
 												onValueChange={(itemValue, itemIndex) => this.setState(() => ({interval: itemValue}))}>
 									<Picker.Item label="10 seconds" value="10000" />
 									<Picker.Item label="30 seconds" value="30000" />

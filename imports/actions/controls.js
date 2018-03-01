@@ -5,7 +5,7 @@ import UsersService from '../services/UsersService';
 export const ADJUST_CURRENT_CONTROL = 'ADJUST/CURRENT/CONTROL';
 export const SET_TIME_PASSED = 'SET/TIME/PASSED';
 export const SET_PAUSED_TIME = 'SET/PAUSED/TIME';
-export const SET_INTERVAL = 'SET/INTERVAL';
+export const SET_CONTROL_INTERVAL = 'SET/CONTROL/INTERVAL';
 export const SET_INTERVAL_ERROR = 'There was a server error while adjusting your journey interval.';
 
 let usersService = new UsersService();
@@ -13,7 +13,6 @@ let timerInterval = null;
 
 export function adjustCurrentControl(control) {
 	return (dispatch, getState) => {
-
 		let state = getState().controls;
 		let pausedAt = null;
 		if(state.current === 'PAUSE' && control === 'play') {
@@ -40,29 +39,21 @@ export function adjustCurrentControl(control) {
 
 function play(pausedAt) {
 	return (dispatch, getState) => {
-		console.log('pausedAt', pausedAt);
 		let timePassed = pausedAt && pausedAt !== null ? pausedAt : 0;
-		console.log('time passed 1', timePassed);
 
-		clearInterval(timerInterval);
 		timerInterval = setInterval(() => {
-			console.log('time passed 2', timePassed);
 			timePassed += 1000;
 			dispatch(setTimePassed(timePassed));
 
-			if(timePassed === 10000 || timePassed > 10000) {
+			let interval = getState().controls.interval;
+
+			if(timePassed === interval || timePassed > interval) {
 				timePassed = 0;
 				let state = getState().events;
 				let activeEventId = state.data[state.activeEventIndex + 1]._id;
 				dispatch(setActiveEvent(state.activeEventIndex + 1, activeEventId));
 			}
 		}, 1000);
-
-		console.log('end interval');
-
-		/*let state = getState().events;
-		let activeEventId = state.data[state.activeEventIndex + 1]._id;
-		dispatch(setActiveEvent(state.activeEventIndex + 1, activeEventId));*/
 	};
 }
 
@@ -85,7 +76,7 @@ export function adjustJourneyInterval(interval) {
 		return usersService.updateJourneyInterval(interval)
 			.then(response => {
 				if(response.success) {
-					dispatch(setInterval(interval));
+					dispatch(setControlInterval(interval));
 				} else {
 					dispatch(handleException('error', SET_INTERVAL_ERROR));
 				}
@@ -96,9 +87,9 @@ export function adjustJourneyInterval(interval) {
 	};
 }
 
-export function setInterval(interval) {
+export function setControlInterval(interval) {
 	return {
-		type: SET_INTERVAL,
+		type: SET_CONTROL_INTERVAL,
 		interval
 	};
 }

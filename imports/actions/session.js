@@ -37,7 +37,6 @@ export function loginFbComplete(fbUserId) {
 				dispatch(handleException('success', LOGIN_FB_SUCCESSFUL));
 			})
 			.catch(error => {
-				console.log(error);
 				dispatch(handleException('error', LOGIN_FB_ERROR));
 			});
 	};

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Button from './Button';
 import {
 	View,
 	StyleSheet,
@@ -24,13 +23,15 @@ import {
 	setActiveEvent
 } from '../../actions/events';
 
+import ActionBar from '../components/ActionBar';
+
 class JourneyControls extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
 			intervalModalVisible: false,
-			interval: props.interval.toString()
+			interval: props.interval && props.interval.toString()
 		};
 
 		this.onControlPress = this.onControlPress.bind(this);
@@ -139,6 +140,11 @@ class JourneyControls extends Component {
 		let enablePrevious = !!previousEvent;
 		let enableNext = nextEvent && activeEventIndex < maxEventIndex;
 
+		const actions = [
+			{text: 'Save', iconType: 'ionicon', iconName: 'md-checkmark-circle', iconSize: 27, iconColor: '#FFFFFF', onPress: this.saveInterval},
+			{text: 'Close', iconType: 'ionicon', iconName: 'ios-close-circle', iconSize: 27, iconColor: '#FFFFFF', onPress: this.onCloseIntervalModal}
+		];
+
 		return (
 			<View style={{flexDirection: 'column', flex: 1}}>
 				{
@@ -150,7 +156,7 @@ class JourneyControls extends Component {
 				<View style={styles.ControlsContainer}>
 					<View style={[styles.ActionWrapper, {borderLeftWidth: 0}]}>
 						<TouchableOpacity onPress={enablePrevious ? this.previousEvent : null} activeOpacity={enablePrevious ? .2 : 1}>
-							<Icon name={'step-backward'} type="font-awesome" color={enablePrevious ? '#C9E779' : '#8B9A61'} size={24} />
+							<Icon name={'fast-backward'} type="font-awesome" color={enablePrevious ? '#C9E779' : '#8B9A61'} size={24} />
 						</TouchableOpacity>
 					</View>
 
@@ -177,7 +183,7 @@ class JourneyControls extends Component {
 
 					<View style={styles.ActionWrapper}>
 						<TouchableOpacity onPress={enableNext ? this.nextEvent : null} activeOpacity={enableNext ? .2 : 1}>
-							<Icon name={'step-forward'} type="font-awesome" color={enableNext ? '#C9E779' : '#8B9A61'} size={24} />
+							<Icon name={'fast-forward'} type="font-awesome" color={enableNext ? '#C9E779' : '#8B9A61'} size={24} />
 						</TouchableOpacity>
 					</View>
 
@@ -197,8 +203,10 @@ class JourneyControls extends Component {
 									<Picker.Item label="60 seconds" value="60000" />
 								</Picker>
 
-								<Button text="SAVE" onPress={this.saveInterval} />
-								<Button text="CLOSE" onPress={this.onCloseIntervalModal} />
+								{/*<Button text="SAVE" onPress={this.saveInterval} />
+								<Button text="CLOSE" onPress={this.onCloseIntervalModal} />*/}
+
+								<ActionBar actions={actions} />
 							</View>
 						</View>
 					</Modal>

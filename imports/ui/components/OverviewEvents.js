@@ -74,7 +74,7 @@ export default class OverviewEvents extends Component {
 		} = this.props;
 
 		return (
-			<View style={[styles.OverviewContainer, {height: componentHeight}]}>
+			<View style={[styles.OverviewContainer, {height: componentHeight}]} pointerEvents={'box-none'}>
 				<Animated.View style={[styles.ToggleContainer, {right: this.toggleRightValue}]}>
 					<TouchableHighlight onPress={this.onToggle} underlayColor="#EEE" style={styles.Toggle}>
 						<Animated.View style={{transform: [{rotateY: rotate}]}}>
@@ -109,7 +109,8 @@ const styles = StyleSheet.create({
 		top: windowHeight / 4,
 		justifyContent: 'center',
 		borderBottomLeftRadius: 5,
-		borderTopLeftRadius: 5
+		borderTopLeftRadius: 5,
+		zIndex: 1
 	},
 	Toggle: {
 		flex: 1,

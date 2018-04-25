@@ -19,6 +19,7 @@ export default class EventItem extends Component {
 	render() {
 		const {
 			DateOfEvent,
+			EndOfEvent,
 			Front,
 			Nation,
 			onPress,
@@ -29,7 +30,12 @@ export default class EventItem extends Component {
 		return (
 			<TouchableOpacity activeOpacity={available ? .2 : 1} onPress={available ? onPress : null}
 												style={[styles.EventItemContainer, selected ? styles.Selected : null, available ? null : styles.Unavailable]}>
-				<Text style={styles.DateOfEvent}>{moment(DateOfEvent, 'DD/MM/YYYY').format('MMMM Do, YYYY')}</Text>
+				{
+					EndOfEvent && EndOfEvent !== null ?
+						<Text style={styles.DateOfEvent}>{moment(DateOfEvent, 'DD/MM/YYYY').format('MMM Do, YYYY')} - {moment(EndOfEvent, 'DD/MM/YYYY').format('MMM Do, YYYY')}</Text>
+						: <Text style={styles.DateOfEvent}>{moment(DateOfEvent, 'DD/MM/YYYY').format('MMMM Do, YYYY')}</Text>
+				}
+
 				<Text style={styles.FrontNation}>{`${Front} / ${Nation}`}</Text>
 			</TouchableOpacity>
 		);

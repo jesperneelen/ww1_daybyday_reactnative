@@ -13,7 +13,10 @@
 #import <React/RCTRootView.h>
 #import <React/RCTLinkingManager.h>
 
-@implementation AppDelegate
+    @import GoogleMaps;
+
+
+    @implementation AppDelegate
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
@@ -31,7 +34,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  NSURL *jsCodeLocation;
+  [GMSServices provideAPIKey:@"AIzaSyC9umhbObZKgLQqkrGjlR1DLyFfop9a1ys"];
+
+NSURL *jsCodeLocation;
 
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
 
@@ -46,7 +51,7 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
-  
+
   return YES;
 }
 

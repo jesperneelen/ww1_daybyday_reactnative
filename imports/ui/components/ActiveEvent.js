@@ -8,10 +8,12 @@ import {
 	Platform,
 	TouchableOpacity,
 	Modal,
-	ScrollView
+	ScrollView,
+	ActivityIndicator
 } from 'react-native';
 
-import Button from './Button';
+import TagItem from '../components/TagItem';
+import ActionBar from '../components/ActionBar';
 
 class ActiveEvent extends Component {
 	constructor(props) {
@@ -23,6 +25,7 @@ class ActiveEvent extends Component {
 
 		this.openModal = this.openModal.bind(this);
 		this.closeModal = this.closeModal.bind(this);
+		this.addToFavourites = this.addToFavourites.bind(this);
 	}
 
 	openModal() {
@@ -33,37 +36,87 @@ class ActiveEvent extends Component {
 		this.setState(() => ({modalVisible: false}));
 	}
 
+	addToFavourites() {
+		console.log('ADD TO FAVOURITES');
+	}
+
 	render() {
 		const {
-			activeEvent
+			activeEvent,
+			isFetchingEvents
 		} = this.props;
+
+		let dbDateFormat = 'DD/MM/YYYY';
+
+		const actions = [
+			{text: 'Add to favourites', iconType: 'ionicon', iconName: 'ios-star', iconColor: '#FFFFFF', iconSize: 27, onPress: this.addToFavourites},
+			{text: 'Close', iconType: 'ionicon', iconName: 'ios-close-circle', iconColor: '#FFFFFF', iconSize: 27, onPress: this.closeModal}
+		];
 
 		return (
 			<View style={styles.ActiveEventContainer}>
 				{
-					activeEvent ?
+					isFetchingEvents ?
 						<View style={styles.ActiveEvent}>
-							<Text style={styles.DateOfEvent}>{moment(activeEvent.DateOfEvent, 'DD/MM/YYYY').format('MMMM Do, YYYY')}</Text>
-							<Text style={styles.NationFront}>{`${activeEvent.Front}/${activeEvent.Nation}`}</Text>
-							<TouchableOpacity onPress={this.openModal}>
-								<Text style={styles.Description} ellipsizeMode="tail" numberOfLines={4}>{activeEvent.Description}</Text>
-							</TouchableOpacity>
+							<ActivityIndicator size="large" animating={true} />
 						</View>
 						:
-						<Text style={styles.NoActiveEvent}>No active event</Text>
+						(
+							activeEvent ?
+								<View style={styles.ActiveEvent}>
+									{
+										activeEvent.EndOfEvent && activeEvent.EndOfEvent !== null ?
+											<Text style={styles.DateOfEvent}>
+												{moment(activeEvent.DateOfEvent, dbDateFormat).format('MMM Do, YYYY')} - {moment(activeEvent.EndOfEvent, dbDateFormat).format('MMM Do, YYYY')}
+											</Text>
+											:
+											<Text style={styles.DateOfEvent}>
+												{moment(activeEvent.DateOfEvent, dbDateFormat).format('MMMM Do, YYYY')}
+											</Text>
+									}
+
+									<Text style={styles.NationFront}>{`${activeEvent.Front} - ${activeEvent.Nation}`}</Text>
+
+									<TouchableOpacity onPress={this.openModal}>
+										<Text style={styles.Description} ellipsizeMode="tail" numberOfLines={4}>{activeEvent.Description}</Text>
+									</TouchableOpacity>
+								</View>
+								:
+								<View style={styles.ActiveEvent}>
+									<Text style={styles.NoActiveEvent}>Looks like you haven't picked an active event until now :(</Text>
+									<Text style={styles.NoActiveEvent}>Select one in the event overview!</Text>
+								</View>
+						)
 				}
 
-				<Modal animationType={'fade'} transparent={true} visible={this.state.modalVisible}>
-					<View style={styles.ModalContainer}>
-						<View style={styles.ModalInnerContainer}>
-							<ScrollView>
-								<Text style={[styles.Description, {fontSize: 14}]}>{activeEvent && activeEvent.Description}</Text>
-							</ScrollView>
+				{
+					activeEvent ?
+						<Modal animationType={'fade'} transparent={true} visible={this.state.modalVisible}>
+							<View style={styles.ModalContainer}>
+								<View style={styles.ModalInnerContainer}>
+									<ScrollView>
+										<Text style={[styles.Description, {fontSize: 14}]}>{activeEvent && activeEvent.Description}</Text>
+									</ScrollView>
 
-							<Button text="CLOSE" onPress={this.closeModal} />
-						</View>
-					</View>
-				</Modal>
+									<View style={styles.ModalTagsContainer}>
+										{
+											activeEvent.Tags && activeEvent.Tags.length > 0 && Array.isArray(activeEvent.Tags) ?
+												activeEvent.Tags
+													.sort((a, b) => a.DisplayName > b.DisplayName ? 1 : -1)
+													.map((tag, idx) => {
+														return (
+															<TagItem key={idx} IsCity={tag.IsCity} DisplayName={tag.DisplayName} backgroundColor="#BEDA73" />
+														)
+													})
+												: null
+										}
+									</View>
+
+									<ActionBar actions={actions} />
+								</View>
+							</View>
+						</Modal> : null
+				}
 			</View>
 		);
 	}
@@ -88,6 +141,7 @@ const styles = StyleSheet.create({
 	DateOfEvent: {
 		color: '#C9E779',
 		fontWeight: 'bold',
+		textAlign: 'center',
 		fontSize: 23
 	},
 	NationFront: {
@@ -102,7 +156,9 @@ const styles = StyleSheet.create({
 		textAlign: 'center'
 	},
 	NoActiveEvent: {
-		color: '#FFF'
+		color: '#BEDA73',
+		fontSize: 17,
+		textAlign: 'center'
 	},
 	ModalContainer: {
 		flex: 1,
@@ -115,13 +171,20 @@ const styles = StyleSheet.create({
 		backgroundColor: 'rgb(139, 154, 97)',
 		padding: 20,
 		overflow: 'scroll'
+	},
+	ModalTagsContainer: {
+		flexDirection: 'row',
+		flexWrap: 'wrap',
+		justifyContent: 'center',
+		marginVertical: 10
 	}
 });
 
 function mapStateToProps(state) {
 	return {
 		activeEvent: state.events.activeEvent,
-		activeEventIndex: state.events.activeEventIndex
+		activeEventIndex: state.events.activeEventIndex,
+		isFetchingEvents: state.events.isFetching
 	};
 }
 

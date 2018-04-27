@@ -141,9 +141,12 @@ class LoginScreen extends Component {
 
 				<View style={styles.inputContainer}>
 					<Input placeholder="Email address" onChange={(text, valid) => this.onChangeText(text, valid, 'email')}
-								 validations={{required: true, format: 'email'}} isSubmitted={saving} />
+								 validations={{required: true, format: 'email'}} isSubmitted={saving}
+								 iconName={'ios-mail'} iconType={'ionicon'} withIcon={true} />
+
 					<Input placeholder="Password" onChange={(text, valid) => this.onChangeText(text, valid, 'password')}
-								 secureTextEntry={true} validations={{required: true}} isSubmitted={saving} />
+								 secureTextEntry={true} validations={{required: true}} isSubmitted={saving}
+								 iconName={'ios-lock'} iconType={'ionicon'} withIcon={true} />
 				</View>
 
 				<View style={styles.actionContainer}>
@@ -151,7 +154,8 @@ class LoginScreen extends Component {
 					<Button text="LOGIN WITH FACEBOOK" onPress={this.loginWithFacebook} fbButton={true} noMarginTop={true} />
 
 					<TouchableOpacity onPress={() => navigate('register')} style={styles.signUpWrapper} activeOpacity={.5}>
-						<Text style={styles.signUpText}>Don't have an account?</Text><Text style={[styles.signUpText, styles.signUp]}>Sign up</Text>
+						<Text style={styles.signUpText}>Don't have an account?</Text>
+						<Text style={[styles.signUpText, styles.signUp]}>Sign up</Text>
 					</TouchableOpacity>
 				</View>
 			</ImageBackground>

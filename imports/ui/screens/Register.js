@@ -95,15 +95,24 @@ class RegisterScreen extends Component {
 			<ImageBackground source={require('../../../assets/register.png')} style={styles.backgroundImage}>
 				<View>
 					<Input placeholder="First name" onChange={(text, valid) => this.onChangeText(text, valid, 'FirstName')}
-								 validations={{required: true}} isSubmitted={saving} />
+								 validations={{required: true}} isSubmitted={saving}
+								 iconName={'ios-person'} iconType={'ionicon'} withIcon={true} />
+
 					<Input placeholder="Last name" onChange={(text, valid) => this.onChangeText(text, valid, 'LastName')}
-								 validations={{required: true}} isSubmitted={saving} />
+								 validations={{required: true}} isSubmitted={saving}
+								 iconName={'ios-person'} iconType={'ionicon'} withIcon={true}/>
+
 					<Input placeholder="Email address" onChange={(text, valid) => this.onChangeText(text, valid, 'Email')}
-								 validations={{required: true, format: 'email'}} isSubmitted={saving} f/>
+								 validations={{required: true, format: 'email'}} isSubmitted={saving}
+								 iconName={'ios-mail'} iconType={'ionicon'} withIcon={true} />
+
 					<Input placeholder="Password" onChange={(text, valid) => this.onChangeText(text, valid, 'Password')}
-								 secureTextEntry={true} validations={{required: true}} isSubmitted={saving} />
+								 secureTextEntry={true} validations={{required: true}} isSubmitted={saving}
+								 iconName={'ios-lock'} iconType={'ionicon'} withIcon={true} />
+
 					<Input placeholder="Confirm password" onChange={(text, valid) => this.onChangeText(text, valid, 'ConfirmPassword')}
-								 secureTextEntry={true} validations={{required: true}} isSubmitted={saving} />
+								 secureTextEntry={true} validations={{required: true}} isSubmitted={saving}
+								 iconName={'ios-checkmark'} iconType={'ionicon'} withIcon={true} />
 				</View>
 
 				<View style={styles.actionContainer}>

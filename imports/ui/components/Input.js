@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import validator from 'validator';
-//import Icon from 'react-native-vector-icons/FontAwesome';
+import { Icon } from 'react-native-elements';
 
 import {
 	TextInput,
-	StyleSheet
+	StyleSheet,
+	View
 } from 'react-native';
 
 export default class Input extends Component {
@@ -95,7 +96,10 @@ export default class Input extends Component {
 			value,
 			defaultValue,
 			noMarginTop,
-			extraStyle
+			extraStyle,
+			withIcon,
+			iconType,
+			iconName
 		} = this.props;
 
 		const {
@@ -103,8 +107,23 @@ export default class Input extends Component {
 			styleOnError
 		} = this.state;
 
+		if(withIcon) {
+			return (
+				<View style={[styles.InputWithIcon, styleOnFocus, styleOnError]}>
+					<Icon type={iconType} name={iconName} color={'white'} size={27} />
+
+					<TextInput style={[styles.input, {borderBottomWidth: 0, flex: 1, ...extraStyle}]}
+										 placeholder={placeholder ? placeholder : 'Enter text here ...'}
+										 autoFocus={autoFocus} editable={editable} keyboardType={keyboardType} secureTextEntry={secureTextEntry}
+										 value={value} defaultValue={defaultValue} placeholderTextColor={'#FFF'}
+										 onChangeText={this.onChange} onFocus={this.onFocus} onBlur={this.onBlur} />
+				</View>
+			);
+		}
+
 		return (
-			<TextInput style={[styles.input, styleOnFocus, styleOnError, {marginTop: noMarginTop ? 0 : 10, ...extraStyle}]} placeholder={placeholder ? placeholder : 'Enter text here ...'}
+			<TextInput style={[styles.input, styleOnFocus, styleOnError, {marginTop: noMarginTop ? 0 : 10, paddingRight: 10, ...extraStyle}]}
+								 placeholder={placeholder ? placeholder : 'Enter text here ...'}
 								 autoFocus={autoFocus} editable={editable} keyboardType={keyboardType} secureTextEntry={secureTextEntry}
 								 value={value} defaultValue={defaultValue} placeholderTextColor={'#FFF'}
 								 onChangeText={this.onChange} onFocus={this.onFocus} onBlur={this.onBlur} />
@@ -113,6 +132,14 @@ export default class Input extends Component {
 }
 
 const styles = StyleSheet.create({
+	InputWithIcon: {
+		borderBottomWidth: 1,
+		borderBottomColor: '#FFF',
+		flexDirection: 'row',
+		alignContent: 'center',
+		paddingHorizontal: 10,
+		marginTop: 13
+	},
 	input: {
 		color: '#FFF',
 		backgroundColor: 'transparent',

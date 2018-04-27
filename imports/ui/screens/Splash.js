@@ -40,7 +40,7 @@ class SplashScreen extends Component {
 				nextProps.navigation.dispatch(NavigationActions.reset({
 					index: 0,
 					actions: [
-						NavigationActions.navigate({routeName: 'drawerStack'})
+						NavigationActions.navigate({routeName: 'home'})
 					]
 				}));
 			}, 2000);

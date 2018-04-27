@@ -6,6 +6,9 @@ import {
 } from 'react-native';
 
 import MapView, { Marker }  from 'react-native-maps';
+import ActionButton from 'react-native-action-button';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import OverviewEvents from './OverviewEvents';
 
 class Map extends Component {
@@ -13,7 +16,8 @@ class Map extends Component {
 		super(props);
 
 		this.state = {
-			height: null
+			height: null,
+			isFiltered: false
 		};
 
 		this.onLayout = this.onLayout.bind(this);
@@ -21,12 +25,23 @@ class Map extends Component {
 	}
 
 	componentDidUpdate() {
-		let markerIDs = this.props.markers.reduce((acc, cur) => {
-			acc.push(cur._id);
-			return acc;
-		}, []);
+		if(this.props.markers && Array.isArray(this.props.markers)) {
+			if(this.props.markers.length > 1) {
+				let markerIDs = this.props.markers.reduce((acc, cur) => {
+					acc.push(cur._id);
+					return acc;
+				}, []);
 
-		this.mapView.fitToSuppliedMarkers(markerIDs, true);
+				this.mapView.fitToSuppliedMarkers(markerIDs, true);
+			} else if(this.props.markers.length === 1) {
+				this.mapView.animateToRegion({
+					longitude: this.props.markers[0].longitude,
+					longitudeDelta: 5,
+					latitude: this.props.markers[0].latitude,
+					latitudeDelta: 5
+				});
+			}
+		}
 	}
 
 	onLayout(event) {
@@ -45,13 +60,14 @@ class Map extends Component {
 
 	render() {
 		const {
-			region
-		} = this.state;
-
-		const {
 			markers,
 			allEventMarkers
 		} = this.props;
+
+		const {
+			isFiltered,
+			height
+		} = this.state;
 
 		return (
 			<View style={styles.mapContainer} onLayout={this.onLayout}>
@@ -63,7 +79,7 @@ class Map extends Component {
 					style={styles.map}
 				>
 					{
-						markers && markers.length > 0 && Array.isArray(markers) ?
+						markers && Array.isArray(markers) ?
 							markers.map((marker, idx) => {
 								return (
 									<Marker
@@ -82,7 +98,7 @@ class Map extends Component {
 					}
 
 					{
-						allEventMarkers && allEventMarkers.length > 0 && Array.isArray(allEventMarkers) ?
+						!isFiltered && allEventMarkers && allEventMarkers.length > 0 && Array.isArray(allEventMarkers) ?
 							allEventMarkers.map((marker, idx) => {
 								return (
 									<Marker
@@ -100,7 +116,15 @@ class Map extends Component {
 					}
 				</MapView>
 
-				<OverviewEvents componentHeight={this.state.height} />
+				<ActionButton buttonColor={'rgb(68, 78, 41)'} position={'left'}
+											spacing={5} offsetY={12} offsetX={12} activeOpacity={.6}
+											renderIcon={() => isFiltered ?
+												(<Icon name="filter-remove" style={styles.actionButtonIcon} /> )
+												: (<Icon name="filter" style={styles.actionButtonIcon} />)
+											}
+											onPress={() => this.setState((prevState) => ({isFiltered: !prevState.isFiltered}))} />
+
+				<OverviewEvents componentHeight={height} />
 			</View>
 		);
 	}
@@ -113,7 +137,11 @@ const styles = StyleSheet.create({
 	},
 	map: {
 		flex: 1
-	}
+	},
+	actionButtonIcon: {
+		fontSize: 22,
+		color: 'white'
+	},
 });
 
 function mapStateToProps(state) {

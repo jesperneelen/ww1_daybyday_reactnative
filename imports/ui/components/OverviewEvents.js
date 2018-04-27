@@ -27,7 +27,7 @@ export default class OverviewEvents extends Component {
 		this.onToggle = this.onToggle.bind(this);
 
 		this.translateX = new Animated.Value(windowWidth);
-		this.toggleRightValue = new Animated.Value(0);
+		this.iconTranslateX = new Animated.Value(windowWidth - 25);
 		this.rotateValue = new Animated.Value(0);
 	}
 
@@ -42,9 +42,9 @@ export default class OverviewEvents extends Component {
 					}
 				),
 				Animated.timing(
-					this.toggleRightValue,
+					this.iconTranslateX,
 					{
-						toValue: prevState.collapsed ? windowWidth : 0,
+						toValue: prevState.collapsed ? -25 : windowWidth - 25,
 						duration: 500
 					}
 				),
@@ -75,10 +75,10 @@ export default class OverviewEvents extends Component {
 
 		return (
 			<View style={[styles.OverviewContainer, {height: componentHeight}]} pointerEvents={'box-none'}>
-				<Animated.View style={[styles.ToggleContainer, {right: this.toggleRightValue}]}>
+				<Animated.View style={[styles.ToggleContainer, {transform: [{translateX: this.iconTranslateX}]}]}>
 					<TouchableHighlight onPress={this.onToggle} underlayColor="#EEE" style={styles.Toggle}>
 						<Animated.View style={{transform: [{rotateY: rotate}]}}>
-							<Icon type="font-awesome" name={'chevron-left'} color={'rgb(68, 78, 41)'} size={30} />
+							<Icon type="font-awesome" name={'chevron-left'} color={'rgb(68, 78, 41)'} />
 						</Animated.View>
 					</TouchableHighlight>
 				</Animated.View>
@@ -88,7 +88,7 @@ export default class OverviewEvents extends Component {
 						<Icon type="ionicon" name={'ios-close-circle'} color={'rgb(68, 78, 41)'} size={30} style={{alignSelf: 'center'}} />
 					</TouchableOpacity>
 
-					<EventsList events={this.props.events} limit={50} height={componentHeight - 30} />
+					<EventsList limit={50} height={componentHeight - 30} />
 				</Animated.View>
 			</View>
 		);
@@ -102,15 +102,14 @@ const styles = StyleSheet.create({
 		right: 0
 	},
 	ToggleContainer: {
-		backgroundColor: '#FFF',
+		backgroundColor: '#FFFFFF',
 		position: 'absolute',
 		height: windowHeight / 7,
 		width: 25,
 		top: windowHeight / 4,
 		justifyContent: 'center',
 		borderBottomLeftRadius: 5,
-		borderTopLeftRadius: 5,
-		zIndex: 1
+		borderTopLeftRadius: 5
 	},
 	Toggle: {
 		flex: 1,

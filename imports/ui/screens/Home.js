@@ -13,11 +13,11 @@ export default class Screen1 extends Component {
 	render() {
 		return (
 			<View style={styles.container}>
-				<ActiveEvent/>
+				<ActiveEvent />
 
 				<Map />
 
-				<JourneyControls/>
+				<JourneyControls />
 			</View>
 		);
 	}

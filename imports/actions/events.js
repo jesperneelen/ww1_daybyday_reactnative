@@ -38,39 +38,7 @@ export function fetchEvents(init, skip, limit, totalCount) {
 			.then(response => {
 				if(init && state && state.user && state.user.ActiveEventIndex !== null && response.events && response.events.length > 0 && Array.isArray(response.events)) {
 					let idx = state.user.ActiveEventIndex;
-					let maxIdx = state.user.MaxEventIndex;
-					let markerIDs = [];
-
-					if(response.events[idx] && response.events[idx].Tags
-						&& response.events[idx].Tags.length > 0 && Array.isArray(response.events[idx].Tags)) {
-						let cityTags = response.events[idx].Tags.filter(tag => {
-							markerIDs.push(tag._id);
-							return tag.IsCity;
-						});
-
-						if(cityTags && cityTags.length > 0 && Array.isArray(cityTags)) {
-							dispatch(setMarkers(cityTags));
-						}
-					}
-
-
-					let allEventMarkers = [];
-					let allMarkerIDs = [];
-					for(let i = 0; i < idx; i++) {
-						let event = response.events[i];
-						if(event.Tags && event.Tags.length > 0 && Array.isArray(event.Tags)) {
-							let cityTags = event.Tags.filter(tag => {
-								let result = tag.IsCity && markerIDs.indexOf(tag._id) === -1 && allMarkerIDs.indexOf(tag._id) === -1;
-								allMarkerIDs.push(tag._id);
-								return result;
-							});
-
-							allEventMarkers = [...allEventMarkers, ...cityTags];
-						}
-					}
-
-					dispatch(setAllEventMarkers(allEventMarkers.sort((a, b) => a.DisplayName > b.DisplayName ? 1 : -1)));
-					console.log(allEventMarkers.sort((a, b) => a.DisplayName > b.DisplayName ? 1 : -1));
+					getAndSetMarkers(dispatch, response.events, idx);
 				}
 
 				dispatch({
@@ -99,39 +67,7 @@ export function setActiveEvent(idx, eventId) {
 			dispatch(setPage(state.page + 1));
 		}
 
-		let markerIDs = [];
-		if(state && state.data && state.data[idx] && state.data[idx].Tags
-			&& state.data[idx].Tags.length > 0 && Array.isArray(state.data[idx].Tags)) {
-			let cityTags = state.data[idx].Tags.filter(tag => {
-				markerIDs.push(tag._id);
-				return tag.IsCity;
-			});
-
-			if(cityTags && cityTags.length > 0 && Array.isArray(cityTags)) {
-				dispatch(setMarkers(cityTags));
-			}
-		}
-
-		if(state && state.data && state.data.length > 0 && Array.isArray(state.data)) {
-			let allEventMarkers = [];
-			let allMarkerIDs = [];
-			for(let i = 0; i < idx; i++) {
-				let event = state.data[i];
-				if(event.Tags && event.Tags.length > 0 && Array.isArray(event.Tags)) {
-					let cityTags = event.Tags.filter(tag => {
-						let result = tag.IsCity && markerIDs.indexOf(tag._id) === -1 && allMarkerIDs.indexOf(tag._id) === -1;
-						allMarkerIDs.push(tag._id);
-						return result;
-					});
-
-					allEventMarkers = [...allEventMarkers, ...cityTags];
-				}
-			}
-
-			console.log('ALL EVENT MAKERS LENGTH', allEventMarkers.length);
-			dispatch(setAllEventMarkers(allEventMarkers.sort((a, b) => a.DisplayName > b.DisplayName ? 1 : -1)));
-		}
-
+		getAndSetMarkers(dispatch, state.data, idx);
 		updateActiveEvent(eventId, idx, state.maxEventIndex <= idx ? idx : state.maxEventIndex);
 
 		dispatch({
@@ -158,4 +94,44 @@ function updateActiveEvent(activeEvent, activeEventIndex, maxEventIndex) {
 		.catch(error => {
 			console.log('updateActiveEvent error', error);
 		});
+}
+
+
+function getAndSetMarkers(dispatch, events, eventIndex) {
+	let markerIDs = [];
+	let idx = eventIndex;
+
+	if(events && events[idx] && events[idx].Tags
+		&& events[idx].Tags.length > 0 && Array.isArray(events[idx].Tags)) {
+		let cityTags = events[idx].Tags.filter(tag => {
+			markerIDs.push(tag._id);
+			return tag.IsCity;
+		});
+
+		if(cityTags && Array.isArray(cityTags)) {
+			dispatch(setMarkers(cityTags));
+		}
+	}
+
+	if(events && events.length > 0 && Array.isArray(events)) {
+		let allEventMarkers = [];
+		let allMarkerIDs = [];
+
+		for(let i = 0; i < idx; i++) {
+			let event = events[i];
+			if(event.Tags && event.Tags.length > 0 && Array.isArray(event.Tags)) {
+				let cityTags = event.Tags.filter(tag => {
+					let result = tag.IsCity && markerIDs.indexOf(tag._id) === -1 && allMarkerIDs.indexOf(tag._id) === -1;
+					allMarkerIDs.push(tag._id);
+					return result;
+				});
+
+				allEventMarkers = [...allEventMarkers, ...cityTags];
+			}
+		}
+
+		console.log(allEventMarkers.sort((a, b) => a.DisplayName > b.DisplayName ? 1 : -1));
+		console.log('ALL EVENT MAKERS LENGTH', allEventMarkers.length);
+		dispatch(setAllEventMarkers(allEventMarkers.sort((a, b) => a.DisplayName > b.DisplayName ? 1 : -1)));
+	}
 }

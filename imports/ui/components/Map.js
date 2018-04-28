@@ -61,7 +61,8 @@ class Map extends Component {
 	render() {
 		const {
 			markers,
-			allEventMarkers
+			allEventMarkers,
+			navigation
 		} = this.props;
 
 		const {
@@ -110,19 +111,31 @@ class Map extends Component {
 											latitude: marker.latitude,
 											longitude: marker.longitude
 										}}
+										onPress={() => /*console.log('onPress', marker.title)*/ this.props.navigation.navigate('filteredEvents')}
+										onCalloutPress={() => /*console.log('onCalloutPress', marker.title)*/ this.props.navigation.navigate('myFavourites')}
 									/>
 								)
 							}) : null
 					}
 				</MapView>
 
-				<ActionButton buttonColor={'rgb(68, 78, 41)'} position={'left'}
-											spacing={5} offsetY={12} offsetX={12} activeOpacity={.6}
+				<ActionButton buttonColor={'rgb(68, 78, 41)'} position={'left'} offsetY={12} offsetX={12} activeOpacity={.6}
+											onPress={() => this.setState((prevState) => ({isFiltered: !prevState.isFiltered}))}
 											renderIcon={() => isFiltered ?
 												(<Icon name="filter-remove" style={styles.actionButtonIcon} /> )
 												: (<Icon name="filter" style={styles.actionButtonIcon} />)
-											}
-											onPress={() => this.setState((prevState) => ({isFiltered: !prevState.isFiltered}))} />
+											} />
+
+				<ActionButton spacing={5} offsetY={12} offsetX={12} activeOpacity={.6} outRangeScale={1.4}
+											buttonColor={'#839A42'} position={'left'} verticalOrientation={'down'} degrees={180}
+											renderIcon={() => (<Icon name="dots-vertical" style={styles.actionButtonIcon} />)}>
+					<ActionButton.Item buttonColor="#433781" title="My Favourites" onPress={() => navigation.navigate('myFavourites')}>
+						<Icon name="star" style={styles.actionButtonIcon} />
+					</ActionButton.Item>
+					<ActionButton.Item buttonColor="#814137" title="Sign Out" onPress={() => console.log('Logout!')}>
+						<Icon name="logout-variant" style={styles.actionButtonIcon} />
+					</ActionButton.Item>
+				</ActionButton>
 
 				<OverviewEvents componentHeight={height} />
 			</View>

@@ -37,6 +37,14 @@ export function updateJourneyInterval() {
 	return getBaseAppPath() + '/user/journey-interval';
 }
 
+export function pushNewFavouriteEvent() {
+	return getBaseAppPath() + '/user/new-favourite';
+}
+
+export function removeFromMyFavourites() {
+	return getBaseAppPath() + '/user/remove-favourite';
+}
+
 // EVENTS
 export function getEvents(skip=0, limit=50, totalCount=null) {
 	return getBaseAppPath() + `/events?skip=${skip}&limit=${limit}&totalCount=${totalCount}`;

@@ -1,5 +1,6 @@
 import { handleException } from './exceptions';
 import { setControlInterval } from './controls';
+import { setMyFavourites } from './events';
 import UsersService from '../services/UsersService';
 
 let usersService = new UsersService();
@@ -33,6 +34,7 @@ export function loginFbComplete(fbUserId) {
 					type: LOGIN_FB_COMPLETE,
 					profile: response
 				});
+				dispatch(setMyFavourites(response.MyFavouriteEvents));
 				dispatch(setControlInterval(response.JourneyInterval));
 				dispatch(handleException('success', LOGIN_FB_SUCCESSFUL));
 			})
@@ -68,6 +70,7 @@ export function logInUser(username, password) {
 		return usersService.login(username, password)
 			.then(response => {
 				dispatch(loginComplete(response));
+				dispatch(setMyFavourites(response.MyFavouriteEvents));
 				dispatch(setControlInterval(response.JourneyInterval));
 				dispatch(handleException('success', LOGIN_SUCCESSFUL));
 			})
@@ -135,6 +138,7 @@ export function fetchProfile() {
 		return usersService.getUser()
 			.then(response => {
 				setTimeout(() => {
+					dispatch(setMyFavourites(response.MyFavouriteEvents));
 					dispatch(setControlInterval(response.JourneyInterval));
 					dispatch(setProfile(response));
 				}, 750);
@@ -166,6 +170,7 @@ export function register(newUser) {
 		return usersService.register(newUser)
 			.then(response => {
 				if(response.success && response.user) {
+					dispatch(setMyFavourites(response.user.MyFavouriteEvents));
 					dispatch(setControlInterval(response.user.JourneyInterval));
 					dispatch(registerComplete(response.user));
 					dispatch(handleException('success', REGISTER_SUCCESSFUL));

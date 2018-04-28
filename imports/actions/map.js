@@ -3,8 +3,6 @@ export const SET_MAP_MARKERS_EVENT = 'SET/MAP/MARKERS/EVENTS';
 
 export function setMarkers(tags = []) {
 	return (dispatch) => {
-		console.log('setMarkers', tags);
-
 		let markers = mapMarkers(tags);
 
 		dispatch({
@@ -16,8 +14,6 @@ export function setMarkers(tags = []) {
 
 export function setAllEventMarkers(tags = []) {
 	return (dispatch) => {
-		console.log('setAllEventMarkers', tags);
-
 		let markers = mapMarkers(tags);
 
 		dispatch({

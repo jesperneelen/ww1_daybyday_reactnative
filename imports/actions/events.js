@@ -13,6 +13,12 @@ const FETCH_EVENTS_ERROR = 'There was a server error while loading the events';
 export const SET_ACTIVE_EVENT = 'SET/ACTIVE/EVENT';
 export const SET_PAGE = 'SET/PAGE';
 
+export const SET_MY_FAVOURITES = 'SET/MY/FAVOURITES';
+export const PUSH_FAVOURITE_EVENT = 'PUSH/FAVOURITE/EVENT';
+export const PUSH_FAVOURITE_EVENT_SUCCESS = 'PUSH/FAVOURITE/EVENT/SUCCESS';
+export const REMOVE_FROM_FAVOURITES = 'REMOVE/FROM/FAVOURITES';
+export const REMOVE_FROM_FAVOURITES_SUCCESS = 'REMOVE/FROM/FAVOURITES/SUCCESS';
+
 function fetchingEvents() {
 	return {
 		type: FETCH_EVENTS
@@ -89,11 +95,72 @@ function updateActiveEvent(activeEvent, activeEventIndex, maxEventIndex) {
 		.then(response => {
 			if(response.success) {
 				//console.log('updateActiveEvent successful!', response);
+			} else {
+				//TODO: error handling
 			}
 		})
 		.catch(error => {
 			console.log('updateActiveEvent error', error);
 		});
+}
+
+export function setMyFavourites(myFavourites) {
+	return {
+		type: SET_MY_FAVOURITES,
+		myFavourites
+	};
+}
+
+export function pushNewFavouriteEvent(eventId) {
+	return (dispatch) => {
+		dispatch({
+			type: PUSH_FAVOURITE_EVENT
+		});
+
+		return usersService.pushNewFavouriteEvent(eventId)
+			.then(response => {
+				console.log('pushNewFavouriteEvent success', response);
+				if(response.success) {
+					setTimeout(() => {
+						dispatch({
+							type: PUSH_FAVOURITE_EVENT_SUCCESS,
+							eventId
+						});
+					}, 350);
+				} else {
+					//TODO: error handling
+				}
+			})
+			.catch(error => {
+				console.log('pushNewFavouriteEvent error', error);
+			});
+	};
+}
+
+export function removeFromMyFavourites(eventId) {
+	return dispatch => {
+		dispatch({
+			type: REMOVE_FROM_FAVOURITES
+		});
+
+		return usersService.removeFromMyFavourites(eventId)
+			.then(response => {
+				console.log('removeFromMyFavourites success', response);
+				if(response.success) {
+					setTimeout(() => {
+						dispatch({
+							type: REMOVE_FROM_FAVOURITES_SUCCESS,
+							eventId
+						});
+					}, 350);
+				} else {
+					//TODO: error handling
+				}
+			})
+			.catch(error => {
+				console.log('removeFromMyFavourites error', error);
+			});
+	};
 }
 
 
@@ -130,8 +197,6 @@ function getAndSetMarkers(dispatch, events, eventIndex) {
 			}
 		}
 
-		console.log(allEventMarkers.sort((a, b) => a.DisplayName > b.DisplayName ? 1 : -1));
-		console.log('ALL EVENT MAKERS LENGTH', allEventMarkers.length);
 		dispatch(setAllEventMarkers(allEventMarkers.sort((a, b) => a.DisplayName > b.DisplayName ? 1 : -1)));
 	}
 }

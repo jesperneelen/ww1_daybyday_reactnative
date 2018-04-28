@@ -15,6 +15,8 @@ import {
 import TagItem from '../components/TagItem';
 import ActionBar from '../components/ActionBar';
 
+import { pushNewFavouriteEvent, removeFromMyFavourites } from '../../actions/events';
+
 class ActiveEvent extends Component {
 	constructor(props) {
 		super(props);
@@ -26,6 +28,7 @@ class ActiveEvent extends Component {
 		this.openModal = this.openModal.bind(this);
 		this.closeModal = this.closeModal.bind(this);
 		this.addToFavourites = this.addToFavourites.bind(this);
+		this.removeFromFavourites = this.removeFromFavourites.bind(this);
 	}
 
 	openModal() {
@@ -37,19 +40,45 @@ class ActiveEvent extends Component {
 	}
 
 	addToFavourites() {
-		console.log('ADD TO FAVOURITES');
+		const {
+			pushNewFavouriteEvent,
+			activeEvent
+		} = this.props;
+
+		if(pushNewFavouriteEvent && activeEvent && activeEvent._id) {
+			pushNewFavouriteEvent(activeEvent._id);
+		}
+	}
+
+	removeFromFavourites() {
+		const {
+			removeFromMyFavourites,
+			activeEvent
+		} = this.props;
+
+		if(removeFromMyFavourites && activeEvent && activeEvent._id) {
+			removeFromMyFavourites(activeEvent._id);
+		}
 	}
 
 	render() {
 		const {
 			activeEvent,
-			isFetchingEvents
+			isFetchingEvents,
+			pushingOrRemovingFavourite,
+			activeEventIsInFavourite
 		} = this.props;
 
 		let dbDateFormat = 'DD/MM/YYYY';
 
 		const actions = [
-			{text: 'Add to favourites', iconType: 'ionicon', iconName: 'ios-star', iconColor: '#FFFFFF', iconSize: 27, onPress: this.addToFavourites},
+			{
+				text: activeEventIsInFavourite ? 'Remove from my favourites' : 'Add to my favourites',
+				loading: pushingOrRemovingFavourite,
+				iconName: activeEventIsInFavourite ? 'ios-star' : 'ios-star-outline',
+				iconColor: '#FFFFFF', iconSize: 27, iconType: 'ionicon',
+				onPress: activeEventIsInFavourite ? this.removeFromFavourites : this.addToFavourites
+			},
 			{text: 'Close', iconType: 'ionicon', iconName: 'ios-close-circle', iconColor: '#FFFFFF', iconSize: 27, onPress: this.closeModal}
 		];
 
@@ -184,8 +213,17 @@ function mapStateToProps(state) {
 	return {
 		activeEvent: state.events.activeEvent,
 		activeEventIndex: state.events.activeEventIndex,
-		isFetchingEvents: state.events.isFetching
+		activeEventIsInFavourite: state.events.activeEventIsInFavourite,
+		isFetchingEvents: state.events.isFetching,
+		pushingOrRemovingFavourite: state.events.pushingOrRemovingFavourite
 	};
 }
 
-export default connect(mapStateToProps, null)(ActiveEvent);
+function mapDispatchToProps(dispatch) {
+	return {
+		pushNewFavouriteEvent: (eventId) => dispatch(pushNewFavouriteEvent(eventId)),
+		removeFromMyFavourites: (eventId) => dispatch(removeFromMyFavourites(eventId))
+	};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ActiveEvent);

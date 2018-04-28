@@ -8,7 +8,8 @@ import {
 	View,
 	Text,
 	StyleSheet,
-	TouchableOpacity
+	TouchableOpacity,
+	ActivityIndicator
 } from 'react-native';
 
 export const ActionBar = ({actions}) => {
@@ -20,7 +21,12 @@ export const ActionBar = ({actions}) => {
 						actions.map((action, idx) => {
 							return (
 								<TouchableOpacity key={idx} style={styles.Action} onPress={() => action.onPress()}>
-									<Icon type={action.iconType} name={action.iconName} color={action.iconColor} size={action.iconSize} />
+									{
+										action.loading ?
+											<ActivityIndicator animating={true} size="small" />
+											: <Icon type={action.iconType} name={action.iconName} color={action.iconColor} size={action.iconSize} />
+									}
+
 									<Text style={styles.ActionText}>{action.text}</Text>
 								</TouchableOpacity>
 							);

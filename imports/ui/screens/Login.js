@@ -50,7 +50,7 @@ class LoginScreen extends Component {
 
 	componentWillReceiveProps(nextProps) {
 		if(nextProps.authenticated && nextProps.user !== null && !nextProps.authenticating) {
-			this.props.navigation.navigate('home');
+			this.props.navigation.navigate('AuthenticatedStack');
 		}
 	}
 

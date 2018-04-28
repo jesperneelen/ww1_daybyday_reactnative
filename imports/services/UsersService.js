@@ -105,4 +105,30 @@ export default class UsersService {
 				}
 			});
 	}
+
+	pushNewFavouriteEvent(eventId) {
+		let url = api.pushNewFavouriteEvent();
+
+		return fetch(url, this.baseService.Update({EventId: eventId}))
+			.then(response => {
+				if(response.status >= 400) {
+					throw new Error('Bad response from server');
+				} else {
+					return response.json();
+				}
+			});
+	}
+
+	removeFromMyFavourites(eventId) {
+		let url = api.removeFromMyFavourites();
+
+		return fetch(url, this.baseService.Update({EventId: eventId}))
+			.then(response => {
+				if(response.status >= 400) {
+					throw new Error('Bad response from server');
+				} else {
+					return response.json();
+				}
+			});
+	}
 }

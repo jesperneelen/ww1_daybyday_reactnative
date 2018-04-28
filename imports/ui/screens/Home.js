@@ -11,11 +11,15 @@ export default class Screen1 extends Component {
 	}
 
 	render() {
+		const {
+			navigation
+		} = this.props;
+
 		return (
 			<View style={styles.container}>
-				<ActiveEvent />
+				<ActiveEvent navigation={navigation} />
 
-				<Map />
+				<Map navigation={navigation} />
 
 				<JourneyControls />
 			</View>

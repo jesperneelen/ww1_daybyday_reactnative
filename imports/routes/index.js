@@ -1,38 +1,51 @@
 import { StackNavigator } from 'react-navigation';
-
-//import DrawerMenu from '../ui/containers/Menu';
+import React from 'react';
 
 import Splash from '../ui/screens/Splash';
 import Login from '../ui/screens/Login';
 import Register from '../ui/screens/Register';
 import Home from '../ui/screens/Home';
-
 import MyFavourites from '../ui/screens/MyFavourites';
 import FilteredEvents from '../ui/screens/FilteredEvents';
-
-/*const DrawerNavigation = DrawerNavigator({
- Screen1: { screen: Screen1 },
- Screen2: { screen: Screen2 }
- }, {
- contentComponent: DrawerMenu,
- drawerWidth: 200
- });
-
- const DrawerStack = StackNavigator({
- DrawerStack: { screen: DrawerNavigation }
- }, {
- headerMode: 'screen',
- navigationOptions: ({navigation}) => ({
- headerStyle: { backgroundColor: 'rgb(68, 78, 41)' },
- title: ''
- })
- });*/
+import Back from '../ui/components/Back';
 
 const AuthenticatedStack = StackNavigator({
-	myFavourites: { screen: MyFavourites },
-	filteredEvents: { screen: FilteredEvents }
+	home: {
+		screen: Home,
+		navigationOptions: {
+			header: null
+		}
+	},
+	myFavourites: {
+		screen: MyFavourites,
+		navigationOptions: ({navigation}) => ({
+			title: 'My Favourites',
+			headerLeft: (<Back />),
+			headerTransparent: true,
+			headerStyle: {
+				backgroundColor: 'rgb(68, 78, 41)'
+			},
+			headerTitleStyle: {
+				color: '#FFFFFF'
+			}
+		})
+	},
+	filteredEvents: {
+		screen: FilteredEvents,
+		navigationOptions: ({navigation}) => ({
+			title: 'Filtered Events',
+			headerLeft: (<Back />),
+			headerTransparent: true,
+			headerStyle: {
+				backgroundColor: 'rgb(68, 78, 41)'
+			},
+			headerTitleStyle: {
+				color: '#FFFFFF'
+			}
+		})
+	}
 }, {
-	headerMode: 'float'
+	headerMode: 'screen'
 });
 
 const NotAuthenticatedStack = StackNavigator({
@@ -45,8 +58,9 @@ const NotAuthenticatedStack = StackNavigator({
 const Routes = StackNavigator({
 	splash: { screen: Splash },
 	notAuthenticatedStack: { screen: NotAuthenticatedStack },
-	home: { screen: Home },
-	otherStack: { screen: AuthenticatedStack }
+	AuthenticatedStack: {
+		screen: AuthenticatedStack
+	}
 }, {
 	headerMode: 'none',
 	initialRouteName: 'splash'

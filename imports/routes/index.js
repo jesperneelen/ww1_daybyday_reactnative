@@ -1,5 +1,5 @@
-import { StackNavigator } from 'react-navigation';
 import React from 'react';
+import { StackNavigator } from 'react-navigation';
 
 import Splash from '../ui/screens/Splash';
 import Login from '../ui/screens/Login';

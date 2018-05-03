@@ -5,7 +5,7 @@ import ActiveEvent from '../components/ActiveEvent';
 import JourneyControls from '../components/JourneyControls';
 import Map from '../components/Map';
 
-export default class Screen1 extends Component {
+export default class Home extends Component {
 	constructor(props) {
 		super(props);
 	}

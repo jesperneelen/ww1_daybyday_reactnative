@@ -10,6 +10,7 @@ import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import OverviewEvents from './OverviewEvents';
+import { logOutUser } from '../../actions/session';
 
 class Map extends Component {
 	constructor(props) {
@@ -62,7 +63,8 @@ class Map extends Component {
 		const {
 			markers,
 			allEventMarkers,
-			navigation
+			navigation,
+			logout
 		} = this.props;
 
 		const {
@@ -119,23 +121,23 @@ class Map extends Component {
 					}
 				</MapView>
 
-				<ActionButton buttonColor={'rgb(68, 78, 41)'} position={'left'} offsetY={12} offsetX={12} activeOpacity={.6}
-											onPress={() => this.setState((prevState) => ({isFiltered: !prevState.isFiltered}))}
-											renderIcon={() => isFiltered ?
-												(<Icon name="filter-remove" style={styles.actionButtonIcon} /> )
-												: (<Icon name="filter" style={styles.actionButtonIcon} />)
-											} />
-
 				<ActionButton spacing={5} offsetY={12} offsetX={12} activeOpacity={.6} outRangeScale={1.4}
 											buttonColor={'#839A42'} position={'left'} verticalOrientation={'down'} degrees={180}
 											renderIcon={() => (<Icon name="dots-vertical" style={styles.actionButtonIcon} />)}>
 					<ActionButton.Item buttonColor="#433781" title="My Favourites" onPress={() => navigation.navigate('myFavourites')}>
 						<Icon name="star" style={styles.actionButtonIcon} />
 					</ActionButton.Item>
-					<ActionButton.Item buttonColor="#814137" title="Sign Out" onPress={() => console.log('Logout!')}>
+					<ActionButton.Item buttonColor="#814137" title="Sign Out" onPress={() => logout && logout()}>
 						<Icon name="logout-variant" style={styles.actionButtonIcon} />
 					</ActionButton.Item>
 				</ActionButton>
+
+				<ActionButton buttonColor={'rgb(68, 78, 41)'} position={'left'} offsetY={12} offsetX={12} activeOpacity={.6}
+											onPress={() => this.setState((prevState) => ({isFiltered: !prevState.isFiltered}))}
+											renderIcon={() => isFiltered ?
+												(<Icon name="filter-remove" style={styles.actionButtonIcon} /> )
+												: (<Icon name="filter" style={styles.actionButtonIcon} />)
+											} />
 
 				<OverviewEvents componentHeight={height} />
 			</View>
@@ -164,4 +166,10 @@ function mapStateToProps(state) {
 	};
 }
 
-export default connect(mapStateToProps, null)(Map);
+function mapDispatchToProps(dispatch) {
+	return {
+		logout: () => dispatch(logOutUser())
+	};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Map);

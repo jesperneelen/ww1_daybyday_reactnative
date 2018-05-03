@@ -4,6 +4,7 @@ import {
 	SET_ACTIVE_EVENT,
 	SET_PAGE,
 	SET_MY_FAVOURITES,
+	POPULATE_MY_FAVOURITE_EVENTS,
 	PUSH_FAVOURITE_EVENT,
 	PUSH_FAVOURITE_EVENT_SUCCESS,
 	REMOVE_FROM_FAVOURITES,
@@ -22,6 +23,7 @@ const initialState = {
 	nextEvent: null,
 	page: 0,
 	myFavourites: [],
+	myFavouriteEvents: [],
 	pushingOrRemovingFavourite: false,
 	activeEventIsInFavourite: false
 };
@@ -63,6 +65,10 @@ export function events(state = initialState, action) {
 			return Object.assign({}, state, {
 				myFavourites: action.myFavourites
 			});
+		case POPULATE_MY_FAVOURITE_EVENTS:
+			return Object.assign({}, state, {
+				myFavouriteEvents: action.myFavouriteEvents.sort((a, b) => a.DayInTheWar > b.DayInTheWar)
+			});
 		case PUSH_FAVOURITE_EVENT:
 			return Object.assign({}, state, {
 				pushingOrRemovingFavourite: true
@@ -70,6 +76,7 @@ export function events(state = initialState, action) {
 		case PUSH_FAVOURITE_EVENT_SUCCESS:
 			return Object.assign({}, state, {
 				myFavourites: [...state.myFavourites, action.eventId],
+				myFavouriteEvents: [...state.myFavouriteEvents, state.data.find(event => event._id === action.eventId)].sort((a, b) => a.DayInTheWar > b.DayInTheWar),
 				pushingOrRemovingFavourite: false,
 				activeEventIsInFavourite: true
 			});
@@ -80,6 +87,7 @@ export function events(state = initialState, action) {
 		case REMOVE_FROM_FAVOURITES_SUCCESS:
 			return Object.assign({}, state, {
 				myFavourites: state.myFavourites.filter(favourite => favourite !== action.eventId),
+				myFavouriteEvents: state.myFavouriteEvents.filter(favouriteEvent => favouriteEvent._id !== action.eventId),
 				pushingOrRemovingFavourite: false,
 				activeEventIsInFavourite: false
 			});

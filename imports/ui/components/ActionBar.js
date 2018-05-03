@@ -20,7 +20,7 @@ export const ActionBar = ({actions}) => {
 					actions && actions.length > 0 && Array.isArray(actions) ?
 						actions.map((action, idx) => {
 							return (
-								<TouchableOpacity key={idx} style={styles.Action} onPress={() => action.onPress()}>
+								<TouchableOpacity key={idx} style={[styles.Action, {backgroundColor: action.backgroundColor || 'rgb(119, 121, 61)'}]} onPress={() => action.onPress()}>
 									{
 										action.loading ?
 											<ActivityIndicator animating={true} size="small" />
@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
 	Action: {
 		marginLeft: 2,
 		paddingVertical: 4,
-		backgroundColor: 'rgb(119, 121, 61)',
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'center',
@@ -59,6 +58,7 @@ const styles = StyleSheet.create({
 	},
 	ActionText: {
 		color: '#FFFFFF',
-		marginLeft: 4
+		marginLeft: 4,
+		fontSize: 12
 	}
 });

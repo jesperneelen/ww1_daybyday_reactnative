@@ -9,7 +9,11 @@ import {
 	ImageBackground,
 	Image,
 	Linking,
-	Platform
+	Platform,
+	SafeAreaView,
+	KeyboardAvoidingView,
+	Keyboard,
+	TouchableWithoutFeedback
 } from 'react-native';
 
 import Button from '../components/Button';
@@ -137,27 +141,38 @@ class LoginScreen extends Component {
 
 		return (
 			<ImageBackground source={require('../../../assets/login.png')} style={styles.backgroundImage}>
-				<Image source={require('../../../assets/WO1_header.png')} style={styles.appHeaderImage} resizeMode="contain" />
+				<SafeAreaView style={styles.container}>
+					<KeyboardAvoidingView behavior="padding" enabled style={styles.container}>
+						<TouchableWithoutFeedback style={styles.container} onPress={() => Keyboard.dismiss()}>
+							<View style={styles.container}>
+								<Image source={require('../../../assets/WO1_header.png')} style={styles.appHeaderImage} resizeMode="contain" />
 
-				<View style={styles.inputContainer}>
-					<Input placeholder="Email address" onChange={(text, valid) => this.onChangeText(text, valid, 'email')}
-								 validations={{required: true, format: 'email'}} isSubmitted={saving}
-								 iconName={'ios-mail'} iconType={'ionicon'} withIcon={true} />
+								<View style={styles.inputContainer}>
+									<Input placeholder="Email address" onChange={(text, valid) => this.onChangeText(text, valid, 'email')}
+												 validations={{required: true, format: 'email'}} isSubmitted={saving} keyboardType="email-address"
+												 iconName={'ios-mail'} iconType={'ionicon'} withIcon={true} returnKeyType="next" autoCapitalize="none"
+												 onSubmitEditing={() => this.pwdInput && this.pwdInput.txtInput && this.pwdInput.txtInput.focus()} />
 
-					<Input placeholder="Password" onChange={(text, valid) => this.onChangeText(text, valid, 'password')}
-								 secureTextEntry={true} validations={{required: true}} isSubmitted={saving}
-								 iconName={'ios-lock'} iconType={'ionicon'} withIcon={true} />
-				</View>
+									<Input ref={(pwdInput) => this.pwdInput = pwdInput}
+												 placeholder="Password" onChange={(text, valid) => this.onChangeText(text, valid, 'password')}
+												 secureTextEntry={true} validations={{required: true}} isSubmitted={saving}
+												 iconName={'ios-lock'} iconType={'ionicon'} withIcon={true} returnKeyType="go"
+												 onSubmitEditing={() => this.onLoginPressed()} />
+								</View>
 
-				<View style={styles.actionContainer}>
-					<Button text="LOGIN" onPress={this.onLoginPressed} loading={authenticating} />
-					<Button text="LOGIN WITH FACEBOOK" onPress={this.loginWithFacebook} fbButton={true} noMarginTop={true} />
+								<View style={styles.actionContainer}>
+									<Button text="LOGIN" onPress={this.onLoginPressed} loading={authenticating} />
+									<Button text="LOGIN WITH FACEBOOK" onPress={this.loginWithFacebook} fbButton={true} noMarginTop={true} />
 
-					<TouchableOpacity onPress={() => navigate('register')} style={styles.signUpWrapper} activeOpacity={.5}>
-						<Text style={styles.signUpText}>Don't have an account?</Text>
-						<Text style={[styles.signUpText, styles.signUp]}>Sign up</Text>
-					</TouchableOpacity>
-				</View>
+									<TouchableOpacity onPress={() => navigate('register')} style={styles.signUpWrapper} activeOpacity={.5}>
+										<Text style={styles.signUpText}>Don't have an account?</Text>
+										<Text style={[styles.signUpText, styles.signUp]}>Sign up</Text>
+									</TouchableOpacity>
+								</View>
+							</View>
+						</TouchableWithoutFeedback>
+					</KeyboardAvoidingView>
+				</SafeAreaView>
 			</ImageBackground>
 		);
 	}
@@ -175,6 +190,10 @@ const styles = StyleSheet.create({
 		alignSelf: 'stretch',
 		height: undefined,
 		width: undefined
+	},
+	container: {
+		flex: 1,
+		flexDirection: 'column'
 	},
 	inputContainer: {
 		flex: 1

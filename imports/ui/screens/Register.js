@@ -4,6 +4,10 @@ import {
 	StyleSheet,
 	View,
 	ImageBackground,
+	Keyboard,
+	KeyboardAvoidingView,
+	SafeAreaView,
+	TouchableWithoutFeedback
 } from 'react-native';
 
 import Button from '../components/Button';
@@ -23,6 +27,7 @@ class RegisterScreen extends Component {
 
 		this.onChangeText = this.onChangeText.bind(this);
 		this.onSignUp = this.onSignUp.bind(this);
+		this.setFocusAfterSubmitEditing = this.setFocusAfterSubmitEditing.bind(this);
 
 		this._validations = new Map();
 	}
@@ -79,6 +84,10 @@ class RegisterScreen extends Component {
 		}
 	}
 
+	setFocusAfterSubmitEditing(refName) {
+		this[refName] && this[refName].txtInput && this[refName].txtInput.focus();
+	}
+
 	render() {
 		const {
 			navigation: {
@@ -93,32 +102,49 @@ class RegisterScreen extends Component {
 
 		return (
 			<ImageBackground source={require('../../../assets/register.png')} style={styles.backgroundImage}>
-				<View>
-					<Input placeholder="First name" onChange={(text, valid) => this.onChangeText(text, valid, 'FirstName')}
-								 validations={{required: true}} isSubmitted={saving}
-								 iconName={'ios-person'} iconType={'ionicon'} withIcon={true} />
+				<SafeAreaView style={styles.container}>
+					<KeyboardAvoidingView behavior="padding" enabled style={styles.container}>
+						<TouchableWithoutFeedback style={styles.container} onPress={() => Keyboard.dismiss()}>
+							<View style={styles.container}>
+								<View>
+									<Input placeholder="First name" onChange={(text, valid) => this.onChangeText(text, valid, 'FirstName')}
+												 validations={{required: true}} isSubmitted={saving} returnKeyType="next"
+												 iconName={'ios-person'} iconType={'ionicon'} withIcon={true}
+												 onSubmitEditing={() => this.setFocusAfterSubmitEditing('lastNameInput')} />
 
-					<Input placeholder="Last name" onChange={(text, valid) => this.onChangeText(text, valid, 'LastName')}
-								 validations={{required: true}} isSubmitted={saving}
-								 iconName={'ios-person'} iconType={'ionicon'} withIcon={true}/>
+									<Input placeholder="Last name" onChange={(text, valid) => this.onChangeText(text, valid, 'LastName')}
+												 validations={{required: true}} isSubmitted={saving} returnKeyType="next"
+												 iconName={'ios-person'} iconType={'ionicon'} withIcon={true}
+												 ref={(input) => this.lastNameInput = input}
+												 onSubmitEditing={() => this.setFocusAfterSubmitEditing('emailInput')} />
 
-					<Input placeholder="Email address" onChange={(text, valid) => this.onChangeText(text, valid, 'Email')}
-								 validations={{required: true, format: 'email'}} isSubmitted={saving}
-								 iconName={'ios-mail'} iconType={'ionicon'} withIcon={true} />
+									<Input placeholder="Email address" onChange={(text, valid) => this.onChangeText(text, valid, 'Email')}
+												 validations={{required: true, format: 'email'}} isSubmitted={saving}
+												 autoCapitalize="none" keyboardType="email-address" returnKeyType="next"
+												 iconName={'ios-mail'} iconType={'ionicon'} withIcon={true}
+												 ref={(input) => this.emailInput = input}
+												 onSubmitEditing={() => this.setFocusAfterSubmitEditing('pwdInput')} />
 
-					<Input placeholder="Password" onChange={(text, valid) => this.onChangeText(text, valid, 'Password')}
-								 secureTextEntry={true} validations={{required: true}} isSubmitted={saving}
-								 iconName={'ios-lock'} iconType={'ionicon'} withIcon={true} />
+									<Input placeholder="Password" onChange={(text, valid) => this.onChangeText(text, valid, 'Password')}
+												 secureTextEntry={true} validations={{required: true}} isSubmitted={saving} returnKeyType="next"
+												 iconName={'ios-lock'} iconType={'ionicon'} withIcon={true}
+												 ref={(input) => this.pwdInput = input}
+												 onSubmitEditing={() => this.setFocusAfterSubmitEditing('pwdConfirmInput')} />
 
-					<Input placeholder="Confirm password" onChange={(text, valid) => this.onChangeText(text, valid, 'ConfirmPassword')}
-								 secureTextEntry={true} validations={{required: true}} isSubmitted={saving}
-								 iconName={'ios-checkmark'} iconType={'ionicon'} withIcon={true} />
-				</View>
+									<Input placeholder="Confirm password" onChange={(text, valid) => this.onChangeText(text, valid, 'ConfirmPassword')}
+												 secureTextEntry={true} validations={{required: true}} isSubmitted={saving} returnKeyType="go"
+												 iconName={'ios-checkmark'} iconType={'ionicon'} withIcon={true}
+												 onSubmitEditing={() => this.onSignUp()} ref={(input) => this.pwdConfirmInput = input} />
+								</View>
 
-				<View style={styles.actionContainer}>
-					<Button text="SIGN UP" onPress={this.onSignUp} loading={registeringUser} />
-					<Button text="BACK" onPress={() => goBack()} inverted={true} noMarginTop={true} />
-				</View>
+								<View style={styles.actionContainer}>
+									<Button text="SIGN UP" onPress={this.onSignUp} loading={registeringUser} />
+									<Button text="BACK" onPress={() => goBack()} inverted={true} noMarginTop={true} />
+								</View>
+							</View>
+						</TouchableWithoutFeedback>
+					</KeyboardAvoidingView>
+				</SafeAreaView>
 			</ImageBackground>
 		);
 	}
@@ -129,6 +155,11 @@ const styles = StyleSheet.create({
 	backgroundImage: {
 		flex: 1,
 		alignItems: 'stretch',
+		flexDirection: 'column',
+		justifyContent: 'center'
+	},
+	container: {
+		flex: 1,
 		flexDirection: 'column',
 		justifyContent: 'center'
 	},

@@ -76,10 +76,10 @@ class ActiveEvent extends Component {
 				text: activeEventIsInFavourite ? 'Remove from my favourites' : 'Add to my favourites',
 				loading: pushingOrRemovingFavourite,
 				iconName: activeEventIsInFavourite ? 'ios-star' : 'ios-star-outline',
-				iconColor: '#FFFFFF', iconSize: 27, iconType: 'ionicon',
+				iconColor: '#FFFFFF', iconSize: 25, iconType: 'ionicon',
 				onPress: activeEventIsInFavourite ? this.removeFromFavourites : this.addToFavourites
 			},
-			{text: 'Close', iconType: 'ionicon', iconName: 'ios-close-circle', iconColor: '#FFFFFF', iconSize: 27, onPress: this.closeModal}
+			{text: 'Close', iconType: 'ionicon', iconName: 'ios-close-circle', iconColor: '#FFFFFF', iconSize: 25, onPress: this.closeModal}
 		];
 
 		return (

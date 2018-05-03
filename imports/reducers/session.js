@@ -8,6 +8,7 @@ import {
 	SET_PROFILE,
 	FETCHING_PROFILE_ERROR,
 	REGISTERING_USER,
+	REGISTERING_USER_ERROR,
 	REGISTERING_COMPLETE
 } from '../actions/session';
 
@@ -41,13 +42,8 @@ export function session(state = initialState, action) {
 				authenticated: false
 			});
 		case LOGGED_OUT:
-			return Object.assign({}, state, {
-				authenticating: false,
-				authenticated: false,
-				user: null,
-				error: null,
-				fetchingProfile: false,
-				fetchingProfileError: false
+			return Object.assign({}, initialState, {
+				fetchingProfile: false
 			});
 		case FETCHING_PROFILE:
 			return Object.assign({}, state, {
@@ -69,6 +65,10 @@ export function session(state = initialState, action) {
 		case REGISTERING_USER:
 			return Object.assign({}, state, {
 				registeringUser: true
+			});
+		case REGISTERING_USER_ERROR:
+			return Object.assign({}, state, {
+				registeringUser: false
 			});
 		case REGISTERING_COMPLETE:
 			return Object.assign({}, state, {

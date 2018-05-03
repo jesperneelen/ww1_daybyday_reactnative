@@ -92,6 +92,7 @@ export default class Input extends Component {
 			autoFocus,
 			editable,
 			keyboardType,
+			returnKeyType,
 			secureTextEntry,
 			value,
 			defaultValue,
@@ -99,7 +100,9 @@ export default class Input extends Component {
 			extraStyle,
 			withIcon,
 			iconType,
-			iconName
+			iconName,
+			autoCapitalize,
+			onSubmitEditing
 		} = this.props;
 
 		const {
@@ -112,11 +115,14 @@ export default class Input extends Component {
 				<View style={[styles.InputWithIcon, styleOnFocus, styleOnError]}>
 					<Icon type={iconType} name={iconName} color={'white'} size={27} />
 
-					<TextInput style={[styles.input, {borderBottomWidth: 0, flex: 1, ...extraStyle}]}
+					<TextInput ref={(txtInput) => this.txtInput = txtInput}
+										 style={[styles.input, {borderBottomWidth: 0, flex: 1, ...extraStyle}]}
 										 placeholder={placeholder ? placeholder : 'Enter text here ...'}
-										 autoFocus={autoFocus} editable={editable} keyboardType={keyboardType} secureTextEntry={secureTextEntry}
+										 autoFocus={autoFocus} editable={editable} returnKeyType={returnKeyType}
+										 keyboardType={keyboardType} secureTextEntry={secureTextEntry} autoCapitalize={autoCapitalize}
 										 value={value} defaultValue={defaultValue} placeholderTextColor={'#FFF'}
-										 onChangeText={this.onChange} onFocus={this.onFocus} onBlur={this.onBlur} />
+										 onChangeText={this.onChange} onFocus={this.onFocus} onBlur={this.onBlur}
+										 onSubmitEditing={onSubmitEditing} />
 				</View>
 			);
 		}

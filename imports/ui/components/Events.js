@@ -76,7 +76,8 @@ class EventsList extends Component {
 		return (
 			<EventItem {...item} onPress={() => this.onPressItem(index, item._id)}
 								 selected={activeEventIndex === index}
-								 available={maxEventIndex >= index} />
+								 available={maxEventIndex >= index}
+								 isFavouriteEvent={false} />
 		);
 	}
 

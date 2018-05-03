@@ -63,7 +63,11 @@ export default class UsersService {
 
 		return fetch(url, this.baseService.GetInit('GET'))
 			.then(response => {
-				return response.json();
+				if(response.status >= 400) {
+					throw new Error('Bad response from server');
+				} else {
+					return response.json();
+				}
 			});
 	}
 

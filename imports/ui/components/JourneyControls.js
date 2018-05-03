@@ -141,8 +141,8 @@ class JourneyControls extends Component {
 		let enableNext = nextEvent && activeEventIndex < maxEventIndex;
 
 		const actions = [
-			{text: 'Save', iconType: 'ionicon', iconName: 'md-checkmark-circle', iconSize: 27, iconColor: '#FFFFFF', onPress: this.saveInterval},
-			{text: 'Close', iconType: 'ionicon', iconName: 'ios-close-circle', iconSize: 27, iconColor: '#FFFFFF', onPress: this.onCloseIntervalModal}
+			{text: 'Save', iconType: 'ionicon', iconName: 'md-checkmark-circle', iconSize: 25, iconColor: '#FFFFFF', onPress: this.saveInterval},
+			{text: 'Close', iconType: 'ionicon', iconName: 'ios-close-circle', iconSize: 25, iconColor: '#FFFFFF', onPress: this.onCloseIntervalModal}
 		];
 
 		return (

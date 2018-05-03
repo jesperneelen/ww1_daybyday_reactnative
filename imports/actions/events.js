@@ -14,6 +14,7 @@ export const SET_ACTIVE_EVENT = 'SET/ACTIVE/EVENT';
 export const SET_PAGE = 'SET/PAGE';
 
 export const SET_MY_FAVOURITES = 'SET/MY/FAVOURITES';
+export const POPULATE_MY_FAVOURITE_EVENTS = 'POPULATE/MY/FAVOURITE/EVENTS';
 export const PUSH_FAVOURITE_EVENT = 'PUSH/FAVOURITE/EVENT';
 export const PUSH_FAVOURITE_EVENT_SUCCESS = 'PUSH/FAVOURITE/EVENT/SUCCESS';
 export const REMOVE_FROM_FAVOURITES = 'REMOVE/FROM/FAVOURITES';
@@ -45,6 +46,18 @@ export function fetchEvents(init, skip, limit, totalCount) {
 				if(init && state && state.user && state.user.ActiveEventIndex !== null && response.events && response.events.length > 0 && Array.isArray(response.events)) {
 					let idx = state.user.ActiveEventIndex;
 					getAndSetMarkers(dispatch, response.events, idx);
+				}
+
+				let myFavouriteEventIds = getState().events.myFavourites;
+
+				if(init && myFavouriteEventIds && myFavouriteEventIds.length > 0 && Array.isArray(myFavouriteEventIds)
+						&& response.events && response.events.length > 0 && Array.isArray(response.events)) {
+					let populatedEvents = response.events.reduce((acc, cur) => {
+						if(myFavouriteEventIds.indexOf(cur._id) > -1) acc.push(cur);
+						return acc;
+					}, []);
+
+					dispatch(populateMyFavouriteEvents(populatedEvents));
 				}
 
 				dispatch({
@@ -111,6 +124,13 @@ export function setMyFavourites(myFavourites) {
 	};
 }
 
+export function populateMyFavouriteEvents(myFavouriteEvents) {
+	return {
+		type: POPULATE_MY_FAVOURITE_EVENTS,
+		myFavouriteEvents
+	};
+}
+
 export function pushNewFavouriteEvent(eventId) {
 	return (dispatch) => {
 		dispatch({
@@ -137,7 +157,7 @@ export function pushNewFavouriteEvent(eventId) {
 	};
 }
 
-export function removeFromMyFavourites(eventId) {
+export function removeFromMyFavourites(eventId, noTimeOut=false) {
 	return dispatch => {
 		dispatch({
 			type: REMOVE_FROM_FAVOURITES
@@ -152,7 +172,7 @@ export function removeFromMyFavourites(eventId) {
 							type: REMOVE_FROM_FAVOURITES_SUCCESS,
 							eventId
 						});
-					}, 350);
+					}, noTimeOut ? 0 : 350);
 				} else {
 					//TODO: error handling
 				}

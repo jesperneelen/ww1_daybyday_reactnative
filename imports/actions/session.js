@@ -3,6 +3,8 @@ import { setControlInterval } from './controls';
 import { setMyFavourites } from './events';
 import UsersService from '../services/UsersService';
 
+import { NavigationActions } from 'react-navigation';
+
 let usersService = new UsersService();
 
 export const LOGIN_BUSY = 'LOGIN//USER';
@@ -14,6 +16,7 @@ export const FETCHING_PROFILE = 'FETCHING/PROFILE';
 export const FETCHING_PROFILE_ERROR = 'FETCHING/PROFILE/ERROR';
 export const SET_PROFILE = 'SET/PROFILE';
 export const REGISTERING_USER = 'REGISTERING/USER';
+export const REGISTERING_USER_ERROR = 'REGISTERING/USER/ERROR';
 export const REGISTERING_COMPLETE = 'REGISTERING/COMPLETE';
 
 export const LOGIN_SUCCESSFUL = 'Successfully logged in!';
@@ -91,23 +94,26 @@ export function loggedOut() {
 	};
 }
 
-export function redirLogin() {
-	//return push('/login');
+function redirToLogin() {
+	return dispatch => {
+		dispatch(NavigationActions.navigate({ routeName: 'notAuthenticatedStack' }));
+	};
 }
 
 export function logOutUser() {
 	return function (dispatch) {
-		dispatch(loggedOut());
-
 		return usersService.logout()
 			.then(response => {
-				console.log('logOutUser response', response);
-				dispatch(redirLogin());
-				dispatch(handleException('success', LOGOUT_SUCCESSFUL));
+				if(response.success) {
+					dispatch(redirToLogin());
+					dispatch(loggedOut());
+					dispatch(handleException('success', LOGOUT_SUCCESSFUL));
+				} else {
+					dispatch(handleException('error', LOGOUT_ERROR));
+				}
 			})
 			.catch(error => {
 				dispatch(handleException('error', LOGOUT_ERROR));
-				console.log('logOutUser error', error);
 			});
 	};
 }
@@ -156,6 +162,12 @@ function registeringUser() {
 	};
 }
 
+function registeringError() {
+	return {
+		type: REGISTERING_USER_ERROR
+	};
+}
+
 function registerComplete(newUserProfile) {
 	return {
 		type: REGISTERING_COMPLETE,
@@ -176,10 +188,12 @@ export function register(newUser) {
 					dispatch(handleException('success', REGISTER_SUCCESSFUL));
 				} else if(!response.success) {
 					dispatch(handleException('error', response.error));
+					dispatch(registeringError());
 				}
 			})
 			.catch(error => {
 				dispatch(handleException('error', REGISTER_ERROR, error));
+				dispatch(registeringError());
 			});
 	};
 }

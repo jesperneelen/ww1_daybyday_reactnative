@@ -20,6 +20,9 @@ export const PUSH_FAVOURITE_EVENT_SUCCESS = 'PUSH/FAVOURITE/EVENT/SUCCESS';
 export const REMOVE_FROM_FAVOURITES = 'REMOVE/FROM/FAVOURITES';
 export const REMOVE_FROM_FAVOURITES_SUCCESS = 'REMOVE/FROM/FAVOURITES/SUCCESS';
 
+export const POPULATE_FILTERED_EVENTS = 'POPULATE/FILTERED/EVENTS';
+export const CLEAR_FILTERED_EVENTS = 'CLEAR/FILTERED/EVENTS';
+
 function fetchingEvents() {
 	return {
 		type: FETCH_EVENTS
@@ -219,4 +222,36 @@ function getAndSetMarkers(dispatch, events, eventIndex) {
 
 		dispatch(setAllEventMarkers(allEventMarkers.sort((a, b) => a.DisplayName > b.DisplayName ? 1 : -1)));
 	}
+}
+
+
+
+export function populateFilteredEvents(tagId, tagDisplayName) {
+	return (dispatch, getState) => {
+		const events = getState().events.data;
+
+		let filteredEvents = events.filter((event, idx) => {
+			return event && event.Tags && event.Tags.length > 0 && Array.isArray(event.Tags)
+				&& event.Tags.find(tag => tag._id === tagId && tag.DisplayName === tagDisplayName);
+		});
+
+		console.log('----------------------------------------');
+		console.log(filteredEvents);
+
+		dispatch({
+			type: POPULATE_FILTERED_EVENTS,
+			filteredEvents,
+			params: {
+				tagId,
+				tagDisplayName
+			}
+		});
+	};
+}
+
+export function clearFilteredEvents(tagId) {
+	return {
+		type: CLEAR_FILTERED_EVENTS,
+		tagId
+	};
 }

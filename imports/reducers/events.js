@@ -8,7 +8,9 @@ import {
 	PUSH_FAVOURITE_EVENT,
 	PUSH_FAVOURITE_EVENT_SUCCESS,
 	REMOVE_FROM_FAVOURITES,
-	REMOVE_FROM_FAVOURITES_SUCCESS
+	REMOVE_FROM_FAVOURITES_SUCCESS,
+	POPULATE_FILTERED_EVENTS,
+	CLEAR_FILTERED_EVENTS
 } from '../actions/events';
 
 const initialState = {
@@ -25,7 +27,9 @@ const initialState = {
 	myFavourites: [],
 	myFavouriteEvents: [],
 	pushingOrRemovingFavourite: false,
-	activeEventIsInFavourite: false
+	activeEventIsInFavourite: false,
+	filteredEvents: [],
+	filteredEventsParams: []
 };
 
 export function events(state = initialState, action) {
@@ -90,6 +94,19 @@ export function events(state = initialState, action) {
 				myFavouriteEvents: state.myFavouriteEvents.filter(favouriteEvent => favouriteEvent._id !== action.eventId),
 				pushingOrRemovingFavourite: false,
 				activeEventIsInFavourite: false
+			});
+		case POPULATE_FILTERED_EVENTS:
+			return Object.assign({}, state, {
+				filteredEvents: action.filteredEvents,
+				filteredEventsParams: [...state.filteredEventsParams, {
+					tagId: action.params.tagId,
+					tagDisplayName: action.params.tagDisplayName
+				}]
+			});
+		case CLEAR_FILTERED_EVENTS:
+			return Object.assign({}, state, {
+				filteredEvents: [],
+				filteredEventsParams: state.filteredEventsParams.filter(param => param.tagId !== action.tagId)
 			});
 		default:
 			return Object.assign({}, state);

@@ -12,7 +12,7 @@ import {
 
 import EventItem from './EventItem';
 
-export default class MyFavouriteEventsList extends Component {
+export default class FilteredEventList extends Component {
 	constructor(props) {
 		super(props);
 
@@ -26,17 +26,11 @@ export default class MyFavouriteEventsList extends Component {
 
 	renderItem({item, index}) {
 		const {
-			removeFromFavourites
+
 		} = this.props;
 
 		const actions = [
-			{
-				text: 'Remove from my favourites',
-				iconName: 'ios-star-outline',
-				backgroundColor: '#DA291C',
-				iconColor: '#FFFFFF', iconSize: 25, iconType: 'ionicon',
-				onPress: () => removeFromFavourites(item._id)
-			}
+
 		];
 
 		return (
@@ -54,10 +48,10 @@ export default class MyFavouriteEventsList extends Component {
 		return (
 			<View style={styles.NoDataContainer}>
 				<Text style={styles.NoDataText}>
-					It looks like you haven't indicated any event as favourite.
+					It looks like there aren't any events for this specific tag!
 				</Text>
 				<Text style={styles.NoDataText}>
-					You can do this by clicking "Add to my favourites" when investigating the details of your active event!
+					Click another one!
 				</Text>
 			</View>
 		);
@@ -65,12 +59,12 @@ export default class MyFavouriteEventsList extends Component {
 
 	render() {
 		const {
-			myFavouriteEvents
+			filteredEvents
 		} = this.props;
 
 		return (
 			<List containerStyle={styles.EventsContainer}>
-				<FlatList data={myFavouriteEvents} keyExtractor={this._keyExtractor} ListEmptyComponent={this.renderNoDataComponent}
+				<FlatList data={filteredEvents} keyExtractor={this._keyExtractor} ListEmptyComponent={this.renderNoDataComponent}
 									renderItem={this.renderItem} ItemSeparatorComponent={this.renderSeparator} />
 			</List>
 		);

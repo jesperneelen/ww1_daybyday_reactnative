@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import OverviewEvents from './OverviewEvents';
 import { logOutUser } from '../../actions/session';
+import { customStyle } from '../shared/CustomMapStyle';
 
 class Map extends Component {
 	constructor(props) {
@@ -80,6 +81,7 @@ class Map extends Component {
 					zoomEnabled={true}
 					loadingEnabled={true}
 					style={styles.map}
+					customMapStyle={customStyle}
 				>
 					{
 						markers && Array.isArray(markers) ?
@@ -88,13 +90,19 @@ class Map extends Component {
 									<Marker
 										key={idx}
 										title={marker.title}
-										tracksViewChanges={false}
 										identifier={marker._id}
-										pinColor={'blue'}
+										trackViewChanges={false}
+										pinColor={'#1CB417'}
 										coordinate={{
 											latitude: marker.latitude,
 											longitude: marker.longitude
 										}}
+										onPress={() =>
+											this.props.navigation.navigate('filteredEvents', {tagId: marker._id, tagDisplayName: marker.title})
+										}
+										onCalloutPress={() =>
+											this.props.navigation.navigate('filteredEvents', {tagId: marker._id, tagDisplayName: marker.title})
+										}
 									/>
 								)
 							}) : null
@@ -107,15 +115,21 @@ class Map extends Component {
 									<Marker
 										key={idx}
 										title={marker.title}
-										tracksViewChanges={false}
 										identifier={marker._id}
+										trackViewChanges={false}
+										pinColor={'#9A5449'}
 										coordinate={{
 											latitude: marker.latitude,
 											longitude: marker.longitude
 										}}
-										onPress={() => /*console.log('onPress', marker.title)*/ this.props.navigation.navigate('filteredEvents')}
-										onCalloutPress={() => /*console.log('onCalloutPress', marker.title)*/ this.props.navigation.navigate('myFavourites')}
-									/>
+										onPress={() =>
+											this.props.navigation.navigate('filteredEvents', {tagId: marker._id, tagDisplayName: marker.title})
+										}
+										onCalloutPress={() =>
+											this.props.navigation.navigate('filteredEvents', {tagId: marker._id, tagDisplayName: marker.title})
+										}
+									>
+									</Marker>
 								)
 							}) : null
 					}

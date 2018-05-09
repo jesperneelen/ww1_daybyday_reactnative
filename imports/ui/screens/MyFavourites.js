@@ -13,6 +13,7 @@ class MyFavourites extends Component {
 		super(props);
 
 		this.removeFromFavourites = this.removeFromFavourites.bind(this);
+		this.onTagPress = this.onTagPress.bind(this);
 	}
 
 	removeFromFavourites(eventId) {
@@ -25,6 +26,16 @@ class MyFavourites extends Component {
 		}
 	}
 
+	onTagPress(tagId, tagDisplayName) {
+		const {
+			navigation
+		} = this.props;
+
+		if(navigation && navigation.navigate && tagId && tagDisplayName) {
+			navigation.navigate('filteredEvents', {tagId, tagDisplayName});
+		}
+	}
+
 	render() {
 		const {
 			myFavouriteEvents
@@ -33,7 +44,8 @@ class MyFavourites extends Component {
 		return (
 			<View style={styles.ScreenContainer}>
 				<MyFavouriteEvents myFavouriteEvents={myFavouriteEvents}
-													 removeFromFavourites={this.removeFromFavourites} />
+													 removeFromFavourites={this.removeFromFavourites}
+													 onTagPress={this.onTagPress} />
 			</View>
 		);
 	}

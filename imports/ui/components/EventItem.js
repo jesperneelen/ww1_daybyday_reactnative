@@ -33,7 +33,8 @@ export default class EventItem extends Component {
 			isFavouriteEvent,
 			Description,
 			Tags,
-			actions
+			actions,
+			onTagPress
 		} = this.props;
 
 		const children = [
@@ -57,8 +58,9 @@ export default class EventItem extends Component {
 									.sort((a, b) => a.DisplayName > b.DisplayName ? 1 : -1)
 									.map((tag, idx) => {
 										return (
-											<TagItem key={idx} IsCity={tag.IsCity} DisplayName={tag.DisplayName} backgroundColor="rgba(139, 154, 97, .8)" />
-										)
+											<TagItem key={idx} id={tag._id} IsCity={tag.IsCity} DisplayName={tag.DisplayName}
+															 backgroundColor="rgba(139, 154, 97, .8)" onPress={onTagPress} />
+										);
 									})
 								: null
 						}

@@ -15,6 +15,8 @@ import FilteredEventList from '../components/FilteredList';
 class FilteredEvents extends Component {
 	constructor(props) {
 		super(props);
+
+		this.onTagPress = this.onTagPress.bind(this);
 	}
 
 	componentDidMount() {
@@ -47,14 +49,27 @@ class FilteredEvents extends Component {
 		}
 	}
 
+	onTagPress(tagId, tagDisplayName) {
+		const {
+			navigation
+		} = this.props;
+
+		if(navigation && navigation.navigate && tagId && tagDisplayName) {
+			navigation.navigate('filteredEvents', {tagId, tagDisplayName});
+		}
+	}
+
 	render() {
 		const {
-			filteredEvents
+			filteredEvents,
+			filteredEventsParams
 		} = this.props;
 
 		return (
 			<View style={styles.ScreenContainer}>
-				<FilteredEventList filteredEvents={filteredEvents} />
+				<FilteredEventList filteredEvents={filteredEvents}
+													 onTagPress={this.onTagPress}
+													 filteredEventsParams={filteredEventsParams} />
 			</View>
 		);
 	}
@@ -67,9 +82,9 @@ const styles = StyleSheet.create({
 	}
 });
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
 	return {
-		filteredEvents: state.events.filteredEvents,
+		filteredEvents: state.events.filteredEvents[ownProps.navigation.state.params.tagId],
 		filteredEventsParams: state.events.filteredEventsParams
 	};
 }

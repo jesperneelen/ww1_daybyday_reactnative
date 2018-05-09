@@ -28,7 +28,7 @@ const initialState = {
 	myFavouriteEvents: [],
 	pushingOrRemovingFavourite: false,
 	activeEventIsInFavourite: false,
-	filteredEvents: [],
+	filteredEvents: {},
 	filteredEventsParams: []
 };
 
@@ -97,7 +97,9 @@ export function events(state = initialState, action) {
 			});
 		case POPULATE_FILTERED_EVENTS:
 			return Object.assign({}, state, {
-				filteredEvents: action.filteredEvents,
+				filteredEvents: Object.assign({}, state.filteredEvents, {
+					[action.params.tagId]: action.filteredEvents
+				}),
 				filteredEventsParams: [...state.filteredEventsParams, {
 					tagId: action.params.tagId,
 					tagDisplayName: action.params.tagDisplayName
@@ -105,7 +107,9 @@ export function events(state = initialState, action) {
 			});
 		case CLEAR_FILTERED_EVENTS:
 			return Object.assign({}, state, {
-				filteredEvents: [],
+				filteredEvents: Object.assign({}, state.filteredEvents, {
+					[action.tagId]: []
+				}),
 				filteredEventsParams: state.filteredEventsParams.filter(param => param.tagId !== action.tagId)
 			});
 		default:

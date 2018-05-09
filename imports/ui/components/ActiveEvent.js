@@ -16,6 +16,7 @@ import TagItem from '../components/TagItem';
 import ActionBar from '../components/ActionBar';
 
 import { pushNewFavouriteEvent, removeFromMyFavourites } from '../../actions/events';
+import { adjustCurrentControl } from '../../actions/controls';
 
 class ActiveEvent extends Component {
 	constructor(props) {
@@ -29,6 +30,7 @@ class ActiveEvent extends Component {
 		this.closeModal = this.closeModal.bind(this);
 		this.addToFavourites = this.addToFavourites.bind(this);
 		this.removeFromFavourites = this.removeFromFavourites.bind(this);
+		this.onTagPress = this.onTagPress.bind(this);
 	}
 
 	openModal() {
@@ -61,6 +63,22 @@ class ActiveEvent extends Component {
 		}
 	}
 
+	onTagPress(tagId, tagDisplayName) {
+		this.setState(() => ({
+			modalVisible: false
+		}));
+
+		const {
+			navigation,
+			adjustCurrentControl
+		} = this.props;
+
+		if(navigation && navigation.navigate && adjustCurrentControl) {
+			adjustCurrentControl('stop');
+			navigation.navigate('filteredEvents', {tagId, tagDisplayName})
+		}
+	}
+
 	render() {
 		const {
 			activeEvent,
@@ -85,7 +103,7 @@ class ActiveEvent extends Component {
 		return (
 			<View style={styles.ActiveEventContainer}>
 				{
-					isFetchingEvents ?
+					isFetchingEvents && activeEvent === null ?
 						<View style={styles.ActiveEvent}>
 							<ActivityIndicator size="large" animating={true} />
 						</View>
@@ -134,7 +152,8 @@ class ActiveEvent extends Component {
 													.sort((a, b) => a.DisplayName > b.DisplayName ? 1 : -1)
 													.map((tag, idx) => {
 														return (
-															<TagItem key={idx} IsCity={tag.IsCity} DisplayName={tag.DisplayName} backgroundColor="#BEDA73" />
+															<TagItem key={idx} IsCity={tag.IsCity} DisplayName={tag.DisplayName} backgroundColor="#BEDA73"
+																			 onPress={this.onTagPress} id={tag._id} />
 														)
 													})
 												: null
@@ -222,7 +241,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 	return {
 		pushNewFavouriteEvent: (eventId) => dispatch(pushNewFavouriteEvent(eventId)),
-		removeFromMyFavourites: (eventId) => dispatch(removeFromMyFavourites(eventId))
+		removeFromMyFavourites: (eventId) => dispatch(removeFromMyFavourites(eventId)),
+		adjustCurrentControl: (ctrlType) => dispatch(adjustCurrentControl(ctrlType))
 	};
 }
 

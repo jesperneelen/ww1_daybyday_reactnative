@@ -21,12 +21,13 @@ export default class MyFavouriteEventsList extends Component {
 	}
 
 	_keyExtractor(item, idx) {
-		return item._id;
+		return idx.toString() + item._id;
 	}
 
-	renderItem({item, index}) {
+	renderItem({item}) {
 		const {
-			removeFromFavourites
+			removeFromFavourites,
+			onTagPress
 		} = this.props;
 
 		const actions = [
@@ -40,7 +41,7 @@ export default class MyFavouriteEventsList extends Component {
 		];
 
 		return (
-			<EventItem {...item} isFavouriteEvent={true} actions={actions} />
+			<EventItem {...item} isFavouriteEvent={true} actions={actions} onTagPress={onTagPress} />
 		);
 	}
 

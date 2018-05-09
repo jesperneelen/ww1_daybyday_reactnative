@@ -33,7 +33,8 @@ const AuthenticatedStack = StackNavigator({
 	filteredEvents: {
 		screen: FilteredEvents,
 		navigationOptions: ({navigation}) => ({
-			title: 'Filtered Events',
+			title: navigation && navigation.state && navigation.state.params && navigation.state.params.tagDisplayName + ' - Day by Day',
+			headerRight: null,
 			headerLeft: (<Back />),
 			headerTransparent: true,
 			headerStyle: {

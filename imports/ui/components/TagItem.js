@@ -5,7 +5,7 @@ import {
 } from 'react-native-elements';
 
 import {
-	View,
+	TouchableOpacity,
 	Text,
 	StyleSheet
 } from 'react-native';
@@ -13,6 +13,20 @@ import {
 export default class TagItem extends Component {
 	constructor(props) {
 		super(props);
+
+		this.onPress = this.onPress.bind(this);
+	}
+
+	onPress() {
+		const {
+			onPress,
+			id,
+			DisplayName
+		} = this.props;
+
+		if(onPress) {
+			onPress(id, DisplayName);
+		}
 	}
 
 	render() {
@@ -23,10 +37,10 @@ export default class TagItem extends Component {
 		} = this.props;
 
 		return (
-			<View style={[styles.Tag, {backgroundColor}]}>
+			<TouchableOpacity style={[styles.Tag, {backgroundColor}]} onPress={() => this.onPress()}>
 				<Icon type={IsCity ? 'material-community': 'ionicon'} name={IsCity ? 'city' : 'ios-pricetags'} color={'white'} size={20} />
 				<Text style={styles.TagText}>{DisplayName}</Text>
-			</View>
+			</TouchableOpacity>
 		);
 	}
 }

@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import OverviewEvents from './OverviewEvents';
 import { logOutUser } from '../../actions/session';
+import { adjustCurrentControl } from '../../actions/controls';
 import { customStyle } from '../shared/CustomMapStyle';
 
 class Map extends Component {
@@ -23,7 +24,9 @@ class Map extends Component {
 		};
 
 		this.onLayout = this.onLayout.bind(this);
-		this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
+		this.onMarkerPress = this.onMarkerPress.bind(this);
+		this.navigateToFavourites = this.navigateToFavourites.bind(this);
+		this.onLogoutPress = this.onLogoutPress.bind(this);
 	}
 
 	componentDidUpdate() {
@@ -46,6 +49,42 @@ class Map extends Component {
 		}
 	}
 
+	onMarkerPress(tagId, tagDisplayName) {
+		const {
+			navigation,
+			adjustCurrentControl
+		} = this.props;
+
+		if(navigation && navigation.navigate && tagId && tagDisplayName && adjustCurrentControl) {
+			adjustCurrentControl('stop');
+			navigation.navigate('filteredEvents', {tagId, tagDisplayName});
+		}
+	}
+
+	navigateToFavourites() {
+		const {
+			navigation,
+			adjustCurrentControl
+		} = this.props;
+
+		if(navigation && navigation.navigate && adjustCurrentControl) {
+			adjustCurrentControl('stop');
+			navigation.navigate('myFavourites');
+		}
+	}
+
+	onLogoutPress() {
+		const {
+			logout,
+			adjustCurrentControl
+		} = this.props;
+
+		if(logout && adjustCurrentControl) {
+			adjustCurrentControl('stop');
+			logout();
+		}
+	}
+
 	onLayout(event) {
 		let {
 			height
@@ -56,22 +95,19 @@ class Map extends Component {
 		}));
 	}
 
-	onRegionChangeComplete(region) {
-		this.setState(() => ({ region }));
-	}
-
 	render() {
 		const {
 			markers,
-			allEventMarkers,
-			navigation,
-			logout
+			allEventMarkers
 		} = this.props;
 
 		const {
 			isFiltered,
 			height
 		} = this.state;
+
+		console.log('markers length', markers.length);
+		console.log('allEventMarkers', allEventMarkers.length);
 
 		return (
 			<View style={styles.mapContainer} onLayout={this.onLayout}>
@@ -97,12 +133,8 @@ class Map extends Component {
 											latitude: marker.latitude,
 											longitude: marker.longitude
 										}}
-										onPress={() =>
-											this.props.navigation.navigate('filteredEvents', {tagId: marker._id, tagDisplayName: marker.title})
-										}
-										onCalloutPress={() =>
-											this.props.navigation.navigate('filteredEvents', {tagId: marker._id, tagDisplayName: marker.title})
-										}
+										onPress={() => this.onMarkerPress(marker._id, marker.title)}
+										onCalloutPress={() => this.onMarkerPress(marker._id, marker.title)}
 									/>
 								)
 							}) : null
@@ -122,12 +154,8 @@ class Map extends Component {
 											latitude: marker.latitude,
 											longitude: marker.longitude
 										}}
-										onPress={() =>
-											this.props.navigation.navigate('filteredEvents', {tagId: marker._id, tagDisplayName: marker.title})
-										}
-										onCalloutPress={() =>
-											this.props.navigation.navigate('filteredEvents', {tagId: marker._id, tagDisplayName: marker.title})
-										}
+										onPress={() => this.onMarkerPress(marker._id, marker.title)}
+										onCalloutPress={() => this.onMarkerPress(marker._id, marker.title)}
 									>
 									</Marker>
 								)
@@ -138,10 +166,10 @@ class Map extends Component {
 				<ActionButton spacing={5} offsetY={12} offsetX={12} activeOpacity={.6} outRangeScale={1.4}
 											buttonColor={'#839A42'} position={'left'} verticalOrientation={'down'} degrees={180}
 											renderIcon={() => (<Icon name="dots-vertical" style={styles.actionButtonIcon} />)}>
-					<ActionButton.Item buttonColor="#433781" title="My Favourites" onPress={() => navigation.navigate('myFavourites')}>
+					<ActionButton.Item buttonColor="#433781" title="My Favourites" onPress={() => this.navigateToFavourites()}>
 						<Icon name="star" style={styles.actionButtonIcon} />
 					</ActionButton.Item>
-					<ActionButton.Item buttonColor="#814137" title="Sign Out" onPress={() => logout && logout()}>
+					<ActionButton.Item buttonColor="#814137" title="Sign Out" onPress={() => this.onLogoutPress()}>
 						<Icon name="logout-variant" style={styles.actionButtonIcon} />
 					</ActionButton.Item>
 				</ActionButton>
@@ -182,7 +210,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		logout: () => dispatch(logOutUser())
+		logout: () => dispatch(logOutUser()),
+		adjustCurrentControl: (ctrlType) => dispatch(adjustCurrentControl(ctrlType))
 	};
 }
 

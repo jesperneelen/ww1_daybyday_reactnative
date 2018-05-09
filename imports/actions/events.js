@@ -37,9 +37,15 @@ export function fetchEvents(init, skip, limit, totalCount) {
 		if(init) {
 			state = getState().session;
 
-			if(state && state.user && state.user.ActiveEventIndex !== null) {
+			/*if(state && state.user && state.user.ActiveEventIndex !== null) {
 				skip = 0;
 				rounded = Math.round(state.user.ActiveEventIndex / 50) + 1;
+				limit = rounded * 50;
+			}*/
+
+			if(state && state.user && state.user.MaxEventIndex !== null) {
+				skip = 0;
+				rounded = Math.round(state.user.MaxEventIndex / 50) + 1;
 				limit = rounded * 50;
 			}
 		}
@@ -225,18 +231,17 @@ function getAndSetMarkers(dispatch, events, eventIndex) {
 }
 
 
-
 export function populateFilteredEvents(tagId, tagDisplayName) {
 	return (dispatch, getState) => {
-		const events = getState().events.data;
+		const {
+			data: events,
+			maxEventIndex
+		} = getState().events;
 
-		let filteredEvents = events.filter((event, idx) => {
+		let filteredEvents = events.slice(0, maxEventIndex).filter(event => {
 			return event && event.Tags && event.Tags.length > 0 && Array.isArray(event.Tags)
 				&& event.Tags.find(tag => tag._id === tagId && tag.DisplayName === tagDisplayName);
 		});
-
-		console.log('----------------------------------------');
-		console.log(filteredEvents);
 
 		dispatch({
 			type: POPULATE_FILTERED_EVENTS,

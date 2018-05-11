@@ -52,6 +52,14 @@ class LoginScreen extends Component {
 		});
 	}
 
+	/*static getDerivedStateFromProps(nextProps, prevState) {
+		if(nextProps.authenticated && nextProps.user !== null && !nextProps.authenticating) {
+			nextProps.navigation.navigate('AuthenticatedStack');
+		}
+
+		return null;
+	}*/
+
 	componentWillReceiveProps(nextProps) {
 		if(nextProps.authenticated && nextProps.user !== null && !nextProps.authenticating) {
 			this.props.navigation.navigate('AuthenticatedStack');

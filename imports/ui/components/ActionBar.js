@@ -46,9 +46,11 @@ const styles = StyleSheet.create({
 	},
 	Actions: {
 		flex: 1,
-		flexDirection: 'row'
+		flexDirection: 'row',
+		flexWrap: 'wrap'
 	},
 	Action: {
+		marginTop: 2,
 		marginLeft: 2,
 		paddingVertical: 4,
 		flexDirection: 'row',

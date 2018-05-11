@@ -23,7 +23,8 @@ class ActiveEvent extends Component {
 		super(props);
 
 		this.state = {
-			modalVisible: false
+			modalVisible: false,
+			showYearChange: false
 		};
 
 		this.openModal = this.openModal.bind(this);
@@ -31,6 +32,21 @@ class ActiveEvent extends Component {
 		this.addToFavourites = this.addToFavourites.bind(this);
 		this.removeFromFavourites = this.removeFromFavourites.bind(this);
 		this.onTagPress = this.onTagPress.bind(this);
+		this.onMoreInfoPress = this.onMoreInfoPress.bind(this);
+	}
+
+	static getDerivedStateFromProps(nextProps, prevState) {
+		if(nextProps && nextProps.hasSideEvent && nextProps.sideEvent && nextProps.sideEvent.Type === 'Year CHange') {
+			if(nextProps.adjustCurrentControl) {
+				nextProps.adjustCurrentControl('stop');
+			}
+
+			return {
+				showYearChange: true
+			};
+		}
+
+		return null;
 	}
 
 	openModal() {
@@ -64,18 +80,36 @@ class ActiveEvent extends Component {
 	}
 
 	onTagPress(tagId, tagDisplayName) {
-		this.setState(() => ({
-			modalVisible: false
-		}));
-
 		const {
 			navigation,
 			adjustCurrentControl
 		} = this.props;
 
 		if(navigation && navigation.navigate && adjustCurrentControl) {
+			this.setState(() => ({
+				modalVisible: false
+			}));
+
 			adjustCurrentControl('stop');
 			navigation.navigate('filteredEvents', {tagId, tagDisplayName})
+		}
+	}
+
+	onMoreInfoPress() {
+		const {
+			navigation,
+			sideEvent,
+			hasSideEvent,
+			adjustCurrentControl
+		} = this.props;
+
+		if(navigation && navigation.navigate && hasSideEvent && sideEvent && adjustCurrentControl) {
+			this.setState(() => ({
+				modalVisible: false
+			}));
+
+			adjustCurrentControl('stop');
+			navigation.navigate('sideEvent', {SideEventTitle: sideEvent.Title});
 		}
 	}
 
@@ -84,21 +118,46 @@ class ActiveEvent extends Component {
 			activeEvent,
 			isFetchingEvents,
 			pushingOrRemovingFavourite,
-			activeEventIsInFavourite
+			activeEventIsInFavourite,
+			sideEvent,
+			hasSideEvent
 		} = this.props;
 
 		let dbDateFormat = 'DD/MM/YYYY';
 
-		const actions = [
+		let actions = [
 			{
 				text: activeEventIsInFavourite ? 'Remove from my favourites' : 'Add to my favourites',
 				loading: pushingOrRemovingFavourite,
 				iconName: activeEventIsInFavourite ? 'ios-star' : 'ios-star-outline',
-				iconColor: '#FFFFFF', iconSize: 25, iconType: 'ionicon',
+				iconColor: '#FFFFFF',
+				iconSize: 25,
+				iconType: 'ionicon',
+				//backgroundColor: '#1CB417',
 				onPress: activeEventIsInFavourite ? this.removeFromFavourites : this.addToFavourites
 			},
-			{text: 'Close', iconType: 'ionicon', iconName: 'ios-close-circle', iconColor: '#FFFFFF', iconSize: 25, onPress: this.closeModal}
+			{
+				text: 'Close',
+				iconType: 'ionicon',
+				iconName: 'ios-close-circle',
+				iconColor: '#FFFFFF',
+				iconSize: 25,
+				//backgroundColor: '#DA291C',
+				onPress: this.closeModal
+			}
 		];
+
+		if(hasSideEvent && sideEvent && sideEvent.Type !== 'Year Change') {
+			actions.push({
+				text: `More info about ${sideEvent.Title}`,
+				iconType: 'ionicon',
+				iconName: 'ios-information-circle',
+				iconColor: '#FFFFFF',
+				iconSize: 25,
+				backgroundColor: '#433781',
+				onPress: this.onMoreInfoPress
+			});
+		}
 
 		return (
 			<View style={styles.ActiveEventContainer}>
@@ -165,6 +224,21 @@ class ActiveEvent extends Component {
 							</View>
 						</Modal> : null
 				}
+
+				{
+					hasSideEvent && sideEvent && sideEvent.Type === 'Year Change' ?
+						<Modal animationType={'fade'} transparent={true} visible={this.state.showYearChange}>
+							<View style={styles.ModalContainer}>
+								<View style={styles.ModalInnerContainer}>
+									<Text style={styles.Title}>{sideEvent && sideEvent.Title}</Text>
+									<ScrollView>
+										<Text style={[styles.Description, {fontSize: 14}]}>{sideEvent && sideEvent.FullText}</Text>
+									</ScrollView>
+								</View>
+							</View>
+						</Modal>
+						: null
+				}
 			</View>
 		);
 	}
@@ -197,8 +271,14 @@ const styles = StyleSheet.create({
 		fontWeight: '500',
 		fontSize: 17
 	},
+	Title: {
+		fontSize: 20,
+		fontWeight: 'bold',
+		color: '#FFFFFF',
+		marginBottom: 5
+	},
 	Description: {
-		color: '#FFF',
+		color: '#FFFFFF',
 		justifyContent: 'center',
 		fontSize: 12,
 		textAlign: 'center'
@@ -211,13 +291,13 @@ const styles = StyleSheet.create({
 	ModalContainer: {
 		flex: 1,
 		justifyContent: 'center',
-		padding: 20,
+		padding: 15,
 		backgroundColor: 'rgba(0, 0, 0, .5)'
 	},
 	ModalInnerContainer: {
 		alignItems: 'center',
 		backgroundColor: 'rgb(139, 154, 97)',
-		padding: 20,
+		padding: 15,
 		overflow: 'scroll'
 	},
 	ModalTagsContainer: {
@@ -234,7 +314,9 @@ function mapStateToProps(state) {
 		activeEventIndex: state.events.activeEventIndex,
 		activeEventIsInFavourite: state.events.activeEventIsInFavourite,
 		isFetchingEvents: state.events.isFetching,
-		pushingOrRemovingFavourite: state.events.pushingOrRemovingFavourite
+		pushingOrRemovingFavourite: state.events.pushingOrRemovingFavourite,
+		hasSideEvent: state.events.hasSideEvent,
+		sideEvent: state.events.sideEvent
 	};
 }
 

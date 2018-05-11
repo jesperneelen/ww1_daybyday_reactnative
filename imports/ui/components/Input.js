@@ -26,13 +26,23 @@ export default class Input extends Component {
 		this.onChange(this.props.defaultValue ? this.props.defaultValue : this.props.value, true);
 	}
 
-	componentWillReceiveProps(nextProps) {
+	static getDerivedStateFromProps(nextProps, prevState) {
+		if(nextProps.isSubmitted && !prevState.valid) {
+			return {
+				styleOnError: styles.input_error
+			};
+		}
+
+		return null;
+	}
+
+	/*componentWillReceiveProps(nextProps) {
 		if(this.props.isSubmitted !== nextProps.isSubmitted && !this.state.valid) {
 			this.setState(() => ({
 				styleOnError: styles.input_error
 			}));
 		}
-	}
+	}*/
 
 	validate(value) {
 		const valid = this.runValidation(value);

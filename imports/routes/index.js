@@ -7,6 +7,7 @@ import Register from '../ui/screens/Register';
 import Home from '../ui/screens/Home';
 import MyFavourites from '../ui/screens/MyFavourites';
 import FilteredEvents from '../ui/screens/FilteredEvents';
+import SideEvent from '../ui/screens/SideEvent';
 import Back from '../ui/components/Back';
 
 const AuthenticatedStack = StackNavigator({
@@ -34,6 +35,21 @@ const AuthenticatedStack = StackNavigator({
 		screen: FilteredEvents,
 		navigationOptions: ({navigation}) => ({
 			title: navigation && navigation.state && navigation.state.params && navigation.state.params.tagDisplayName + ' - Day by Day',
+			headerRight: null,
+			headerLeft: (<Back />),
+			headerTransparent: true,
+			headerStyle: {
+				backgroundColor: 'rgb(68, 78, 41)'
+			},
+			headerTitleStyle: {
+				color: '#FFFFFF'
+			}
+		})
+	},
+	sideEvent: {
+		screen: SideEvent,
+		navigationOptions: ({navigation}) => ({
+			title: navigation && navigation.state && navigation.state.params && navigation.state.params.SideEventTitle,
 			headerRight: null,
 			headerLeft: (<Back />),
 			headerTransparent: true,

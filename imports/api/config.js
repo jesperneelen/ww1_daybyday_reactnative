@@ -3,3 +3,6 @@
 
 export const baseUrl = 'http://localhost:3002/v1';
 export const baseAppUrl = 'http://localhost:3002/v1/app';
+
+//export const baseUrl = 'http://192.168.0.143:3002/v1';
+//export const baseAppUrl = 'http://192.168.0.143:3002/v1/app';

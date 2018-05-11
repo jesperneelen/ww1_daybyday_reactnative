@@ -63,7 +63,7 @@ class EventsList extends Component {
 			|| this.props.maxEventIndex !== nextProps.maxEventIndex;
 	}
 
-	_keyExtractor(item, idx) {
+	_keyExtractor(item) {
 		return item._id;
 	}
 

@@ -106,9 +106,6 @@ class Map extends Component {
 			height
 		} = this.state;
 
-		console.log('markers length', markers.length);
-		console.log('allEventMarkers', allEventMarkers.length);
-
 		return (
 			<View style={styles.mapContainer} onLayout={this.onLayout}>
 				<MapView

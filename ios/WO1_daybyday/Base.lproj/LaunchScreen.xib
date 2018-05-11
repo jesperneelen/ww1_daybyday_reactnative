@@ -17,7 +17,8 @@
             <subviews>
                 <imageView autoresizesSubviews="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="LaunchScreen" translatesAutoresizingMaskIntoConstraints="NO" id="uyl-xf-J3E">
                     <rect key="frame" x="-2" y="1" width="480" height="480"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    <color key="backgroundColor" red="0.25037163496017456" green="0.28416365385055542" blue="0.15840572118759155" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 </imageView>
             </subviews>
             <color key="backgroundColor" red="0.2582087516784668" green="0.29197758436203003" blue="0.17055395245552063" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

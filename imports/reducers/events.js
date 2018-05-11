@@ -23,6 +23,8 @@ const initialState = {
 	activeEventIndex: null,
 	maxEventIndex: null,
 	nextEvent: null,
+	hasSideEvent: false,
+	sideEvent: null,
 	page: 0,
 	myFavourites: [],
 	myFavouriteEvents: [],
@@ -39,27 +41,37 @@ export function events(state = initialState, action) {
 				isFetching: true
 			});
 		case FETCH_EVENTS_SUCCESS:
+			let InitActiveEvent = action.events.find(event => event._id === action.activeEventId);
+			let InitHasSideEvent = !!(InitActiveEvent.SideEvent);
+
 			return Object.assign({}, state, {
 				isFetching: false,
 				data: state.data.concat(action.events),
 				lastUpdated: action.receivedAt,
 				totalCount: action.totalCount,
 				page: action.init ? action.page : state.page,
-				activeEvent: action.init && action.activeEventId ? action.events.find(event => event._id === action.activeEventId) : state.activeEvent,
+				activeEvent: action.init && action.activeEventId ? InitActiveEvent : state.activeEvent,
 				activeEventIndex: action.init && action.activeEventIndex !== null ? action.activeEventIndex : state.activeEventIndex,
 				maxEventIndex: action.init && action.maxEventIndex !== null ? action.maxEventIndex : state.maxEventIndex,
 				previousEvent: action.init && action.activeEventIndex !== null && action.activeEventIndex !== 0 ? action.events[action.activeEventIndex - 1] : state.previousEvent,
 				nextEvent: action.init && action.activeEventIndex !== null && action.activeEventIndex < action.events.length - 1  ? action.events[action.activeEventIndex + 1] : state.nextEvent,
-				activeEventIsInFavourite: action.init && action.activeEventId ? state.myFavourites.indexOf(action.activeEventId) > -1 : false
+				activeEventIsInFavourite: action.init && action.activeEventId ? state.myFavourites.indexOf(action.activeEventId) > -1 : false,
+				hasSideEvent: action.init && action.activeEventId ? InitHasSideEvent : null,
+				sideEvent: InitHasSideEvent ? InitActiveEvent.SideEvent : null
 			});
 		case SET_ACTIVE_EVENT:
+			let activeEvent = state.data[action.index];
+			let hasSideEvent = !!(activeEvent.SideEvent);
+
 			return Object.assign({}, state, {
-				activeEvent: state.data[action.index],
+				activeEvent: activeEvent,
 				activeEventIndex: action.index,
 				maxEventIndex: action.index > state.maxEventIndex ? action.index : state.maxEventIndex,
 				previousEvent: action.index === 0 ? null : state.data[action.index - 1],
 				nextEvent: action.index === state.data.length - 1 ? null : state.data[action.index + 1],
-				activeEventIsInFavourite: state.myFavourites.indexOf(state.data[action.index]._id) > -1
+				activeEventIsInFavourite: state.myFavourites.indexOf(state.data[action.index]._id) > -1,
+				hasSideEvent,
+				sideEvent: hasSideEvent ? activeEvent.SideEvent : null
 			});
 		case SET_PAGE:
 			return Object.assign({}, state, {

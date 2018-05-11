@@ -37,12 +37,6 @@ export function fetchEvents(init, skip, limit, totalCount) {
 		if(init) {
 			state = getState().session;
 
-			/*if(state && state.user && state.user.ActiveEventIndex !== null) {
-				skip = 0;
-				rounded = Math.round(state.user.ActiveEventIndex / 50) + 1;
-				limit = rounded * 50;
-			}*/
-
 			if(state && state.user && state.user.MaxEventIndex !== null) {
 				skip = 0;
 				rounded = Math.round(state.user.MaxEventIndex / 50) + 1;
@@ -126,6 +120,44 @@ function updateActiveEvent(activeEvent, activeEventIndex, maxEventIndex) {
 		});
 }
 
+function getAndSetMarkers(dispatch, events, eventIndex) {
+	let markerIDs = [];
+	let idx = eventIndex;
+
+	if(events && events[idx] && events[idx].Tags
+		&& events[idx].Tags.length > 0 && Array.isArray(events[idx].Tags)) {
+		let cityTags = events[idx].Tags.filter(tag => {
+			markerIDs.push(tag._id);
+			return tag.IsCity;
+		});
+
+		if(cityTags && Array.isArray(cityTags)) {
+			dispatch(setMarkers(cityTags));
+		}
+	}
+
+	if(events && events.length > 0 && Array.isArray(events)) {
+		let allEventMarkers = [];
+		let allMarkerIDs = [];
+
+		for(let i = 0; i < idx; i++) {
+			let event = events[i];
+			if(event.Tags && event.Tags.length > 0 && Array.isArray(event.Tags)) {
+				let cityTags = event.Tags.filter(tag => {
+					let result = tag.IsCity && markerIDs.indexOf(tag._id) === -1 && allMarkerIDs.indexOf(tag._id) === -1;
+					allMarkerIDs.push(tag._id);
+					return result;
+				});
+
+				allEventMarkers = [...allEventMarkers, ...cityTags];
+			}
+		}
+
+		dispatch(setAllEventMarkers(allEventMarkers.sort((a, b) => a.DisplayName > b.DisplayName ? 1 : -1)));
+	}
+}
+
+
 export function setMyFavourites(myFavourites) {
 	return {
 		type: SET_MY_FAVOURITES,
@@ -190,44 +222,6 @@ export function removeFromMyFavourites(eventId, noTimeOut=false) {
 				console.log('removeFromMyFavourites error', error);
 			});
 	};
-}
-
-
-function getAndSetMarkers(dispatch, events, eventIndex) {
-	let markerIDs = [];
-	let idx = eventIndex;
-
-	if(events && events[idx] && events[idx].Tags
-		&& events[idx].Tags.length > 0 && Array.isArray(events[idx].Tags)) {
-		let cityTags = events[idx].Tags.filter(tag => {
-			markerIDs.push(tag._id);
-			return tag.IsCity;
-		});
-
-		if(cityTags && Array.isArray(cityTags)) {
-			dispatch(setMarkers(cityTags));
-		}
-	}
-
-	if(events && events.length > 0 && Array.isArray(events)) {
-		let allEventMarkers = [];
-		let allMarkerIDs = [];
-
-		for(let i = 0; i < idx; i++) {
-			let event = events[i];
-			if(event.Tags && event.Tags.length > 0 && Array.isArray(event.Tags)) {
-				let cityTags = event.Tags.filter(tag => {
-					let result = tag.IsCity && markerIDs.indexOf(tag._id) === -1 && allMarkerIDs.indexOf(tag._id) === -1;
-					allMarkerIDs.push(tag._id);
-					return result;
-				});
-
-				allEventMarkers = [...allEventMarkers, ...cityTags];
-			}
-		}
-
-		dispatch(setAllEventMarkers(allEventMarkers.sort((a, b) => a.DisplayName > b.DisplayName ? 1 : -1)));
-	}
 }
 
 

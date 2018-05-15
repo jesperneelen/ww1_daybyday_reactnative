@@ -33,10 +33,11 @@ class ActiveEvent extends Component {
 		this.removeFromFavourites = this.removeFromFavourites.bind(this);
 		this.onTagPress = this.onTagPress.bind(this);
 		this.onMoreInfoPress = this.onMoreInfoPress.bind(this);
+		this.closeYearModal = this.closeYearModal.bind(this);
 	}
 
 	static getDerivedStateFromProps(nextProps, prevState) {
-		if(nextProps && nextProps.hasSideEvent && nextProps.sideEvent && nextProps.sideEvent.Type === 'Year CHange') {
+		if(nextProps && nextProps.hasSideEvent && nextProps.sideEvent && nextProps.sideEvent.Type === 'Year Change') {
 			if(nextProps.adjustCurrentControl) {
 				nextProps.adjustCurrentControl('stop');
 			}
@@ -55,6 +56,18 @@ class ActiveEvent extends Component {
 
 	closeModal() {
 		this.setState(() => ({modalVisible: false}));
+	}
+
+	closeYearModal() {
+		this.setState(() => ({showYearChange: false}));
+
+		const {
+			adjustCurrentControl
+		} = this.props;
+
+		if(adjustCurrentControl) {
+			adjustCurrentControl('play');
+		}
 	}
 
 	addToFavourites() {
@@ -159,6 +172,17 @@ class ActiveEvent extends Component {
 			});
 		}
 
+		let yearChangeActions = [
+			{
+				text: 'Close',
+				iconType: 'ionicon',
+				iconName: 'ios-close-circle',
+				iconColor: '#FFFFFF',
+				iconSize: 25,
+				onPress: this.closeYearModal
+			}
+		];
+
 		return (
 			<View style={styles.ActiveEventContainer}>
 				{
@@ -232,8 +256,10 @@ class ActiveEvent extends Component {
 								<View style={styles.ModalInnerContainer}>
 									<Text style={styles.Title}>{sideEvent && sideEvent.Title}</Text>
 									<ScrollView>
-										<Text style={[styles.Description, {fontSize: 14}]}>{sideEvent && sideEvent.FullText}</Text>
+										<Text style={[styles.Description, {fontSize: 14, marginBottom: 10}]}>{sideEvent && sideEvent.FullText}</Text>
 									</ScrollView>
+
+									<ActionBar actions={yearChangeActions} />
 								</View>
 							</View>
 						</Modal>

@@ -27,7 +27,8 @@ export default class MyFavouriteEventsList extends Component {
 	renderItem({item}) {
 		const {
 			removeFromFavourites,
-			onTagPress
+			onTagPress,
+			onMoreInfoPress
 		} = this.props;
 
 		const actions = [
@@ -39,6 +40,18 @@ export default class MyFavouriteEventsList extends Component {
 				onPress: () => removeFromFavourites(item._id)
 			}
 		];
+
+		if(item && item.SideEvent && item.SideEvent.Type !== 'Year Change') {
+			actions.push({
+				text: `More info about ${item.SideEvent.Title}`,
+				iconType: 'ionicon',
+				iconName: 'ios-information-circle',
+				iconColor: '#FFFFFF',
+				iconSize: 25,
+				backgroundColor: '#433781',
+				onPress: () => onMoreInfoPress(item.SideEvent)
+			});
+		}
 
 		return (
 			<EventItem {...item} isFavouriteEvent={true} actions={actions} onTagPress={onTagPress} />

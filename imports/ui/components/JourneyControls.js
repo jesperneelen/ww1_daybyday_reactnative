@@ -149,7 +149,7 @@ class JourneyControls extends Component {
 			<View style={{flexDirection: 'column', flex: 1}}>
 				{
 					Platform.OS === 'ios' ?
-						<ProgressViewIOS progress={timePassed/parseInt(interval)} progressTintColor={'#C9E779'} trackTintColor={'#FFF'} style={styles.ProgressView} />
+						<ProgressViewIOS progress={timePassed/parseInt(interval)} progressTintColor={'#1CB417'} trackTintColor={'#FFFFFF'} style={styles.ProgressView} />
 						: null
 				}
 

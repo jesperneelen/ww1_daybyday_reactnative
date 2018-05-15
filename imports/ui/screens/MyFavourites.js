@@ -14,6 +14,7 @@ class MyFavourites extends Component {
 
 		this.removeFromFavourites = this.removeFromFavourites.bind(this);
 		this.onTagPress = this.onTagPress.bind(this);
+		this.onMoreInfoPress = this.onMoreInfoPress.bind(this);
 	}
 
 	removeFromFavourites(eventId) {
@@ -36,6 +37,16 @@ class MyFavourites extends Component {
 		}
 	}
 
+	onMoreInfoPress(sideEvent) {
+		const {
+			navigation
+		} = this.props;
+
+		if(navigation && navigation.navigate && sideEvent) {
+			navigation.navigate('sideEvent', {SideEventTitle: sideEvent.Title});
+		}
+	}
+
 	render() {
 		const {
 			myFavouriteEvents
@@ -45,7 +56,8 @@ class MyFavourites extends Component {
 			<View style={styles.ScreenContainer}>
 				<MyFavouriteEvents myFavouriteEvents={myFavouriteEvents}
 													 removeFromFavourites={this.removeFromFavourites}
-													 onTagPress={this.onTagPress} />
+													 onTagPress={this.onTagPress}
+													 onMoreInfoPress={this.onMoreInfoPress} />
 			</View>
 		);
 	}

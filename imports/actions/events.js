@@ -12,6 +12,7 @@ const FETCH_EVENTS_ERROR = 'There was a server error while loading the events';
 
 export const SET_ACTIVE_EVENT = 'SET/ACTIVE/EVENT';
 export const SET_PAGE = 'SET/PAGE';
+export const SET_SIDE_EVENT = 'SET/SIDE/EVENT';
 
 export const SET_MY_FAVOURITES = 'SET/MY/FAVOURITES';
 export const POPULATE_MY_FAVOURITE_EVENTS = 'POPULATE/MY/FAVOURITE/EVENTS';
@@ -103,6 +104,13 @@ export function setPage(page) {
 	return {
 		type: SET_PAGE,
 		page
+	};
+}
+
+export function setSideEvent(sideEvent) {
+	return {
+		type: SET_SIDE_EVENT,
+		sideEvent
 	};
 }
 

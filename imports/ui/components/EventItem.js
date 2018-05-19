@@ -7,6 +7,9 @@ import {
 	View
 } from 'react-native';
 
+import ActionButton from 'react-native-action-button';
+import Icon from 'react-native-vector-icons/Ionicons';
+
 import TagItem from './TagItem';
 import ActionBar from './ActionBar';
 
@@ -34,7 +37,8 @@ export default class EventItem extends Component {
 			Description,
 			Tags,
 			actions,
-			onTagPress
+			onTagPress,
+			actionsType
 		} = this.props;
 
 		const children = [
@@ -65,11 +69,29 @@ export default class EventItem extends Component {
 								: null
 						}
 					</View>
-
 					{
-						actions && actions.length > 0 && Array.isArray(actions) ?
-							<ActionBar actions={actions} />
-							: null
+						actionsType === 'button' && actions && actions.length > 0 && Array.isArray(actions) ?
+							<ActionButton spacing={2} offsetY={15} offsetX={5} activeOpacity={.6} outRangeScale={1} size={35}
+														buttonColor={'#839A42'} position={'right'} verticalOrientation={'down'} degrees={180}
+														renderIcon={() => (<Icon name="md-more" style={[styles.actionButtonIcon, {fontSize: 24}]} />)}>
+								{
+									actions.map((action, idx) => {
+										return (
+											<ActionButton.Item key={idx} buttonColor={action.backgroundColor} size={28} spaceBetween={10}
+																				 onPress={() => action.onPress()} title={action.text}
+																				 textStyle={{color: '#FFFFFF', fontWeight: '600', backgroundColor: '#BEDA73'}}
+																				 textContainerStyle={{backgroundColor: '#BEDA73', borderColor: '#BEDA73'}}>
+												<Icon name={action.iconName} style={styles.actionButtonIcon} />
+											</ActionButton.Item>
+										);
+									})
+								}
+							</ActionButton>
+							: (
+								!actionsType && actions && actions.length > 0 && Array.isArray(actions) ?
+									<ActionBar actions={actions} />
+									: null
+							)
 					}
 				</View>
 			);
@@ -91,7 +113,7 @@ export default class EventItem extends Component {
 
 const styles = StyleSheet.create({
 	EventItemContainer: {
-		paddingVertical: 10,
+		paddingVertical: 15,
 		paddingHorizontal: 5,
 		flexDirection: 'column',
 		alignItems: 'center'
@@ -127,5 +149,9 @@ const styles = StyleSheet.create({
 		flexWrap: 'wrap',
 		justifyContent: 'center',
 		marginVertical: 12
+	},
+	actionButtonIcon: {
+		fontSize: 14,
+		color: 'white'
 	}
 });

@@ -3,6 +3,7 @@ import {
 	FETCH_EVENTS_SUCCESS,
 	SET_ACTIVE_EVENT,
 	SET_PAGE,
+	SET_SIDE_EVENT,
 	SET_MY_FAVOURITES,
 	POPULATE_MY_FAVOURITE_EVENTS,
 	PUSH_FAVOURITE_EVENT,
@@ -76,6 +77,10 @@ export function events(state = initialState, action) {
 		case SET_PAGE:
 			return Object.assign({}, state, {
 				page: action.page
+			});
+		case SET_SIDE_EVENT:
+			return Object.assign({}, state, {
+				sideEvent: action.sideEvent
 			});
 		case SET_MY_FAVOURITES:
 			return Object.assign({}, state, {

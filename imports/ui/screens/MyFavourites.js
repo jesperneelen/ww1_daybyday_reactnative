@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 
 import MyFavouriteEvents from '../components/FavouriteEvents';
-import { removeFromMyFavourites } from '../../actions/events';
+import { removeFromMyFavourites, setSideEvent } from '../../actions/events';
 
 class MyFavourites extends Component {
 	constructor(props) {
@@ -39,10 +39,12 @@ class MyFavourites extends Component {
 
 	onMoreInfoPress(sideEvent) {
 		const {
-			navigation
+			navigation,
+			setSideEvent
 		} = this.props;
 
-		if(navigation && navigation.navigate && sideEvent) {
+		if(navigation && navigation.navigate && sideEvent && setSideEvent) {
+			setSideEvent(sideEvent);
 			navigation.navigate('sideEvent', {SideEventTitle: sideEvent.Title});
 		}
 	}
@@ -79,7 +81,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		removeFromMyFavourites: (eventId, noTimeOut) => dispatch(removeFromMyFavourites(eventId, noTimeOut))
+		removeFromMyFavourites: (eventId, noTimeOut) => dispatch(removeFromMyFavourites(eventId, noTimeOut)),
+		setSideEvent: (sideEvent) => dispatch(setSideEvent(sideEvent))
 	};
 }
 

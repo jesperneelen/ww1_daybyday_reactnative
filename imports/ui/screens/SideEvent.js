@@ -17,15 +17,19 @@ class SideEvent extends Component {
 			sideEvent
 		} = this.props;
 
-		return (
-			<View style={styles.ScreenContainer}>
-				<ScrollView>
-					<Text style={styles.Description}>
-						{sideEvent.FullText}
-					</Text>
-				</ScrollView>
-			</View>
-		);
+		if(sideEvent && sideEvent !== null) {
+			return (
+				<View style={styles.ScreenContainer}>
+					<ScrollView>
+						<Text style={styles.Description}>
+							{sideEvent.FullText}
+						</Text>
+					</ScrollView>
+				</View>
+			);
+		}
+
+		return null;
 	}
 }
 

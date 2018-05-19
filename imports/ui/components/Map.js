@@ -37,7 +37,10 @@ class Map extends Component {
 					return acc;
 				}, []);
 
-				this.mapView.fitToSuppliedMarkers(markerIDs, true);
+				//timeout for performance reasons
+				setTimeout(() => {
+					this.mapView.fitToSuppliedMarkers(markerIDs, true);
+				}, 10);
 			} else if(this.props.markers.length === 1) {
 				this.mapView.animateToRegion({
 					longitude: this.props.markers[0].longitude,
@@ -195,7 +198,7 @@ const styles = StyleSheet.create({
 	actionButtonIcon: {
 		fontSize: 22,
 		color: 'white'
-	},
+	}
 });
 
 function mapStateToProps(state) {

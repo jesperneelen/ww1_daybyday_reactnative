@@ -28,28 +28,34 @@ export default class MyFavouriteEventsList extends Component {
 		const {
 			removeFromFavourites,
 			onTagPress,
-			onMoreInfoPress
+			onMoreInfoPress,
+			onSetActiveEventPress,
+			activeEventIndex
 		} = this.props;
 
-		const actions = [
-			{
-				text: 'Show on "Day by Day" map',
-				backgroundColor: '#9A5449',
-				iconName: 'ios-map',
-				iconColor: '#FFFFFF',
-				iconSize: 25,
-				iconType: 'ionicon',
-				onPress: () => console.log('Show on "Day by day" map')
-			},
-			{
+		let actions = [];
+
+		if(activeEventIndex !== item.eventIndex) {
+			actions.push({
 				text: 'Set as active event',
 				backgroundColor: '#1CB417',
 				iconName: 'ios-book',
 				iconColor: '#FFFFFF',
 				iconSize: 25,
 				iconType: 'ionicon',
-				onPress: () => console.log('set as active event')
-			},
+				onPress: () => onSetActiveEventPress(item.eventIndex, item._id)
+			}, {
+				text: 'Show on "Day by Day" map',
+				backgroundColor: '#636755',
+				iconName: 'ios-map',
+				iconColor: '#FFFFFF',
+				iconSize: 25,
+				iconType: 'ionicon',
+				onPress: () => console.log('Show on "Day by day" map')
+			});
+		}
+
+		actions.push(
 			{
 				text: 'Remove from my favourites',
 				backgroundColor: '#DA291C',
@@ -59,7 +65,7 @@ export default class MyFavouriteEventsList extends Component {
 				iconType: 'ionicon',
 				onPress: () => removeFromFavourites(item._id)
 			}
-		];
+		);
 
 		if(item && item.SideEvent && item.SideEvent.Type !== 'Year Change') {
 			actions.push({

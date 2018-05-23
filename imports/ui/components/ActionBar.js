@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
 	},
 	ActionText: {
 		color: '#FFFFFF',
-		marginLeft: 4,
+		marginLeft: 6,
 		fontSize: 12
 	}
 });

@@ -27,6 +27,8 @@ class Wrapper extends Component {
 	}
 }
 
+console.disableYellowBox = true;
+
 const styles = StyleSheet.create({
 	wrapper: {
 		flex: 1

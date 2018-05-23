@@ -56,8 +56,11 @@ export function fetchEvents(init, skip, limit, totalCount) {
 
 				if(init && myFavouriteEventIds && myFavouriteEventIds.length > 0 && Array.isArray(myFavouriteEventIds)
 						&& response.events && response.events.length > 0 && Array.isArray(response.events)) {
-					let populatedEvents = response.events.reduce((acc, cur) => {
-						if(myFavouriteEventIds.indexOf(cur._id) > -1) acc.push(cur);
+					let populatedEvents = response.events.reduce((acc, cur, idx) => {
+						if(myFavouriteEventIds.indexOf(cur._id) > -1) {
+							cur.eventIndex = idx;
+							acc.push(cur);
+						}
 						return acc;
 					}, []);
 

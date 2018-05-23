@@ -71,13 +71,13 @@ export default class EventItem extends Component {
 					</View>
 					{
 						actionsType === 'button' && actions && actions.length > 0 && Array.isArray(actions) ?
-							<ActionButton spacing={2} offsetY={15} offsetX={5} activeOpacity={.6} outRangeScale={1} size={35}
-														buttonColor={'#839A42'} position={'right'} verticalOrientation={'down'} degrees={180}
-														renderIcon={() => (<Icon name="md-more" style={[styles.actionButtonIcon, {fontSize: 24}]} />)}>
+							<ActionButton spacing={1} offsetY={15} offsetX={5} activeOpacity={.6} outRangeScale={1} size={34}
+														buttonColor={'rgb(68, 78, 41)'} position={'right'} verticalOrientation={'down'} degrees={180}
+														renderIcon={() => (<Icon name="md-more" style={[styles.actionButtonIcon, {fontSize: 23}]} />)}>
 								{
 									actions.map((action, idx) => {
 										return (
-											<ActionButton.Item key={idx} buttonColor={action.backgroundColor} size={28} spaceBetween={10}
+											<ActionButton.Item key={idx} buttonColor={action.backgroundColor} size={29} spaceBetween={8}
 																				 onPress={() => action.onPress()} title={action.text}
 																				 textStyle={{color: '#FFFFFF', fontWeight: '600', backgroundColor: '#BEDA73'}}
 																				 textContainerStyle={{backgroundColor: '#BEDA73', borderColor: '#BEDA73'}}>
@@ -103,7 +103,7 @@ export default class EventItem extends Component {
 													styles.EventItemContainer,
 													selected ? styles.Selected : null,
 													available ? null : styles.Unavailable,
-													{height: 70}
+													{height: 70, paddingVertical: 0, justifyContent: 'center'}
 												]}>
 				{children}
 			</TouchableOpacity>
@@ -113,7 +113,7 @@ export default class EventItem extends Component {
 
 const styles = StyleSheet.create({
 	EventItemContainer: {
-		paddingVertical: 15,
+		paddingVertical: 25,
 		paddingHorizontal: 5,
 		flexDirection: 'column',
 		alignItems: 'center'
@@ -148,10 +148,11 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		flexWrap: 'wrap',
 		justifyContent: 'center',
-		marginVertical: 12
+		//marginVertical: 12
+		marginTop: 12
 	},
 	actionButtonIcon: {
-		fontSize: 14,
+		fontSize: 13,
 		color: 'white'
 	}
 });

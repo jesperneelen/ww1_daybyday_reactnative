@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Image, ImageBackground, ActivityIndicator } from 'react-native';
+import { StyleSheet, Image, View, ActivityIndicator } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 
 import {
@@ -49,25 +49,25 @@ class SplashScreen extends Component {
 
 	render() {
 		return (
-			<ImageBackground source={require('../../../assets/wallpaper.jpg')} style={styles.backgroundImage}>
-				<Image source={require('../../../assets/WO1_header.png')} style={styles.appHeaderImage} resizeMode="contain" />
+			<View style={styles.fillBackground}>
+				<Image source={require('../../../assets/launch-screen-text.png')} style={styles.appHeaderImage} resizeMode="contain" />
 				<ActivityIndicator style={styles.loadingIndicator} animating={true} size={'large'} />
-			</ImageBackground>
+			</View>
 		);
 	}
 }
 
 const styles = StyleSheet.create({
-	backgroundImage: {
+	fillBackground: {
+		padding: 40,
 		flex: 1,
+		backgroundColor: '#444D2B',
+		flexDirection: 'column',
 		alignItems: 'center',
-		flexDirection: 'column'
+		justifyContent: 'center'
 	},
 	appHeaderImage: {
-		flex: 1,
-		alignSelf: 'stretch',
-		height: undefined,
-		width: undefined
+		flex: 6
 	},
 	loadingIndicator: {
 		flex: 1

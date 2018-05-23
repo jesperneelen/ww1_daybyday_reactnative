@@ -47,12 +47,17 @@ export default class TagItem extends Component {
 
 const styles = StyleSheet.create({
 	Tag: {
-		paddingVertical: 2,
+		paddingVertical: 3,
 		paddingHorizontal: 6,
 		margin: 3,
 		flexDirection: 'row',
 		alignItems: 'center',
-		borderRadius: 4
+		borderRadius: 4,
+		shadowColor: 'rgb(68, 78, 41)',
+		shadowOffset: { width: 0, height: 3 },
+		shadowOpacity: .9,
+		shadowRadius: 2,
+		elevation: 2
 	},
 	TagText: {
 		color: 'white',

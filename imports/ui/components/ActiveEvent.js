@@ -205,7 +205,7 @@ class ActiveEvent extends Component {
 											</Text>
 									}
 
-									<Text style={styles.NationFront}>{`${activeEvent.Front} - ${activeEvent.Nation}`}</Text>
+									<Text style={styles.NationFront}>{`${activeEvent.Front} / ${activeEvent.Nation}`}</Text>
 
 									<TouchableOpacity onPress={this.openModal}>
 										<Text style={styles.Description} ellipsizeMode="tail" numberOfLines={4}>{activeEvent.Description}</Text>

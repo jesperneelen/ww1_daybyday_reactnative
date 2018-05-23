@@ -4,9 +4,10 @@ import {
 	View,
 	StyleSheet
 } from 'react-native';
+import { NavigationActions } from 'react-navigation';
 
 import MyFavouriteEvents from '../components/FavouriteEvents';
-import { removeFromMyFavourites, setSideEvent } from '../../actions/events';
+import { removeFromMyFavourites, setSideEvent, setActiveEvent } from '../../actions/events';
 
 class MyFavourites extends Component {
 	constructor(props) {
@@ -15,6 +16,7 @@ class MyFavourites extends Component {
 		this.removeFromFavourites = this.removeFromFavourites.bind(this);
 		this.onTagPress = this.onTagPress.bind(this);
 		this.onMoreInfoPress = this.onMoreInfoPress.bind(this);
+		this.setFavouriteAsActiveEvent = this.setFavouriteAsActiveEvent.bind(this);
 	}
 
 	removeFromFavourites(eventId) {
@@ -49,17 +51,37 @@ class MyFavourites extends Component {
 		}
 	}
 
+	setFavouriteAsActiveEvent(eventIdx, eventId) {
+		const {
+			setActiveEvent,
+			navigation
+		} = this.props;
+
+		if(setActiveEvent && eventIdx && eventId) {
+			setActiveEvent(eventIdx, eventId);
+
+			const backAction = NavigationActions.back({
+				key: 'home'
+			});
+
+			navigation.dispatch({type: NavigationActions.BACK, action: backAction});
+		}
+	}
+
 	render() {
 		const {
-			myFavouriteEvents
+			myFavouriteEvents,
+			activeEventIndex
 		} = this.props;
 
 		return (
 			<View style={styles.ScreenContainer}>
 				<MyFavouriteEvents myFavouriteEvents={myFavouriteEvents}
+													 activeEventIndex={activeEventIndex}
 													 removeFromFavourites={this.removeFromFavourites}
 													 onTagPress={this.onTagPress}
-													 onMoreInfoPress={this.onMoreInfoPress} />
+													 onMoreInfoPress={this.onMoreInfoPress}
+													 onSetActiveEventPress={this.setFavouriteAsActiveEvent} />
 			</View>
 		);
 	}
@@ -75,14 +97,15 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
 	return {
 		myFavouriteEvents: state.events.myFavouriteEvents,
-		myFavourites: state.events.myFavourites
+		activeEventIndex: state.events.activeEventIndex
 	};
 }
 
 function mapDispatchToProps(dispatch) {
 	return {
 		removeFromMyFavourites: (eventId, noTimeOut) => dispatch(removeFromMyFavourites(eventId, noTimeOut)),
-		setSideEvent: (sideEvent) => dispatch(setSideEvent(sideEvent))
+		setSideEvent: (sideEvent) => dispatch(setSideEvent(sideEvent)),
+		setActiveEvent: (eventIdx, eventId) => dispatch(setActiveEvent(eventIdx, eventId))
 	};
 }
 

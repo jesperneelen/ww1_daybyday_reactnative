@@ -121,10 +121,10 @@ class Map extends Component {
 				>
 					{
 						markers && Array.isArray(markers) ?
-							markers.map((marker, idx) => {
+							markers.map(marker => {
 								return (
 									<Marker
-										key={idx}
+										key={marker._id}
 										title={marker.title}
 										identifier={marker._id}
 										trackViewChanges={false}
@@ -142,10 +142,10 @@ class Map extends Component {
 
 					{
 						!isFiltered && allEventMarkers && allEventMarkers.length > 0 && Array.isArray(allEventMarkers) ?
-							allEventMarkers.map((marker, idx) => {
+							allEventMarkers.map(marker => {
 								return (
 									<Marker
-										key={idx}
+										key={marker._id}
 										title={marker.title}
 										identifier={marker._id}
 										trackViewChanges={false}
@@ -156,8 +156,7 @@ class Map extends Component {
 										}}
 										onPress={() => this.onMarkerPress(marker._id, marker.title)}
 										onCalloutPress={() => this.onMarkerPress(marker._id, marker.title)}
-									>
-									</Marker>
+									/>
 								)
 							}) : null
 					}

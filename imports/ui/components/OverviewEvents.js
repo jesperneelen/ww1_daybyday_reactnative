@@ -88,7 +88,7 @@ export default class OverviewEvents extends Component {
 						<Icon type="ionicon" name={'ios-close-circle'} color={'rgb(68, 78, 41)'} size={30} style={{alignSelf: 'center'}} />
 					</TouchableOpacity>
 
-					<EventsList limit={50} height={componentHeight - 30} />
+					<EventsList limit={50} height={componentHeight - 30} collapsed={this.state.collapsed} />
 				</Animated.View>
 			</View>
 		);

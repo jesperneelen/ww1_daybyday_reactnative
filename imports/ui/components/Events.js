@@ -45,22 +45,28 @@ class EventsList extends Component {
 
 		if(nextProps.activeEventIndex && nextProps.activeEventIndex !== null && !this.scrolledToMiddle && this.flatList && !nextProps.isFetching) {
 			setTimeout(() => {
-				this.flatList.scrollToIndex({
-					animated: false,
-					index: nextProps.activeEventIndex
-				}, 500);
+				this.flatList.scrollToItem({
+					item: nextProps.events[nextProps.activeEventIndex],
+					viewPosition: 0,
+					animated: true
+				});
 
 				this.scrolledToMiddle = true;
 			});
 		}
-	}
+
+		 if(nextProps.collapsed) {
+		 	this.scrolledToMiddle = false;
+		 }
+	 }
 
 	shouldComponentUpdate(nextProps, nextState) {
 		return nextProps.lastUpdated > this.props.lastUpdated
 			|| this.state.page !== nextState.page
 			|| this.state.limit !== nextState.limit
 			|| this.props.activeEventIndex !== nextProps.activeEventIndex
-			|| this.props.maxEventIndex !== nextProps.maxEventIndex;
+			|| this.props.maxEventIndex !== nextProps.maxEventIndex
+			|| this.props.collapsed !== nextProps.collapsed;
 	}
 
 	_keyExtractor(item) {
@@ -122,7 +128,7 @@ class EventsList extends Component {
 	}
 
 	getItemLayout = (data, index) => (
-		{ length: 69, offset: 69 * index, index }
+		{ length: 71, offset: 71 * index, index }
 	);
 
 	render() {

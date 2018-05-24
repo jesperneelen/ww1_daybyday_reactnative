@@ -1,5 +1,5 @@
 import { handleException } from './exceptions';
-import { setMarkers, setAllEventMarkers } from './map';
+import { setMarkers, setAllEventMarkers, clearExtraMarkers } from './map';
 import EventsService from '../services/EventsService';
 import UsersService from '../services/UsersService';
 
@@ -59,6 +59,8 @@ export function fetchEvents(init, skip, limit, totalCount) {
 					let populatedEvents = response.events.reduce((acc, cur, idx) => {
 						if(myFavouriteEventIds.indexOf(cur._id) > -1) {
 							cur.eventIndex = idx;
+							cur.HasCityTags = !!(cur.Tags.find(tag => tag.IsCity));
+
 							acc.push(cur);
 						}
 						return acc;
@@ -93,6 +95,7 @@ export function setActiveEvent(idx, eventId) {
 			dispatch(setPage(state.page + 1));
 		}
 
+		dispatch(clearExtraMarkers());
 		getAndSetMarkers(dispatch, state.data, idx);
 		updateActiveEvent(eventId, idx, state.maxEventIndex <= idx ? idx : state.maxEventIndex);
 

@@ -63,7 +63,7 @@ export default class EventItem extends Component {
 									.map((tag, idx) => {
 										return (
 											<TagItem key={idx} id={tag._id} IsCity={tag.IsCity} DisplayName={tag.DisplayName}
-															 backgroundColor="rgba(139, 154, 97, .8)" onPress={onTagPress} />
+															 backgroundColor="rgb(139, 154, 97)" onPress={onTagPress} />
 										);
 									})
 								: null

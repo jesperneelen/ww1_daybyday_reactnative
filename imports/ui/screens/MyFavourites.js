@@ -8,6 +8,7 @@ import { NavigationActions } from 'react-navigation';
 
 import MyFavouriteEvents from '../components/FavouriteEvents';
 import { removeFromMyFavourites, setSideEvent, setActiveEvent } from '../../actions/events';
+import { setExtraMarkers } from '../../actions/map';
 
 class MyFavourites extends Component {
 	constructor(props) {
@@ -17,6 +18,7 @@ class MyFavourites extends Component {
 		this.onTagPress = this.onTagPress.bind(this);
 		this.onMoreInfoPress = this.onMoreInfoPress.bind(this);
 		this.setFavouriteAsActiveEvent = this.setFavouriteAsActiveEvent.bind(this);
+		this.showFavouriteOnMap = this.showFavouriteOnMap.bind(this);
 	}
 
 	removeFromFavourites(eventId) {
@@ -53,19 +55,36 @@ class MyFavourites extends Component {
 
 	setFavouriteAsActiveEvent(eventIdx, eventId) {
 		const {
-			setActiveEvent,
-			navigation
+			setActiveEvent
 		} = this.props;
 
 		if(setActiveEvent && eventIdx && eventId) {
 			setActiveEvent(eventIdx, eventId);
-
-			const backAction = NavigationActions.back({
-				key: 'home'
-			});
-
-			navigation.dispatch({type: NavigationActions.BACK, action: backAction});
+			this._navigateHome();
 		}
+	}
+
+	showFavouriteOnMap(eventTags) {
+		const {
+			setExtraMarkers
+		} = this.props;
+
+		if(setExtraMarkers && eventTags) {
+			setExtraMarkers(eventTags);
+			this._navigateHome();
+		}
+	}
+
+	_navigateHome() {
+		const {
+			navigation
+		} = this.props;
+
+		const backAction = NavigationActions.back({
+			key: 'home'
+		});
+
+		navigation.dispatch({type: NavigationActions.BACK, action: backAction});
 	}
 
 	render() {
@@ -81,7 +100,8 @@ class MyFavourites extends Component {
 													 removeFromFavourites={this.removeFromFavourites}
 													 onTagPress={this.onTagPress}
 													 onMoreInfoPress={this.onMoreInfoPress}
-													 onSetActiveEventPress={this.setFavouriteAsActiveEvent} />
+													 onSetActiveEventPress={this.setFavouriteAsActiveEvent}
+													 showFavouriteOnMap={this.showFavouriteOnMap} />
 			</View>
 		);
 	}
@@ -105,7 +125,8 @@ function mapDispatchToProps(dispatch) {
 	return {
 		removeFromMyFavourites: (eventId, noTimeOut) => dispatch(removeFromMyFavourites(eventId, noTimeOut)),
 		setSideEvent: (sideEvent) => dispatch(setSideEvent(sideEvent)),
-		setActiveEvent: (eventIdx, eventId) => dispatch(setActiveEvent(eventIdx, eventId))
+		setActiveEvent: (eventIdx, eventId) => dispatch(setActiveEvent(eventIdx, eventId)),
+		setExtraMarkers: (eventTags) => dispatch(setExtraMarkers(eventTags))
 	};
 }
 

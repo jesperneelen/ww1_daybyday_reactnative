@@ -95,9 +95,12 @@ export function events(state = initialState, action) {
 				pushingOrRemovingFavourite: true
 			});
 		case PUSH_FAVOURITE_EVENT_SUCCESS:
+			let newFavouriteEvent = state.data.find(event => event._id === action.eventId);
+			newFavouriteEvent.HasCityTags = !!(newFavouriteEvent.Tags.find(tag => tag.IsCity));
+
 			return Object.assign({}, state, {
 				myFavourites: [...state.myFavourites, action.eventId],
-				myFavouriteEvents: [...state.myFavouriteEvents, state.data.find(event => event._id === action.eventId)].sort((a, b) => a.DayInTheWar > b.DayInTheWar),
+				myFavouriteEvents: [...state.myFavouriteEvents, newFavouriteEvent].sort((a, b) => a.DayInTheWar > b.DayInTheWar),
 				pushingOrRemovingFavourite: false,
 				activeEventIsInFavourite: true
 			});

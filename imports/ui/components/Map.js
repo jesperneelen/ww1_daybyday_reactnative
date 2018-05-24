@@ -27,12 +27,27 @@ class Map extends Component {
 		this.onMarkerPress = this.onMarkerPress.bind(this);
 		this.navigateToFavourites = this.navigateToFavourites.bind(this);
 		this.onLogoutPress = this.onLogoutPress.bind(this);
+		this._renderMarkers = this._renderMarkers.bind(this);
 	}
 
 	componentDidUpdate() {
-		if(this.props.markers && Array.isArray(this.props.markers)) {
-			if(this.props.markers.length > 1) {
-				let markerIDs = this.props.markers.reduce((acc, cur) => {
+		const {
+			extraMarkers,
+			markers
+		} = this.props;
+
+		if(extraMarkers && extraMarkers.length > 0 && Array.isArray(extraMarkers)) {
+			let extraMarkerIDs = extraMarkers.reduce((acc, cur) => {
+				acc.push(cur._id);
+				return acc;
+			}, []);
+
+			setTimeout(() => {
+				this.mapView.fitToSuppliedMarkers(extraMarkerIDs, true);
+			}, 10);
+		} else if(markers && Array.isArray(markers)) {
+			if(markers.length > 1) {
+				let markerIDs = markers.reduce((acc, cur) => {
 					acc.push(cur._id);
 					return acc;
 				}, []);
@@ -41,11 +56,11 @@ class Map extends Component {
 				setTimeout(() => {
 					this.mapView.fitToSuppliedMarkers(markerIDs, true);
 				}, 10);
-			} else if(this.props.markers.length === 1) {
+			} else if(markers.length === 1 && Array.isArray(markers)) {
 				this.mapView.animateToRegion({
-					longitude: this.props.markers[0].longitude,
+					longitude: markers[0].longitude,
 					longitudeDelta: 5,
-					latitude: this.props.markers[0].latitude,
+					latitude: markers[0].latitude,
 					latitudeDelta: 5
 				});
 			}
@@ -98,10 +113,31 @@ class Map extends Component {
 		}));
 	}
 
+	_renderMarkers(markersToRender, pinColor) {
+		return markersToRender.map(marker => {
+			return (
+				<Marker
+					key={marker._id}
+					title={marker.title}
+					identifier={marker._id}
+					trackViewChanges={false}
+					pinColor={pinColor}
+					coordinate={{
+						latitude: marker.latitude,
+						longitude: marker.longitude
+					}}
+					onPress={() => this.onMarkerPress(marker._id, marker.title)}
+					onCalloutPress={() => this.onMarkerPress(marker._id, marker.title)}
+				/>
+			);
+		});
+	}
+
 	render() {
 		const {
 			markers,
-			allEventMarkers
+			allEventMarkers,
+			extraMarkers
 		} = this.props;
 
 		const {
@@ -121,44 +157,20 @@ class Map extends Component {
 				>
 					{
 						markers && Array.isArray(markers) ?
-							markers.map(marker => {
-								return (
-									<Marker
-										key={marker._id}
-										title={marker.title}
-										identifier={marker._id}
-										trackViewChanges={false}
-										pinColor={'#1CB417'}
-										coordinate={{
-											latitude: marker.latitude,
-											longitude: marker.longitude
-										}}
-										onPress={() => this.onMarkerPress(marker._id, marker.title)}
-										onCalloutPress={() => this.onMarkerPress(marker._id, marker.title)}
-									/>
-								)
-							}) : null
+							this._renderMarkers(markers, '#1CB417')
+							: null
 					}
 
 					{
 						!isFiltered && allEventMarkers && allEventMarkers.length > 0 && Array.isArray(allEventMarkers) ?
-							allEventMarkers.map(marker => {
-								return (
-									<Marker
-										key={marker._id}
-										title={marker.title}
-										identifier={marker._id}
-										trackViewChanges={false}
-										pinColor={'#9A5449'}
-										coordinate={{
-											latitude: marker.latitude,
-											longitude: marker.longitude
-										}}
-										onPress={() => this.onMarkerPress(marker._id, marker.title)}
-										onCalloutPress={() => this.onMarkerPress(marker._id, marker.title)}
-									/>
-								)
-							}) : null
+							this._renderMarkers(allEventMarkers, '#9A5449')
+							: null
+					}
+
+					{
+						extraMarkers && extraMarkers.length > 0 && Array.isArray(extraMarkers) ?
+							this._renderMarkers(extraMarkers, '#636755')
+							: null
 					}
 				</MapView>
 
@@ -203,7 +215,8 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
 	return {
 		markers: state.map.markers,
-		allEventMarkers: state.map.allEventMarkers
+		allEventMarkers: state.map.allEventMarkers,
+		extraMarkers: state.map.extraMarkers
 	};
 }
 

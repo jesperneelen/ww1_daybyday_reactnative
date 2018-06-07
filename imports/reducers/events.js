@@ -43,7 +43,7 @@ export function events(state = initialState, action) {
 			});
 		case FETCH_EVENTS_SUCCESS:
 			let InitActiveEvent = action.events.find(event => event._id === action.activeEventId);
-			let InitHasSideEvent = !!(InitActiveEvent.SideEvent);
+			let InitHasSideEvent = !!(InitActiveEvent && InitActiveEvent.SideEvent);
 
 			return Object.assign({}, state, {
 				isFetching: false,
@@ -87,8 +87,10 @@ export function events(state = initialState, action) {
 				myFavourites: action.myFavourites
 			});
 		case POPULATE_MY_FAVOURITE_EVENTS:
+			action.myFavouriteEvents.sort((a, b) => a.DayInTheWar > b.DayInTheWar ? 1 : -1);
+
 			return Object.assign({}, state, {
-				myFavouriteEvents: action.myFavouriteEvents.sort((a, b) => a.DayInTheWar > b.DayInTheWar)
+				myFavouriteEvents: action.myFavouriteEvents
 			});
 		case PUSH_FAVOURITE_EVENT:
 			return Object.assign({}, state, {
@@ -97,10 +99,14 @@ export function events(state = initialState, action) {
 		case PUSH_FAVOURITE_EVENT_SUCCESS:
 			let newFavouriteEvent = state.data.find(event => event._id === action.eventId);
 			newFavouriteEvent.HasCityTags = !!(newFavouriteEvent.Tags.find(tag => tag.IsCity));
+			newFavouriteEvent.isFavouriteEvent = true;
+
+			let newFavouriteEvents = [...state.myFavouriteEvents, newFavouriteEvent];
+			newFavouriteEvents.sort((a, b) => a.DayInTheWar > b.DayInTheWar ? 1 : -1);
 
 			return Object.assign({}, state, {
 				myFavourites: [...state.myFavourites, action.eventId],
-				myFavouriteEvents: [...state.myFavouriteEvents, newFavouriteEvent].sort((a, b) => a.DayInTheWar > b.DayInTheWar),
+				myFavouriteEvents: newFavouriteEvents,
 				pushingOrRemovingFavourite: false,
 				activeEventIsInFavourite: true
 			});
@@ -112,6 +118,15 @@ export function events(state = initialState, action) {
 			return Object.assign({}, state, {
 				myFavourites: state.myFavourites.filter(favourite => favourite !== action.eventId),
 				myFavouriteEvents: state.myFavouriteEvents.filter(favouriteEvent => favouriteEvent._id !== action.eventId),
+				data: state.data.reduce((acc, cur) => {
+					if(cur._id === action.eventId) {
+						cur.isFavouriteEvent = false;
+					}
+
+					acc.push(cur);
+
+					return acc;
+				}, []),
 				pushingOrRemovingFavourite: false,
 				activeEventIsInFavourite: false
 			});
@@ -128,7 +143,7 @@ export function events(state = initialState, action) {
 		case CLEAR_FILTERED_EVENTS:
 			return Object.assign({}, state, {
 				filteredEvents: Object.assign({}, state.filteredEvents, {
-					[action.tagId]: []
+					[action.tagId]: null
 				}),
 				filteredEventsParams: state.filteredEventsParams.filter(param => param.tagId !== action.tagId)
 			});

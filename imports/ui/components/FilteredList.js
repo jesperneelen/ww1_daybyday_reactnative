@@ -27,12 +27,81 @@ export default class FilteredEventList extends Component {
 	renderItem({item}) {
 		const {
 			onTagPress,
-			filteredEventsParams
+			onMoreInfoPress,
+			onSetActiveEventPress,
+			showFavouriteOnMap,
+			filteredEventsParams,
+			activeEventIndex,
+			removeFromFavourites,
+			addToFavourites
 		} = this.props;
 
-		const actions = [
+		let actions = [];
 
-		];
+		if(!item.isFavouriteEvent) {
+			actions.push({
+				text: 'Add to my favourites',
+				backgroundColor: '#1CB417',
+				iconName: 'ios-star-outline',
+				iconColor: '#FFFFFF',
+				iconSize: 25,
+				iconType: 'ionicon',
+				onPress: () => addToFavourites(item._id)
+			});
+		} else {
+			actions.push({
+				text: 'Remove from my favourites',
+				backgroundColor: '#DA291C',
+				iconName: 'ios-star',
+				iconColor: '#FFFFFF',
+				iconSize: 25,
+				iconType: 'ionicon',
+				onPress: () => removeFromFavourites(item._id)
+			});
+		}
+
+		if(activeEventIndex !== item.eventIndex) {
+			//Only add option if this event isn't the current active event
+			actions.push({
+				text: 'Set as active event',
+				backgroundColor: '#1CB417',
+				iconName: 'ios-book',
+				iconColor: '#FFFFFF',
+				iconSize: 25,
+				iconType: 'ionicon',
+				onPress: () => onSetActiveEventPress(item.eventIndex, item._id)
+			});
+
+			//Only add option if there is a "IsCity" in the tags => calculated in the event action fetchEvents()
+			if(item.HasCityTags && item.Tags && item.Tags.length > 0 && Array.isArray(item.Tags)) {
+				let cityTags = item.Tags.reduce((acc, cur) => {
+					if(cur.IsCity) acc.push(cur);
+					return acc;
+				}, []);
+
+				actions.push({
+					text: 'Show on "Day by Day" map',
+					backgroundColor: '#636755',
+					iconName: 'ios-map',
+					iconColor: '#FFFFFF',
+					iconSize: 25,
+					iconType: 'ionicon',
+					onPress: () => showFavouriteOnMap(cityTags)
+				});
+			}
+		}
+
+		if(item && item.SideEvent && item.SideEvent.Type !== 'Year Change') {
+			actions.push({
+				text: `More info about ${item.SideEvent.Title}`,
+				backgroundColor: '#433781',
+				iconType: 'ionicon',
+				iconName: 'ios-information-circle',
+				iconColor: '#FFFFFF',
+				iconSize: 25,
+				onPress: () => onMoreInfoPress(item.SideEvent)
+			});
+		}
 
 		const copiedItem = Object.assign({}, item, {
 			Tags: item.Tags.reduce((acc, cur) => {
@@ -53,7 +122,7 @@ export default class FilteredEventList extends Component {
 		});
 
 		return (
-			<EventItem {...copiedItem} isFavouriteEvent={true} actions={actions} onTagPress={onTagPress} />
+			<EventItem {...copiedItem} isComplexEvent={true} actions={actions} onTagPress={onTagPress} actionsType="button" />
 		);
 	}
 

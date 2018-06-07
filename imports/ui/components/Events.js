@@ -83,7 +83,7 @@ class EventsList extends Component {
 			<EventItem {...item} onPress={() => this.onPressItem(index, item._id)}
 								 selected={activeEventIndex === index}
 								 available={maxEventIndex >= index}
-								 isFavouriteEvent={false} />
+								 isComplexEvent={false} />
 		);
 	}
 

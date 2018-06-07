@@ -109,7 +109,12 @@ const styles = StyleSheet.create({
 		top: windowHeight / 4,
 		justifyContent: 'center',
 		borderBottomLeftRadius: 5,
-		borderTopLeftRadius: 5
+		borderTopLeftRadius: 5,
+		shadowColor: 'rgb(68, 78, 41)',
+		shadowOffset: { width: 2, height: 2 },
+		shadowOpacity: .9,
+		shadowRadius: 4,
+		elevation: 4
 	},
 	Toggle: {
 		flex: 1,

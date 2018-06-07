@@ -21,6 +21,7 @@ export default class EventItem extends Component {
 	shouldComponentUpdate(nextProps) {
 		return nextProps.selected !== this.props.selected
 			|| (nextProps.available && !this.props.available)
+			|| this.props.isComplexEvent !== nextProps.isComplexEvent
 			|| this.props.isFavouriteEvent !== nextProps.isFavouriteEvent;
 	}
 
@@ -33,7 +34,7 @@ export default class EventItem extends Component {
 			onPress,
 			selected,
 			available,
-			isFavouriteEvent,
+			isComplexEvent,
 			Description,
 			Tags,
 			actions,
@@ -48,7 +49,7 @@ export default class EventItem extends Component {
 			<Text style={styles.FrontNation} key="frontNation">{`${Front} / ${Nation}`}</Text>
 		];
 
-		if(isFavouriteEvent) {
+		if(isComplexEvent) {
 			return (
 				<View style={styles.EventItemContainer}>
 					{children}

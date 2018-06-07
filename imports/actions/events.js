@@ -53,14 +53,27 @@ export function fetchEvents(init, skip, limit, totalCount) {
 				}
 
 				let myFavouriteEventIds = getState().events.myFavourites;
+				let eventsData = !init ? getState().events.data : [];
+
+				let eventsWithExtraData = response.events.reduce((acc, cur, idx) => {
+					if(init) {
+						cur.eventIndex = idx;
+					} else {
+						cur.eventIndex = eventsData.length + idx;
+					}
+
+					cur.isFavouriteEvent = myFavouriteEventIds.indexOf(cur._id) > - 1;
+
+					cur.HasCityTags = !!(cur.Tags.find(tag => tag.IsCity));
+					acc.push(cur);
+					return acc;
+				}, []);
+
 
 				if(init && myFavouriteEventIds && myFavouriteEventIds.length > 0 && Array.isArray(myFavouriteEventIds)
 						&& response.events && response.events.length > 0 && Array.isArray(response.events)) {
-					let populatedEvents = response.events.reduce((acc, cur, idx) => {
+					let populatedEvents = response.events.reduce((acc, cur) => {
 						if(myFavouriteEventIds.indexOf(cur._id) > -1) {
-							cur.eventIndex = idx;
-							cur.HasCityTags = !!(cur.Tags.find(tag => tag.IsCity));
-
 							acc.push(cur);
 						}
 						return acc;
@@ -71,7 +84,7 @@ export function fetchEvents(init, skip, limit, totalCount) {
 
 				dispatch({
 					type: FETCH_EVENTS_SUCCESS,
-					events: response.events,
+					events: eventsWithExtraData,
 					totalCount: response.totalCount,
 					receivedAt: Date.now(),
 					page: rounded - 1,

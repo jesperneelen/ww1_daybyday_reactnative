@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
 		overflow: 'scroll'
 	},
 	Description: {
-		paddingHorizontal: 5,
+		paddingHorizontal: 10,
 		marginTop: 12,
 		opacity: 0.9,
 		justifyContent: 'center',

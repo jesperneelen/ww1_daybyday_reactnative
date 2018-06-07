@@ -70,7 +70,7 @@ export default class MyFavouriteEventsList extends Component {
 		actions.push({
 				text: 'Remove from my favourites',
 				backgroundColor: '#DA291C',
-				iconName: 'ios-star-outline',
+				iconName: 'ios-star',
 				iconColor: '#FFFFFF',
 				iconSize: 25,
 				iconType: 'ionicon',
@@ -90,7 +90,7 @@ export default class MyFavouriteEventsList extends Component {
 		}
 
 		return (
-			<EventItem {...item} isFavouriteEvent={true} actions={actions} onTagPress={onTagPress} actionsType="button" />
+			<EventItem {...item} isComplexEvent={true} actions={actions} onTagPress={onTagPress} actionsType="button" />
 		);
 	}
 

@@ -9,18 +9,21 @@ const initialState = {
 	markers: [],
 	allEventMarkers: [],
 	extraMarkers: [],
-	removedMarkers: []
+	removedMarkers: [],
+	lastUpdated: Date.now()
 };
 
 export function map(state=initialState, action) {
 	switch(action.type) {
 		case SET_MAP_MARKERS:
 			return Object.assign({}, state, {
-				markers: action.markers
+				markers: action.markers,
+				lastUpdated: Date.now()
 			});
 		case SET_MAP_MARKERS_EVENT:
 			return Object.assign({}, state, {
-				allEventMarkers: action.markers
+				allEventMarkers: action.markers,
+				lastUpdated: Date.now()
 			});
 		case SET_MAP_MARKERS_EXTRA:
 			let markersToRemove = [
@@ -32,14 +35,16 @@ export function map(state=initialState, action) {
 				allEventMarkers: state.allEventMarkers.filter(marker => action.markerIDs.indexOf(marker._id) === -1),
 				markers: state.markers.filter(marker => action.markerIDs.indexOf(marker._id) === -1),
 				extraMarkers: action.markers,
-				removedMarkers: markersToRemove
+				removedMarkers: markersToRemove,
+				lastUpdated: Date.now()
 			});
 		case CLEAR_MAP_MARKERS_EXTRA:
 			return Object.assign({}, state, {
 				allEventMarkers: [...state.allEventMarkers, ...state.removedMarkers.filter(marker => !marker.isFromActiveEvent)],
 				markers: [...state.markers, ...state.removedMarkers.filter(marker => marker.isFromActiveEvent)],
 				removedMarkers: [],
-				extraMarkers: []
+				extraMarkers: [],
+				lastUpdated: Date.now()
 			});
 		default:
 			return Object.assign({}, state);

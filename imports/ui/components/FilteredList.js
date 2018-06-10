@@ -41,7 +41,7 @@ export default class FilteredEventList extends Component {
 		if(!item.isFavouriteEvent) {
 			actions.push({
 				text: 'Add to my favourites',
-				backgroundColor: '#1CB417',
+				backgroundColor: 'rgb(139, 154, 97)',
 				iconName: 'ios-star-outline',
 				iconColor: '#FFFFFF',
 				iconSize: 25,
@@ -147,13 +147,14 @@ export default class FilteredEventList extends Component {
 
 	render() {
 		const {
-			filteredEvents
+			filteredEvents,
+			pushingOrRemovingFavourite
 		} = this.props;
 
 		return (
 			<List containerStyle={styles.EventsContainer}>
 				<FlatList data={filteredEvents} keyExtractor={this._keyExtractor} ListEmptyComponent={this.renderNoDataComponent}
-									renderItem={this.renderItem} ItemSeparatorComponent={this.renderSeparator} />
+									renderItem={this.renderItem} ItemSeparatorComponent={this.renderSeparator} extraData={{pushingOrRemovingFavourite}} />
 			</List>
 		);
 	}

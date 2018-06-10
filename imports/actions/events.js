@@ -207,7 +207,6 @@ export function pushNewFavouriteEvent(eventId) {
 
 		return usersService.pushNewFavouriteEvent(eventId)
 			.then(response => {
-				console.log('pushNewFavouriteEvent success', response);
 				if(response.success) {
 					setTimeout(() => {
 						dispatch({
@@ -233,7 +232,6 @@ export function removeFromMyFavourites(eventId, noTimeOut=false) {
 
 		return usersService.removeFromMyFavourites(eventId)
 			.then(response => {
-				console.log('removeFromMyFavourites success', response);
 				if(response.success) {
 					setTimeout(() => {
 						dispatch({

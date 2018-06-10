@@ -30,6 +30,12 @@ class Map extends Component {
 		this._renderMarkers = this._renderMarkers.bind(this);
 	}
 
+	shouldComponentUpdate(nextProps, nextState) {
+		return this.state.height !== nextState.height
+			|| this.state.isFiltered !== nextState.isFiltered
+			|| this.props.lastUpdated < nextProps.lastUpdated;
+	}
+
 	componentDidUpdate() {
 		const {
 			extraMarkers,
@@ -216,7 +222,8 @@ function mapStateToProps(state) {
 	return {
 		markers: state.map.markers,
 		allEventMarkers: state.map.allEventMarkers,
-		extraMarkers: state.map.extraMarkers
+		extraMarkers: state.map.extraMarkers,
+		lastUpdated: state.map.lastUpdated
 	};
 }
 

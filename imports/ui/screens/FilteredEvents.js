@@ -171,7 +171,8 @@ class FilteredEvents extends Component {
 		const {
 			filteredEvents,
 			filteredEventsParams,
-			activeEventIndex
+			activeEventIndex,
+			pushingOrRemovingFavourite
 		} = this.props;
 
 		const {
@@ -191,7 +192,8 @@ class FilteredEvents extends Component {
 																 onMoreInfoPress={this.onMoreInfoPress}
 																 onSetActiveEventPress={this.setFilterEventAsActiveEvent}
 																 showFavouriteOnMap={this.showFavouriteOnMap}
-																 filteredEventsParams={filteredEventsParams} />
+																 filteredEventsParams={filteredEventsParams}
+																 pushingOrRemovingFavourite={pushingOrRemovingFavourite} />
 				}
 			</View>
 		);
@@ -214,7 +216,8 @@ function mapStateToProps(state, ownProps) {
 	return {
 		filteredEvents: state.events.filteredEvents[ownProps.navigation.state.params.tagId],
 		filteredEventsParams: state.events.filteredEventsParams,
-		activeEventIndex: state.events.activeEventIndex
+		activeEventIndex: state.events.activeEventIndex,
+		pushingOrRemovingFavourite: state.events.pushingOrRemovingFavourite
 	};
 }
 

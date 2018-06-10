@@ -108,7 +108,16 @@ export function events(state = initialState, action) {
 				myFavourites: [...state.myFavourites, action.eventId],
 				myFavouriteEvents: newFavouriteEvents,
 				pushingOrRemovingFavourite: false,
-				activeEventIsInFavourite: true
+				activeEventIsInFavourite: true,
+				data: state.data.reduce((acc, cur) => {
+					if(cur._id === action.eventId) {
+						cur.isFavouriteEvent = true;
+					}
+
+					acc.push(cur);
+
+					return acc;
+				}, []),
 			});
 		case REMOVE_FROM_FAVOURITES:
 			return Object.assign({}, state, {

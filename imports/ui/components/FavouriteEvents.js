@@ -11,6 +11,7 @@ import {
 } from 'react-native-elements';
 
 import EventItem from './EventItem';
+import { normalize } from '../utils/responsive-ui';
 
 export default class MyFavouriteEventsList extends Component {
 	constructor(props) {
@@ -43,7 +44,7 @@ export default class MyFavouriteEventsList extends Component {
 				backgroundColor: '#1CB417',
 				iconName: 'ios-book',
 				iconColor: '#FFFFFF',
-				iconSize: 25,
+				iconSize: normalize(25),
 				iconType: 'ionicon',
 				onPress: () => onSetActiveEventPress(item.eventIndex, item._id)
 			});
@@ -60,7 +61,7 @@ export default class MyFavouriteEventsList extends Component {
 					backgroundColor: '#636755',
 					iconName: 'ios-map',
 					iconColor: '#FFFFFF',
-					iconSize: 25,
+					iconSize: normalize(25),
 					iconType: 'ionicon',
 					onPress: () => showFavouriteOnMap(cityTags)
 				});
@@ -72,7 +73,7 @@ export default class MyFavouriteEventsList extends Component {
 				backgroundColor: '#DA291C',
 				iconName: 'ios-star',
 				iconColor: '#FFFFFF',
-				iconSize: 25,
+				iconSize: normalize(25),
 				iconType: 'ionicon',
 				onPress: () => removeFromFavourites(item._id)
 		});
@@ -84,7 +85,7 @@ export default class MyFavouriteEventsList extends Component {
 				iconType: 'ionicon',
 				iconName: 'ios-information-circle',
 				iconColor: '#FFFFFF',
-				iconSize: 25,
+				iconSize: normalize(25),
 				onPress: () => onMoreInfoPress(item.SideEvent)
 			});
 		}
@@ -146,7 +147,7 @@ const styles = StyleSheet.create({
 	},
 	NoDataText: {
 		color: 'rgb(68, 78, 41)',
-		fontSize: 18,
+		fontSize: normalize(16),
 		textAlign: 'center'
 	}
 });

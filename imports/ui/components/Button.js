@@ -8,6 +8,10 @@ import {
 	ActivityIndicator
 } from 'react-native';
 
+import {
+	normalize
+} from '../utils/responsive-ui';
+
 export default class Button extends Component {
 	constructor(props) {
 		super(props);
@@ -52,7 +56,7 @@ const styles = StyleSheet.create({
 		height: 50
 	},
 	defaultButtonText: {
-		fontSize: 12,
+		fontSize: normalize(10),
 		fontWeight: 'bold'
 	},
 	button: {

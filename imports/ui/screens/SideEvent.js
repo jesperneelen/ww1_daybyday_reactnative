@@ -7,6 +7,8 @@ import {
 	ScrollView
 } from 'react-native';
 
+import { normalize } from '../utils/responsive-ui';
+
 class SideEvent extends Component {
 	constructor(props) {
 		super(props);
@@ -44,7 +46,7 @@ const styles = StyleSheet.create({
 		marginTop: 12,
 		opacity: 0.9,
 		justifyContent: 'center',
-		fontSize: 14,
+		fontSize: normalize(12),
 		textAlign: 'center'
 	}
 });

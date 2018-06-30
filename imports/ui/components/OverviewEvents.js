@@ -12,6 +12,7 @@ import {
 } from 'react-native-elements';
 
 import EventsList from './Events';
+import { normalize } from '../utils/responsive-ui';
 
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;

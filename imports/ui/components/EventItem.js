@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import TagItem from './TagItem';
 import ActionBar from './ActionBar';
+import { normalize } from '../utils/responsive-ui';
 
 export default class EventItem extends Component {
 	constructor(props) {
@@ -64,7 +65,7 @@ export default class EventItem extends Component {
 									.map((tag, idx) => {
 										return (
 											<TagItem key={idx} id={tag._id} IsCity={tag.IsCity} DisplayName={tag.DisplayName}
-															 backgroundColor="rgb(139, 154, 97)" onPress={onTagPress} />
+													 backgroundColor="rgb(139, 154, 97)" onPress={onTagPress} />
 										);
 									})
 								: null
@@ -72,16 +73,16 @@ export default class EventItem extends Component {
 					</View>
 					{
 						actionsType === 'button' && actions && actions.length > 0 && Array.isArray(actions) ?
-							<ActionButton spacing={1} offsetY={15} offsetX={5} activeOpacity={.6} outRangeScale={1} size={34}
-														buttonColor={'rgb(68, 78, 41)'} position={'right'} verticalOrientation={'down'} degrees={180}
-														renderIcon={() => (<Icon name="md-more" style={[styles.actionButtonIcon, {fontSize: 23}]} />)}>
+							<ActionButton spacing={1} offsetY={15} offsetX={5} activeOpacity={.6} outRangeScale={1} size={normalize(31)}
+										  buttonColor={'rgb(68, 78, 41)'} position={'right'} verticalOrientation={'down'} degrees={180}
+										  renderIcon={() => (<Icon name="md-more" style={[styles.actionButtonIcon, {fontSize: normalize(20)}]} />)}>
 								{
 									actions.map((action, idx) => {
 										return (
-											<ActionButton.Item key={idx} buttonColor={action.backgroundColor} size={29} spaceBetween={8}
-																				 onPress={() => action.onPress()} title={action.text}
-																				 textStyle={{color: '#FFFFFF', fontWeight: '600', backgroundColor: '#BEDA73'}}
-																				 textContainerStyle={{backgroundColor: '#BEDA73', borderColor: '#BEDA73'}}>
+											<ActionButton.Item key={idx} buttonColor={action.backgroundColor} size={normalize(26)} spaceBetween={8}
+															   onPress={() => action.onPress()} title={action.text}
+															   textStyle={{color: '#FFFFFF', fontWeight: '600', backgroundColor: '#BEDA73'}}
+															   textContainerStyle={{backgroundColor: '#BEDA73', borderColor: '#BEDA73'}}>
 												<Icon name={action.iconName} style={styles.actionButtonIcon} />
 											</ActionButton.Item>
 										);
@@ -100,12 +101,12 @@ export default class EventItem extends Component {
 
 		return (
 			<TouchableOpacity activeOpacity={available ? .2 : 1} onPress={available ? onPress : null}
-												style={[
-													styles.EventItemContainer,
-													selected ? styles.Selected : null,
-													available ? null : styles.Unavailable,
-													{height: 70, paddingVertical: 0, justifyContent: 'center'}
-												]}>
+							  style={[
+								  styles.EventItemContainer,
+								  selected ? styles.Selected : null,
+								  available ? null : styles.Unavailable,
+								  {height: 70, paddingVertical: 0, justifyContent: 'center'}
+							  ]}>
 				{children}
 			</TouchableOpacity>
 		);
@@ -125,11 +126,11 @@ const styles = StyleSheet.create({
 	DateOfEvent: {
 		color: 'rgb(119, 121, 61)',
 		fontWeight: 'bold',
-		fontSize: 20
+		fontSize: normalize(17)
 	},
 	FrontNation: {
 		color: '#53565A',
-		fontSize: 16,
+		fontSize: normalize(13),
 		fontWeight: 'bold'
 	},
 	Selected: {
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
 		marginTop: 12,
 		opacity: 0.9,
 		justifyContent: 'center',
-		fontSize: 14,
+		fontSize: normalize(11),
 		textAlign: 'center'
 	},
 	TagContainer: {
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
 		marginTop: 12
 	},
 	actionButtonIcon: {
-		fontSize: 13,
+		fontSize: normalize(10),
 		color: 'white'
 	}
 });

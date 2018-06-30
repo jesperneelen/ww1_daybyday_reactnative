@@ -24,6 +24,7 @@ import {
 } from '../../actions/events';
 
 import ActionBar from '../components/ActionBar';
+import { normalize } from '../utils/responsive-ui';
 
 class JourneyControls extends Component {
 	constructor(props) {
@@ -141,8 +142,8 @@ class JourneyControls extends Component {
 		let enableNext = nextEvent && activeEventIndex < maxEventIndex;
 
 		const actions = [
-			{text: 'Save', iconType: 'ionicon', iconName: 'md-checkmark-circle', iconSize: 25, iconColor: '#FFFFFF', onPress: this.saveInterval},
-			{text: 'Close', iconType: 'ionicon', iconName: 'ios-close-circle', iconSize: 25, iconColor: '#FFFFFF', onPress: this.onCloseIntervalModal}
+			{text: 'Save', iconType: 'ionicon', iconName: 'md-checkmark-circle', iconSize: normalize(23), iconColor: '#FFFFFF', onPress: this.saveInterval},
+			{text: 'Close', iconType: 'ionicon', iconName: 'ios-close-circle', iconSize: normalize(23), iconColor: '#FFFFFF', onPress: this.onCloseIntervalModal}
 		];
 
 		return (
@@ -156,7 +157,7 @@ class JourneyControls extends Component {
 				<View style={styles.ControlsContainer}>
 					<View style={[styles.ActionWrapper, {borderLeftWidth: 0}]}>
 						<TouchableOpacity onPress={enablePrevious ? this.previousEvent : null} activeOpacity={enablePrevious ? .2 : 1}>
-							<Icon name={'fast-backward'} type="font-awesome" color={enablePrevious ? '#C9E779' : '#8B9A61'} size={24} />
+							<Icon name={'fast-backward'} type="font-awesome" color={enablePrevious ? '#C9E779' : '#8B9A61'} size={normalize(22)} />
 						</TouchableOpacity>
 					</View>
 
@@ -164,32 +165,32 @@ class JourneyControls extends Component {
 						currentControl === 'PLAY' ?
 							<View style={styles.ActionWrapper}>
 								<TouchableOpacity onPress={() => this.onControlPress('pause')}>
-									<Icon name={'pause'} type="font-awesome" color={'#C9E779'} size={24} />
+									<Icon name={'pause'} type="font-awesome" color={'#C9E779'} size={normalize(22)} />
 								</TouchableOpacity>
 							</View>
 							:
 							<View style={styles.ActionWrapper}>
 								<TouchableOpacity onPress={() => this.onControlPress('play')}>
-									<Icon name={'play'} type="font-awesome" color={'#C9E779'} size={24} />
+									<Icon name={'play'} type="font-awesome" color={'#C9E779'} size={normalize(22)} />
 								</TouchableOpacity>
 							</View>
 					}
 
 					<View style={styles.ActionWrapper}>
 						<TouchableOpacity onPress={() => this.onControlPress('stop')}>
-							<Icon name={'stop'} type="font-awesome" color={'#C9E779'} size={24} />
+							<Icon name={'stop'} type="font-awesome" color={'#C9E779'} size={normalize(22)} />
 						</TouchableOpacity>
 					</View>
 
 					<View style={styles.ActionWrapper}>
 						<TouchableOpacity onPress={enableNext ? this.nextEvent : null} activeOpacity={enableNext ? .2 : 1}>
-							<Icon name={'fast-forward'} type="font-awesome" color={enableNext ? '#C9E779' : '#8B9A61'} size={24} />
+							<Icon name={'fast-forward'} type="font-awesome" color={enableNext ? '#C9E779' : '#8B9A61'} size={normalize(22)} />
 						</TouchableOpacity>
 					</View>
 
 					<View style={[styles.ActionWrapper, {borderLeftWidth: 2, borderLeftColor: '#FFF'}]}>
 						<TouchableOpacity onPress={this.onOpenIntervalModal}>
-							<Icon name={'ios-timer'} type="ionicon" color={'#FFF'} size={24} />
+							<Icon name={'ios-timer'} type="ionicon" color={'#FFF'} size={normalize(22)} />
 						</TouchableOpacity>
 					</View>
 
@@ -202,10 +203,6 @@ class JourneyControls extends Component {
 									<Picker.Item label="30 seconds" value="30000" />
 									<Picker.Item label="60 seconds" value="60000" />
 								</Picker>
-
-								{/*<Button text="SAVE" onPress={this.saveInterval} />
-								<Button text="CLOSE" onPress={this.onCloseIntervalModal} />*/}
-
 								<ActionBar actions={actions} />
 							</View>
 						</View>

@@ -10,6 +10,8 @@ import {
 	StyleSheet
 } from 'react-native';
 
+import { normalize } from '../utils/responsive-ui';
+
 export default class TagItem extends Component {
 	constructor(props) {
 		super(props);
@@ -38,7 +40,7 @@ export default class TagItem extends Component {
 
 		return (
 			<TouchableOpacity style={[styles.Tag, {backgroundColor}]} onPress={() => this.onPress()}>
-				<Icon type={IsCity ? 'material-community': 'ionicon'} name={IsCity ? 'city' : 'ios-pricetags'} color={'white'} size={20} />
+				<Icon type={IsCity ? 'material-community': 'ionicon'} name={IsCity ? 'city' : 'ios-pricetags'} color={'white'} size={normalize(18)} />
 				<Text style={styles.TagText}>{DisplayName}</Text>
 			</TouchableOpacity>
 		);
@@ -61,7 +63,7 @@ const styles = StyleSheet.create({
 	},
 	TagText: {
 		color: 'white',
-		fontSize: 11,
+		fontSize: normalize(10),
 		marginLeft: 3
 	},
 });

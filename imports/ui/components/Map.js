@@ -13,6 +13,7 @@ import OverviewEvents from './OverviewEvents';
 import { logOutUser } from '../../actions/session';
 import { adjustCurrentControl } from '../../actions/controls';
 import { customStyle } from '../shared/CustomMapStyle';
+import { normalize } from '../utils/responsive-ui';
 
 class Map extends Component {
 	constructor(props) {
@@ -181,8 +182,8 @@ class Map extends Component {
 				</MapView>
 
 				<ActionButton spacing={5} offsetY={12} offsetX={12} activeOpacity={.6} outRangeScale={1.4}
-											buttonColor={'#839A42'} position={'left'} verticalOrientation={'down'} degrees={180}
-											renderIcon={() => (<Icon name="dots-vertical" style={styles.actionButtonIcon} />)}>
+							  buttonColor={'#839A42'} position={'left'} verticalOrientation={'down'} degrees={180}
+							  renderIcon={() => (<Icon name="dots-vertical" style={styles.actionButtonIcon} />)}>
 					<ActionButton.Item buttonColor="#433781" title="My Favourites" onPress={() => this.navigateToFavourites()}>
 						<Icon name="star" style={styles.actionButtonIcon} />
 					</ActionButton.Item>
@@ -192,11 +193,11 @@ class Map extends Component {
 				</ActionButton>
 
 				<ActionButton buttonColor={'rgb(68, 78, 41)'} position={'left'} offsetY={12} offsetX={12} activeOpacity={.6}
-											onPress={() => this.setState((prevState) => ({isFiltered: !prevState.isFiltered}))}
-											renderIcon={() => isFiltered ?
-												(<Icon name="filter-remove" style={styles.actionButtonIcon} /> )
-												: (<Icon name="filter" style={styles.actionButtonIcon} />)
-											} />
+							  onPress={() => this.setState((prevState) => ({isFiltered: !prevState.isFiltered}))}
+							  renderIcon={() => isFiltered ?
+								  (<Icon name="filter-remove" style={styles.actionButtonIcon} /> )
+								  : (<Icon name="filter" style={styles.actionButtonIcon} />)
+							  } />
 
 				<OverviewEvents componentHeight={height} />
 			</View>
@@ -213,7 +214,7 @@ const styles = StyleSheet.create({
 		flex: 1
 	},
 	actionButtonIcon: {
-		fontSize: 22,
+		fontSize: normalize(22),
 		color: 'white'
 	}
 });

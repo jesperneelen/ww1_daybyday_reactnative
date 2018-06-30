@@ -17,6 +17,7 @@ import ActionBar from '../components/ActionBar';
 
 import { pushNewFavouriteEvent, removeFromMyFavourites } from '../../actions/events';
 import { adjustCurrentControl } from '../../actions/controls';
+import { normalize } from '../utils/responsive-ui';
 
 class ActiveEvent extends Component {
 	constructor(props) {
@@ -144,7 +145,7 @@ class ActiveEvent extends Component {
 				loading: pushingOrRemovingFavourite,
 				iconName: activeEventIsInFavourite ? 'ios-star' : 'ios-star-outline',
 				iconColor: '#FFFFFF',
-				iconSize: 25,
+				iconSize: normalize(23),
 				iconType: 'ionicon',
 				//backgroundColor: '#1CB417',
 				onPress: activeEventIsInFavourite ? this.removeFromFavourites : this.addToFavourites
@@ -154,7 +155,7 @@ class ActiveEvent extends Component {
 				iconType: 'ionicon',
 				iconName: 'ios-close-circle',
 				iconColor: '#FFFFFF',
-				iconSize: 25,
+				iconSize: normalize(23),
 				//backgroundColor: '#DA291C',
 				onPress: this.closeModal
 			}
@@ -166,7 +167,7 @@ class ActiveEvent extends Component {
 				iconType: 'ionicon',
 				iconName: 'ios-information-circle',
 				iconColor: '#FFFFFF',
-				iconSize: 25,
+				iconSize: normalize(23),
 				backgroundColor: '#433781',
 				onPress: this.onMoreInfoPress
 			});
@@ -178,7 +179,7 @@ class ActiveEvent extends Component {
 				iconType: 'ionicon',
 				iconName: 'ios-close-circle',
 				iconColor: '#FFFFFF',
-				iconSize: 25,
+				iconSize: normalize(23),
 				onPress: this.closeYearModal
 			}
 		];
@@ -225,7 +226,7 @@ class ActiveEvent extends Component {
 							<View style={styles.ModalContainer}>
 								<View style={styles.ModalInnerContainer}>
 									<ScrollView>
-										<Text style={[styles.Description, {fontSize: 14}]}>{activeEvent && activeEvent.Description}</Text>
+										<Text style={[styles.Description, {fontSize: normalize(12)}]}>{activeEvent && activeEvent.Description}</Text>
 									</ScrollView>
 
 									<View style={styles.ModalTagsContainer}>
@@ -256,7 +257,7 @@ class ActiveEvent extends Component {
 								<View style={styles.ModalInnerContainer}>
 									<Text style={styles.Title}>{sideEvent && sideEvent.Title}</Text>
 									<ScrollView>
-										<Text style={[styles.Description, {fontSize: 14, marginBottom: 10}]}>{sideEvent && sideEvent.FullText}</Text>
+										<Text style={[styles.Description, {fontSize: normalize(12), marginBottom: 10}]}>{sideEvent && sideEvent.FullText}</Text>
 									</ScrollView>
 
 									<ActionBar actions={yearChangeActions} />
@@ -290,15 +291,15 @@ const styles = StyleSheet.create({
 		color: '#C9E779',
 		fontWeight: 'bold',
 		textAlign: 'center',
-		fontSize: 23
+		fontSize: normalize(21)
 	},
 	NationFront: {
 		color: '#BEDA73',
 		fontWeight: '500',
-		fontSize: 17
+		fontSize: normalize(15)
 	},
 	Title: {
-		fontSize: 20,
+		fontSize: normalize(18),
 		fontWeight: 'bold',
 		color: '#FFFFFF',
 		marginBottom: 5
@@ -306,12 +307,12 @@ const styles = StyleSheet.create({
 	Description: {
 		color: '#FFFFFF',
 		justifyContent: 'center',
-		fontSize: 12,
+		fontSize: normalize(11),
 		textAlign: 'center'
 	},
 	NoActiveEvent: {
 		color: '#BEDA73',
-		fontSize: 17,
+		fontSize: normalize(15),
 		textAlign: 'center'
 	},
 	ModalContainer: {

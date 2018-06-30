@@ -12,6 +12,10 @@ import {
 	ActivityIndicator
 } from 'react-native';
 
+import {
+	normalize
+} from '../utils/responsive-ui';
+
 export const ActionBar = ({actions}) => {
 	return (
 		<View style={styles.ActionsContainer}>
@@ -62,6 +66,6 @@ const styles = StyleSheet.create({
 	ActionText: {
 		color: '#FFFFFF',
 		marginLeft: 6,
-		fontSize: 12
+		fontSize: normalize(10)
 	}
 });

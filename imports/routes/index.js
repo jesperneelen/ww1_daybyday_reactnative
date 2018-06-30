@@ -10,6 +10,8 @@ import FilteredEvents from '../ui/screens/FilteredEvents';
 import SideEvent from '../ui/screens/SideEvent';
 import Back from '../ui/components/Back';
 
+import { normalize } from '../ui/utils/responsive-ui';
+
 const AuthenticatedStack = StackNavigator({
 	home: {
 		screen: Home,
@@ -27,6 +29,7 @@ const AuthenticatedStack = StackNavigator({
 				backgroundColor: 'rgb(68, 78, 41)'
 			},
 			headerTitleStyle: {
+				fontSize: normalize(16),
 				color: '#FFFFFF'
 			}
 		})
@@ -42,6 +45,7 @@ const AuthenticatedStack = StackNavigator({
 				backgroundColor: 'rgb(68, 78, 41)'
 			},
 			headerTitleStyle: {
+				fontSize: normalize(13),
 				color: '#FFFFFF'
 			}
 		})
@@ -57,6 +61,7 @@ const AuthenticatedStack = StackNavigator({
 				backgroundColor: 'rgb(68, 78, 41)'
 			},
 			headerTitleStyle: {
+				fontSize: normalize(16),
 				color: '#FFFFFF'
 			}
 		})

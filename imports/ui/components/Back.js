@@ -9,6 +9,10 @@ import {
 	Icon
 } from 'react-native-elements';
 
+import {
+	normalize
+} from '../utils/responsive-ui';
+
 import { NavigationActions, withNavigation } from 'react-navigation';
 
 class BackButton extends PureComponent {
@@ -35,7 +39,7 @@ class BackButton extends PureComponent {
 	render() {
 		return(
 			<TouchableOpacity onPress={this.goBack} style={styles.BackButton}>
-				<Icon name="ios-arrow-back" type="ionicon" size={32} color="#FFFFFF" />
+				<Icon name="ios-arrow-back" type="ionicon" size={normalize(30)} color="#FFFFFF" />
 			</TouchableOpacity>
 		);
 	}

@@ -8,6 +8,8 @@ import {
 	View
 } from 'react-native';
 
+import { normalize } from '../utils/responsive-ui';
+
 export default class Input extends Component {
 	constructor(props) {
 		super(props);
@@ -160,7 +162,7 @@ const styles = StyleSheet.create({
 		color: '#FFF',
 		backgroundColor: 'transparent',
 		height: 50,
-		fontSize: 18,
+		fontSize: normalize(16),
 		paddingLeft: 10,
 		alignSelf: 'stretch',
 		borderBottomWidth: 1,

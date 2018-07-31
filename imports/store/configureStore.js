@@ -18,6 +18,7 @@ export const addListener = createReduxBoundAddListener('root');
 
 export const store = createStore(
 	reducers,
-	applyMiddleware(thunk, logger),
+	applyMiddleware(thunk),
+	//applyMiddleware(thunk, logger),
 	applyMiddleware(middleware)
 );

@@ -72,7 +72,9 @@ class LoginScreen extends Component {
 	}
 
 	loginWithFacebook() {
-		this.openURL('http://localhost:3002/v1/auth/facebook');
+		//this.openURL('http://localhost:3002/v1/auth/facebook');
+		this.openURL('https://ww1-admin-api.herokuapp.com/v1/auth/facebook');
+		//this.openURL('http://192.168.0.211:3002/v1/auth/facebook');
 	}
 
 	// Open URL in a browser
@@ -194,21 +196,22 @@ const styles = StyleSheet.create({
 		flexDirection: 'column'
 	},
 	appHeaderImage: {
-		flex: 1,
+		flex: 2,
 		alignSelf: 'stretch',
 		height: undefined,
-		width: undefined
+		width: '98%'
 	},
 	container: {
 		flex: 1,
 		flexDirection: 'column'
 	},
 	inputContainer: {
-		flex: 1
+		flex: 2,
+		alignItems: 'center',
+		justifyContent: 'center'
 	},
 	actionContainer: {
-		flex: 1,
-		marginTop: 20
+		flex: 2
 	},
 	signUpWrapper: {
 		flexDirection: 'row',

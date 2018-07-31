@@ -39,7 +39,7 @@ export function loginFbComplete(fbUserId) {
 				});
 				dispatch(setMyFavourites(response.MyFavouriteEvents));
 				dispatch(setControlInterval(response.JourneyInterval));
-				dispatch(handleException('success', LOGIN_FB_SUCCESSFUL));
+				//dispatch(handleException('success', LOGIN_FB_SUCCESSFUL));
 			})
 			.catch(error => {
 				dispatch(handleException('error', LOGIN_FB_ERROR));
@@ -75,7 +75,7 @@ export function logInUser(username, password) {
 				dispatch(loginComplete(response));
 				dispatch(setMyFavourites(response.MyFavouriteEvents));
 				dispatch(setControlInterval(response.JourneyInterval));
-				dispatch(handleException('success', LOGIN_SUCCESSFUL));
+				//dispatch(handleException('success', LOGIN_SUCCESSFUL));
 			})
 			.catch(error => {
 				dispatch(loginError());
@@ -96,7 +96,15 @@ export function loggedOut() {
 
 function redirToLogin() {
 	return dispatch => {
-		dispatch(NavigationActions.navigate({ routeName: 'notAuthenticatedStack' }));
+		const resetAction = NavigationActions.reset({
+			index: 0,
+			key: null,
+			actions: [
+				NavigationActions.navigate({ routeName: 'notAuthenticatedStack' })
+			]
+		});
+
+		dispatch(resetAction);
 	};
 }
 
@@ -107,7 +115,7 @@ export function logOutUser() {
 				if(response.success) {
 					dispatch(redirToLogin());
 					dispatch(loggedOut());
-					dispatch(handleException('success', LOGOUT_SUCCESSFUL));
+					//dispatch(handleException('success', LOGOUT_SUCCESSFUL));
 				} else {
 					dispatch(handleException('error', LOGOUT_ERROR));
 				}
@@ -185,7 +193,7 @@ export function register(newUser) {
 					dispatch(setMyFavourites(response.user.MyFavouriteEvents));
 					dispatch(setControlInterval(response.user.JourneyInterval));
 					dispatch(registerComplete(response.user));
-					dispatch(handleException('success', REGISTER_SUCCESSFUL));
+					//dispatch(handleException('success', REGISTER_SUCCESSFUL));
 				} else if(!response.success) {
 					dispatch(handleException('error', response.error));
 					dispatch(registeringError());

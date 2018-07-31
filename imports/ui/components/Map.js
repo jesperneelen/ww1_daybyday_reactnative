@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
 	View,
-	StyleSheet
+	StyleSheet,
+	Text
 } from 'react-native';
 
 import MapView, { Marker }  from 'react-native-maps';
@@ -49,9 +50,7 @@ class Map extends Component {
 				return acc;
 			}, []);
 
-			setTimeout(() => {
-				this.mapView.fitToSuppliedMarkers(extraMarkerIDs, true);
-			}, 10);
+			this.mapView.fitToSuppliedMarkers(extraMarkerIDs, false);
 		} else if(markers && Array.isArray(markers)) {
 			if(markers.length > 1) {
 				let markerIDs = markers.reduce((acc, cur) => {
@@ -59,16 +58,13 @@ class Map extends Component {
 					return acc;
 				}, []);
 
-				//timeout for performance reasons
-				setTimeout(() => {
-					this.mapView.fitToSuppliedMarkers(markerIDs, true);
-				}, 10);
-			} else if(markers.length === 1 && Array.isArray(markers)) {
+				this.mapView.fitToSuppliedMarkers(markerIDs, false);
+			} else if(markers.length === 1) {
 				this.mapView.animateToRegion({
 					longitude: markers[0].longitude,
-					longitudeDelta: 5,
+					longitudeDelta: 6,
 					latitude: markers[0].latitude,
-					latitudeDelta: 5
+					latitudeDelta: 6
 				});
 			}
 		}
@@ -132,10 +128,11 @@ class Map extends Component {
 					coordinate={{
 						latitude: marker.latitude,
 						longitude: marker.longitude
-					}}
-					onPress={() => this.onMarkerPress(marker._id, marker.title)}
-					onCalloutPress={() => this.onMarkerPress(marker._id, marker.title)}
-				/>
+					}}>
+					<MapView.Callout onPress={() => this.onMarkerPress(marker._id, marker.title)}>
+						<Text style={styles.calloutStyle}>{marker.title}</Text>
+					</MapView.Callout>
+				</Marker>
 			);
 		});
 	}
@@ -216,6 +213,14 @@ const styles = StyleSheet.create({
 	actionButtonIcon: {
 		fontSize: normalize(22),
 		color: 'white'
+	},
+	calloutStyle: {
+		fontSize: normalize(14),
+		color: 'rgb(68, 78, 41)',
+		alignSelf: 'center',
+		fontWeight: '700',
+		paddingVertical: 3,
+		paddingHorizontal: 5
 	}
 });
 

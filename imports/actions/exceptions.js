@@ -26,6 +26,6 @@ export function handleException(type, message, errorObject, title = '') {
 
 		setTimeout(() => {
 			dispatch(removeException(exceptionId));
-		}, 3000);
+		}, 3500);
 	};
 }

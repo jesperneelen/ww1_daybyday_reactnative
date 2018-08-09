@@ -18,4 +18,17 @@ export default class EventsService {
 				}
 			});
 	}
+
+	getFreeEvents() {
+		let url = api.getFreeEvents();
+
+		return fetch(url, this.baseService.GetInit('GET'))
+			.then(response => {
+				if(response.status >= 400) {
+					throw new Error('Bad response from server');
+				} else {
+					return response.json();
+				}
+			});
+	}
 }

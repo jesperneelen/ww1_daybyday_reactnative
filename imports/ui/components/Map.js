@@ -9,10 +9,12 @@ import {
 import MapView, { Marker }  from 'react-native-maps';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { NavigationActions } from 'react-navigation';
 
 import OverviewEvents from './OverviewEvents';
 import { logOutUser } from '../../actions/session';
 import { adjustCurrentControl } from '../../actions/controls';
+import { clearSessionNoAccount } from '../../actions/session';
 import { customStyle } from '../shared/CustomMapStyle';
 import { normalize } from '../utils/responsive-ui';
 
@@ -29,6 +31,7 @@ class Map extends Component {
 		this.onMarkerPress = this.onMarkerPress.bind(this);
 		this.navigateToFavourites = this.navigateToFavourites.bind(this);
 		this.onLogoutPress = this.onLogoutPress.bind(this);
+		this.onLoginPress = this.onLoginPress.bind(this);
 		this._renderMarkers = this._renderMarkers.bind(this);
 	}
 
@@ -44,14 +47,24 @@ class Map extends Component {
 			markers
 		} = this.props;
 
-		if(extraMarkers && extraMarkers.length > 0 && Array.isArray(extraMarkers)) {
-			let extraMarkerIDs = extraMarkers.reduce((acc, cur) => {
-				acc.push(cur._id);
-				return acc;
-			}, []);
+		if(extraMarkers && extraMarkers.length && Array.isArray(extraMarkers)) {
+			if(extraMarkers.length > 1) {
+				let extraMarkerIDs = extraMarkers.reduce((acc, cur) => {
+					acc.push(cur._id);
+					return acc;
+				}, []);
 
-			this.mapView.fitToSuppliedMarkers(extraMarkerIDs, false);
-		} else if(markers && Array.isArray(markers)) {
+				this.mapView.fitToSuppliedMarkers(extraMarkerIDs, false);
+			} else if(extraMarkers.length === 1) {
+				this.mapView.animateToRegion({
+					longitude: extraMarkers[0].longitude,
+					longitudeDelta: 7,
+					latitude: extraMarkers[0].latitude,
+					latitudeDelta: 7
+				});
+			}
+
+		} else if(markers && markers.length && Array.isArray(markers)) {
 			if(markers.length > 1) {
 				let markerIDs = markers.reduce((acc, cur) => {
 					acc.push(cur._id);
@@ -62,9 +75,9 @@ class Map extends Component {
 			} else if(markers.length === 1) {
 				this.mapView.animateToRegion({
 					longitude: markers[0].longitude,
-					longitudeDelta: 6,
+					longitudeDelta: 7,
 					latitude: markers[0].latitude,
-					latitudeDelta: 6
+					latitudeDelta: 7
 				});
 			}
 		}
@@ -106,6 +119,19 @@ class Map extends Component {
 		}
 	}
 
+	onLoginPress() {
+		const resetAction = NavigationActions.reset({
+			index: 0,
+			key: null,
+			actions: [
+				NavigationActions.navigate({ routeName: 'notAuthenticatedStack' })
+			]
+		});
+
+		this.props.clearSessionNoAccount();
+		this.props.dispatchResetAction(resetAction);
+	}
+
 	onLayout(event) {
 		let {
 			height
@@ -141,7 +167,8 @@ class Map extends Component {
 		const {
 			markers,
 			allEventMarkers,
-			extraMarkers
+			extraMarkers,
+			initNoAccount
 		} = this.props;
 
 		const {
@@ -184,8 +211,9 @@ class Map extends Component {
 					<ActionButton.Item buttonColor="#433781" title="My Favourites" onPress={() => this.navigateToFavourites()}>
 						<Icon name="star" style={styles.actionButtonIcon} />
 					</ActionButton.Item>
-					<ActionButton.Item buttonColor="#814137" title="Sign Out" onPress={() => this.onLogoutPress()}>
-						<Icon name="logout-variant" style={styles.actionButtonIcon} />
+					<ActionButton.Item buttonColor={initNoAccount ? '#1CB417' : '#814137'} title={initNoAccount ? 'Sign In' : 'Sign Out'}
+									   onPress={initNoAccount ? () => this.onLoginPress() : () => this.onLogoutPress()}>
+						<Icon name={initNoAccount ? 'login-variant' : "logout-variant"} style={styles.actionButtonIcon} />
 					</ActionButton.Item>
 				</ActionButton>
 
@@ -229,14 +257,17 @@ function mapStateToProps(state) {
 		markers: state.map.markers,
 		allEventMarkers: state.map.allEventMarkers,
 		extraMarkers: state.map.extraMarkers,
-		lastUpdated: state.map.lastUpdated
+		lastUpdated: state.map.lastUpdated,
+		initNoAccount: state.session.initNoAccount
 	};
 }
 
 function mapDispatchToProps(dispatch) {
 	return {
 		logout: () => dispatch(logOutUser()),
-		adjustCurrentControl: (ctrlType) => dispatch(adjustCurrentControl(ctrlType))
+		adjustCurrentControl: (ctrlType) => dispatch(adjustCurrentControl(ctrlType)),
+		dispatchResetAction: (resetAction) => dispatch(resetAction),
+		clearSessionNoAccount: () => dispatch(clearSessionNoAccount())
 	};
 }
 

@@ -49,3 +49,7 @@ export function removeFromMyFavourites() {
 export function getEvents(skip=0, limit=50, totalCount=null) {
 	return getBaseAppPath() + `/events?skip=${skip}&limit=${limit}&totalCount=${totalCount}`;
 }
+
+export function getFreeEvents() {
+	return getBaseAppPath() + '/free-events';
+}

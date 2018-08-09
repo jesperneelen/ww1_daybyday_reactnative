@@ -824,6 +824,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 3K487NUZW4;
+						ProvisioningStyle = Automatic;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1450,6 +1451,8 @@
 			baseConfigurationReference = 8A3C53F0F01CCE68F535DC6F /* Pods-WO1_daybyday.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 3K487NUZW4;
@@ -1472,6 +1475,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.worldwarone.daybyday;
 				PRODUCT_NAME = WO1_daybyday;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1482,6 +1486,8 @@
 			baseConfigurationReference = EAD7FB050C5CC956167D4343 /* Pods-WO1_daybyday.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3K487NUZW4;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1503,6 +1509,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.worldwarone.daybyday;
 				PRODUCT_NAME = WO1_daybyday;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

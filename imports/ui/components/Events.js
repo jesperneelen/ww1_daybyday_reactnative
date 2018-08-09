@@ -142,8 +142,8 @@ class EventsList extends Component {
 		return (
 			<List containerStyle={[styles.EventsContainer, {height}]}>
 				<FlatList ref={(flatList) => this.flatList = flatList} data={events} keyExtractor={this._keyExtractor} renderItem={this.renderItem}
-									ItemSeparatorComponent={this.renderSeparator} ListFooterComponent={this.renderFooter} getItemLayout={this.getItemLayout}
-									onEndReached={this.handleLoadMore} onEndReachedThreshold={.3} extraData={{activeEventIndex, maxEventIndex}} />
+						  ItemSeparatorComponent={this.renderSeparator} ListFooterComponent={this.renderFooter} getItemLayout={this.getItemLayout}
+						  onEndReached={this.handleLoadMore} onEndReachedThreshold={.3} extraData={{activeEventIndex, maxEventIndex}} />
 			</List>
 		);
 	}

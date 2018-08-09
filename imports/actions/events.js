@@ -30,6 +30,28 @@ function fetchingEvents() {
 	};
 }
 
+function getEvents(initNoAccount, skip, limit, totalCount) {
+	return new Promise((resolve, reject) => {
+		if(initNoAccount) {
+			eventsService.getFreeEvents()
+				.then(response => {
+					resolve(response);
+				})
+				.catch(error => {
+					reject(error);
+				});
+		} else {
+			eventsService.getEvents(skip, limit, totalCount)
+				.then(response => {
+					resolve(response);
+				})
+				.catch(error => {
+					reject(error);
+				});
+		}
+	});
+}
+
 export function fetchEvents(init, skip, limit, totalCount) {
 	return (dispatch, getState) => {
 		dispatch(fetchingEvents());
@@ -45,9 +67,12 @@ export function fetchEvents(init, skip, limit, totalCount) {
 			}
 		}
 
-		return eventsService.getEvents(skip, limit, totalCount)
+		return getEvents(state && state.initNoAccount, skip, limit, totalCount)
 			.then(response => {
-				if(init && state && state.user && state.user.ActiveEventIndex !== null && response.events && response.events.length > 0 && Array.isArray(response.events)) {
+				if(state && state.initNoAccount) {
+					let idx = 0;
+					getAndSetMarkers(dispatch, response.events, idx);
+				} else if(init && state && state.user && state.user.ActiveEventIndex !== null && response.events && response.events.length > 0 && Array.isArray(response.events)) {
 					let idx = state.user.ActiveEventIndex;
 					getAndSetMarkers(dispatch, response.events, idx);
 				}
@@ -71,7 +96,7 @@ export function fetchEvents(init, skip, limit, totalCount) {
 
 
 				if(init && myFavouriteEventIds && myFavouriteEventIds.length > 0 && Array.isArray(myFavouriteEventIds)
-						&& response.events && response.events.length > 0 && Array.isArray(response.events)) {
+					&& response.events && response.events.length > 0 && Array.isArray(response.events)) {
 					let populatedEvents = response.events.reduce((acc, cur) => {
 						if(myFavouriteEventIds.indexOf(cur._id) > -1) {
 							acc.push(cur);
@@ -82,17 +107,31 @@ export function fetchEvents(init, skip, limit, totalCount) {
 					dispatch(populateMyFavouriteEvents(populatedEvents));
 				}
 
+				let maxEventIndex, activeEventIndex, activeEventId;
+
+				if(state && state.initNoAccount) {
+					maxEventIndex = 0;
+					activeEventIndex = 0;
+					activeEventId = response.events[0]._id;
+				} else {
+					maxEventIndex = state && state.user && state.user.MaxEventIndex !== null ? state.user.MaxEventIndex : null;
+					activeEventIndex = state && state.user && state.user.ActiveEventIndex !== null ? state.user.ActiveEventIndex : null;
+					activeEventId = state && state.user && state.user.ActiveEvent ? state.user.ActiveEvent._id : null;
+				}
+
 				dispatch({
 					type: FETCH_EVENTS_SUCCESS,
 					events: eventsWithExtraData,
-					totalCount: response.totalCount,
+					totalCount: state && state.initNoAccount ? 10 : response.totalCount,
 					receivedAt: Date.now(),
 					page: rounded - 1,
 					init,
-					maxEventIndex: state && state.user && state.user.MaxEventIndex !== null ? state.user.MaxEventIndex : null,
-					activeEventIndex: state && state.user && state.user.ActiveEventIndex !== null ? state.user.ActiveEventIndex : null,
-					activeEventId: state && state.user && state.user.ActiveEvent ? state.user.ActiveEvent._id : null
+					maxEventIndex,
+					activeEventIndex,
+					activeEventId
 				});
+			}, error => {
+				dispatch(handleException('error', FETCH_EVENTS_ERROR, error));
 			})
 			.catch(error => {
 				dispatch(handleException('error', FETCH_EVENTS_ERROR, error));
@@ -103,14 +142,20 @@ export function fetchEvents(init, skip, limit, totalCount) {
 export function setActiveEvent(idx, eventId) {
 	return (dispatch, getState) => {
 		const state = getState().events;
-		if(idx === state.data.length - 2 && idx < state.totalCount) {
+		const initNoAcount = getState().session.initNoAccount;
+
+		if(idx === state.data.length - 2 && idx < state.totalCount && !initNoAcount) {
 			dispatch(fetchEvents(state.data.length, 50, state.totalCount));
 			dispatch(setPage(state.page + 1));
 		}
 
 		dispatch(clearExtraMarkers());
 		getAndSetMarkers(dispatch, state.data, idx);
-		updateActiveEvent(eventId, idx, state.maxEventIndex <= idx ? idx : state.maxEventIndex);
+
+		// only update the active event of the user in the database when you've an account
+		if(!initNoAcount) {
+			updateActiveEvent(eventId, idx, state.maxEventIndex <= idx ? idx : state.maxEventIndex);
+		}
 
 		dispatch({
 			type: SET_ACTIVE_EVENT,
@@ -200,52 +245,74 @@ export function populateMyFavouriteEvents(myFavouriteEvents) {
 }
 
 export function pushNewFavouriteEvent(eventId) {
-	return (dispatch) => {
+	return (dispatch, getState) => {
+		const initNoAccount = getState().session.initNoAccount;
+
 		dispatch({
 			type: PUSH_FAVOURITE_EVENT
 		});
 
-		return usersService.pushNewFavouriteEvent(eventId)
-			.then(response => {
-				if(response.success) {
-					setTimeout(() => {
-						dispatch({
-							type: PUSH_FAVOURITE_EVENT_SUCCESS,
-							eventId
-						});
-					}, 350);
-				} else {
-					//TODO: error handling
-				}
-			})
-			.catch(error => {
-				console.log('pushNewFavouriteEvent error', error);
-			});
+		if(!initNoAccount) {
+			return usersService.pushNewFavouriteEvent(eventId)
+				.then(response => {
+					if(response.success) {
+						setTimeout(() => {
+							dispatch({
+								type: PUSH_FAVOURITE_EVENT_SUCCESS,
+								eventId
+							});
+						}, 350);
+					} else {
+						//TODO: error handling
+					}
+				})
+				.catch(error => {
+					console.log('pushNewFavouriteEvent error', error);
+				});
+		} else {
+			setTimeout(() => {
+				dispatch({
+					type: PUSH_FAVOURITE_EVENT_SUCCESS,
+					eventId
+				});
+			}, 350);
+		}
 	};
 }
 
 export function removeFromMyFavourites(eventId, noTimeOut=false) {
-	return dispatch => {
+	return (dispatch, getState) => {
+		const initNoAccount = getState().session.initNoAccount;
+
 		dispatch({
 			type: REMOVE_FROM_FAVOURITES
 		});
 
-		return usersService.removeFromMyFavourites(eventId)
-			.then(response => {
-				if(response.success) {
-					setTimeout(() => {
-						dispatch({
-							type: REMOVE_FROM_FAVOURITES_SUCCESS,
-							eventId
-						});
-					}, noTimeOut ? 0 : 350);
-				} else {
-					//TODO: error handling
-				}
-			})
-			.catch(error => {
-				console.log('removeFromMyFavourites error', error);
-			});
+		if(!initNoAccount) {
+			return usersService.removeFromMyFavourites(eventId)
+				.then(response => {
+					if (response.success) {
+						setTimeout(() => {
+							dispatch({
+								type: REMOVE_FROM_FAVOURITES_SUCCESS,
+								eventId
+							});
+						}, noTimeOut ? 0 : 350);
+					} else {
+						//TODO: error handling
+					}
+				})
+				.catch(error => {
+					console.log('removeFromMyFavourites error', error);
+				});
+		} else {
+			setTimeout(() => {
+				dispatch({
+					type: REMOVE_FROM_FAVOURITES_SUCCESS,
+					eventId
+				});
+			}, noTimeOut ? 0 : 350);
+		}
 	};
 }
 

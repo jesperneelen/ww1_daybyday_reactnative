@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
+import { NavigationActions } from 'react-navigation';
 import {
 	View,
 	Text,
@@ -17,6 +18,7 @@ import ActionBar from '../components/ActionBar';
 
 import { pushNewFavouriteEvent, removeFromMyFavourites } from '../../actions/events';
 import { adjustCurrentControl } from '../../actions/controls';
+import { clearSessionNoAccount } from '../../actions/session';
 import { normalize } from '../utils/responsive-ui';
 
 class ActiveEvent extends Component {
@@ -25,7 +27,8 @@ class ActiveEvent extends Component {
 
 		this.state = {
 			modalVisible: false,
-			showYearChange: false
+			showYearChange: false,
+			showSignInModal: false
 		};
 
 		this.openModal = this.openModal.bind(this);
@@ -35,6 +38,8 @@ class ActiveEvent extends Component {
 		this.onTagPress = this.onTagPress.bind(this);
 		this.onMoreInfoPress = this.onMoreInfoPress.bind(this);
 		this.closeYearModal = this.closeYearModal.bind(this);
+		this.closeSignInModal = this.closeSignInModal.bind(this);
+		this.onLoginPressed = this.onLoginPressed.bind(this);
 	}
 
 	static getDerivedStateFromProps(nextProps, prevState) {
@@ -45,6 +50,12 @@ class ActiveEvent extends Component {
 
 			return {
 				showYearChange: true
+			};
+		}
+
+		if(nextProps.activeEventIndex + 1 === nextProps.totalCount && nextProps.totalCount) {
+			return {
+				showSignInModal: true
 			};
 		}
 
@@ -69,6 +80,12 @@ class ActiveEvent extends Component {
 		if(adjustCurrentControl) {
 			adjustCurrentControl('play');
 		}
+	}
+
+	closeSignInModal() {
+		this.setState(() => ({
+			showSignInModal: false
+		}));
 	}
 
 	addToFavourites() {
@@ -125,6 +142,23 @@ class ActiveEvent extends Component {
 			adjustCurrentControl('stop');
 			navigation.navigate('sideEvent', {SideEventTitle: sideEvent.Title});
 		}
+	}
+
+	onLoginPressed() {
+		this.setState(() => ({
+			showSignInModal: false
+		}));
+
+		const resetAction = NavigationActions.reset({
+			index: 0,
+			key: null,
+			actions: [
+				NavigationActions.navigate({ routeName: 'notAuthenticatedStack' })
+			]
+		});
+
+		this.props.clearSessionNoAccount();
+		this.props.dispatchResetAction(resetAction);
 	}
 
 	render() {
@@ -184,6 +218,27 @@ class ActiveEvent extends Component {
 			}
 		];
 
+		let signInModalActions = [
+			{
+				text: 'Sign me up!',
+				iconType: 'material-community',
+				iconName: 'login-variant',
+				iconColor: '#FFFFFF',
+				backgroundColor: '#1CB417',
+				iconSize: normalize(23),
+				onPress: this.onLoginPressed
+			},
+			{
+				text: 'Close',
+				iconType: 'ionicon',
+				iconName: 'ios-close-circle',
+				iconColor: '#FFFFFF',
+				backgroundColor: '#814137',
+				iconSize: normalize(23),
+				onPress: this.closeSignInModal
+			}
+		];
+
 		return (
 			<View style={styles.ActiveEventContainer}>
 				{
@@ -237,7 +292,7 @@ class ActiveEvent extends Component {
 													.map((tag, idx) => {
 														return (
 															<TagItem key={idx} IsCity={tag.IsCity} DisplayName={tag.DisplayName} backgroundColor="#BEDA73"
-																			 onPress={this.onTagPress} id={tag._id} />
+																	 onPress={this.onTagPress} id={tag._id} />
 														)
 													})
 												: null
@@ -266,6 +321,21 @@ class ActiveEvent extends Component {
 						</Modal>
 						: null
 				}
+
+				<Modal animationType={'fade'} transparent={true} visible={this.state.showSignInModal}>
+					<View style={styles.ModalContainer}>
+						<View style={styles.ModalInnerContainer}>
+							<ScrollView>
+								<Text style={[styles.Description, {fontSize: normalize(12), marginBottom: 10}]}>
+									This is the last event you can view in detail without creating an account.
+									Would you like to sign up? Click on the button below!
+								</Text>
+							</ScrollView>
+
+							<ActionBar actions={signInModalActions} />
+						</View>
+					</View>
+				</Modal>
 			</View>
 		);
 	}
@@ -343,7 +413,9 @@ function mapStateToProps(state) {
 		isFetchingEvents: state.events.isFetching,
 		pushingOrRemovingFavourite: state.events.pushingOrRemovingFavourite,
 		hasSideEvent: state.events.hasSideEvent,
-		sideEvent: state.events.sideEvent
+		sideEvent: state.events.sideEvent,
+		totalCount: state.events.totalCount,
+		initNoAccount: state.session.initNoAccount
 	};
 }
 
@@ -351,7 +423,9 @@ function mapDispatchToProps(dispatch) {
 	return {
 		pushNewFavouriteEvent: (eventId) => dispatch(pushNewFavouriteEvent(eventId)),
 		removeFromMyFavourites: (eventId) => dispatch(removeFromMyFavourites(eventId)),
-		adjustCurrentControl: (ctrlType) => dispatch(adjustCurrentControl(ctrlType))
+		adjustCurrentControl: (ctrlType) => dispatch(adjustCurrentControl(ctrlType)),
+		dispatchResetAction: (resetAction) => dispatch(resetAction),
+		clearSessionNoAccount: () => dispatch(clearSessionNoAccount())
 	};
 }
 

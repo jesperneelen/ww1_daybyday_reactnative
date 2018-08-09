@@ -50,8 +50,14 @@ function play(pausedAt) {
 			if(timePassed === interval || timePassed > interval) {
 				timePassed = 0;
 				let state = getState().events;
-				let activeEventId = state.data[state.activeEventIndex + 1]._id;
-				dispatch(setActiveEvent(state.activeEventIndex + 1, activeEventId));
+
+				let activeEventId = state.data[state.activeEventIndex + 1] && state.data[state.activeEventIndex + 1]._id;
+				if(activeEventId) dispatch(setActiveEvent(state.activeEventIndex + 1, activeEventId));
+
+				// stop the journey when we reach the last event
+				if(state.activeEventIndex + 2 === state.totalCount || state.activeEventIndex + 1 === state.totalCount) {
+					dispatch(adjustCurrentControl('stop'));
+				}
 			}
 		}, 1000);
 	};
@@ -72,18 +78,24 @@ function setPausedTime(pauseTime) {
 }
 
 export function adjustJourneyInterval(interval) {
-	return dispatch => {
-		return usersService.updateJourneyInterval(interval)
-			.then(response => {
-				if(response.success) {
-					dispatch(setControlInterval(interval));
-				} else {
-					dispatch(handleException('error', SET_INTERVAL_ERROR));
-				}
-			})
-			.catch(error => {
-				dispatch(handleException('error', SET_INTERVAL_ERROR, error));
-			});
+	return (dispatch, getState) => {
+		const initNoAccount = getState().session.initNoAccount;
+
+		if(!initNoAccount) {
+			return usersService.updateJourneyInterval(interval)
+				.then(response => {
+					if(response.success) {
+						dispatch(setControlInterval(interval));
+					} else {
+						dispatch(handleException('error', SET_INTERVAL_ERROR));
+					}
+				})
+				.catch(error => {
+					dispatch(handleException('error', SET_INTERVAL_ERROR, error));
+				});
+		} else {
+			dispatch(setControlInterval(interval));
+		}
 	};
 }
 

@@ -18,6 +18,8 @@ export const SET_PROFILE = 'SET/PROFILE';
 export const REGISTERING_USER = 'REGISTERING/USER';
 export const REGISTERING_USER_ERROR = 'REGISTERING/USER/ERROR';
 export const REGISTERING_COMPLETE = 'REGISTERING/COMPLETE';
+export const INIT_NO_ACCOUNT = 'INIT/NO/ACCOUNT';
+export const CLEAR_SESSION_NO_ACCOUNT = 'CLEAR/SESSION/NO/ACCOUNT';
 
 export const LOGIN_SUCCESSFUL = 'Successfully logged in!';
 export const LOGIN_INTERNAL_ERROR = 'There was a server error while trying to log in';
@@ -203,5 +205,22 @@ export function register(newUser) {
 				dispatch(handleException('error', REGISTER_ERROR, error));
 				dispatch(registeringError());
 			});
+	};
+}
+
+export function initNoAccount() {
+	return dispatch => {
+		dispatch({
+			type: INIT_NO_ACCOUNT
+		});
+		dispatch(setMyFavourites([]));
+		//dispatch(setControlInterval(10000));
+		dispatch(setControlInterval(30000));
+	};
+}
+
+export function clearSessionNoAccount() {
+	return {
+		type: CLEAR_SESSION_NO_ACCOUNT
 	};
 }

@@ -19,7 +19,7 @@ import {
 import Button from '../components/Button';
 import Input from '../components/Input';
 
-import { logInUser, loginFbComplete } from '../../actions/session';
+import { logInUser, loginFbComplete, initNoAccount } from '../../actions/session';
 import { handleException } from '../../actions/exceptions';
 
 class LoginScreen extends Component {
@@ -36,6 +36,7 @@ class LoginScreen extends Component {
 		this.loginWithFacebook = this.loginWithFacebook.bind(this);
 		this.openURL = this.openURL.bind(this);
 		this.handleOpenURL = this.handleOpenURL.bind(this);
+		this.loginWithNoAccount = this.loginWithNoAccount.bind(this);
 
 		this._validations = new Map();
 	}
@@ -61,7 +62,7 @@ class LoginScreen extends Component {
 	}*/
 
 	componentWillReceiveProps(nextProps) {
-		if(nextProps.authenticated && nextProps.user !== null && !nextProps.authenticating) {
+		if((nextProps.authenticated && nextProps.user !== null && !nextProps.authenticating) || (nextProps.initNoAccount && nextProps.authenticated)) {
 			this.props.navigation.navigate('AuthenticatedStack');
 		}
 	}
@@ -137,6 +138,16 @@ class LoginScreen extends Component {
 		//OneSignal.sendTag('userId', responseData._id);
 	}
 
+	loginWithNoAccount() {
+		const {
+			loginWithNoAccount
+		} = this.props;
+
+		if(loginWithNoAccount) {
+			loginWithNoAccount();
+		}
+	}
+
 	render() {
 		const {
 			navigation: {
@@ -177,6 +188,12 @@ class LoginScreen extends Component {
 									<TouchableOpacity onPress={() => navigate('register')} style={styles.signUpWrapper} activeOpacity={.5}>
 										<Text style={styles.signUpText}>Don't have an account?</Text>
 										<Text style={[styles.signUpText, styles.signUp]}>Sign up</Text>
+									</TouchableOpacity>
+
+									<TouchableOpacity onPress={this.loginWithNoAccount} style={styles.withoutAccountWrapper} activeOpacity={.5}>
+										<Text style={styles.withoutAccountText}>
+											Continue without account
+										</Text>
 									</TouchableOpacity>
 								</View>
 							</View>
@@ -219,12 +236,21 @@ const styles = StyleSheet.create({
 		marginTop: 20
 	},
 	signUpText: {
-		color: '#FFF'
+		color: '#FFFFFF'
 	},
 	signUp: {
 		marginLeft: 3,
 		fontWeight: 'bold',
 		color: 'rgb(119, 121, 61)'
+	},
+	withoutAccountWrapper: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		marginTop: 5
+	},
+	withoutAccountText: {
+		opacity: .8,
+		color: '#FFFFFF'
 	}
 });
 
@@ -232,7 +258,8 @@ function mapStateToProps(state) {
 	return {
 		authenticating: state.session.authenticating,
 		authenticated: state.session.authenticated,
-		user: state.session.user
+		user: state.session.user,
+		initNoAccount: state.session.initNoAccount
 	};
 }
 
@@ -240,7 +267,8 @@ function mapDispatchToProps(dispatch) {
 	return {
 		logInUser: (username, password) => dispatch(logInUser(username, password)),
 		loginFbComplete: (fbUserId) => dispatch(loginFbComplete(fbUserId)),
-		handleException: (type, message, errorObject) => dispatch(handleException(type, message, errorObject))
+		handleException: (type, message, errorObject) => dispatch(handleException(type, message, errorObject)),
+		loginWithNoAccount: () => dispatch(initNoAccount())
 	};
 }
 

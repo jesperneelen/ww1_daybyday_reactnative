@@ -9,7 +9,9 @@ import {
 	FETCHING_PROFILE_ERROR,
 	REGISTERING_USER,
 	REGISTERING_USER_ERROR,
-	REGISTERING_COMPLETE
+	REGISTERING_COMPLETE,
+	INIT_NO_ACCOUNT,
+	CLEAR_SESSION_NO_ACCOUNT
 } from '../actions/session';
 
 const initialState = {
@@ -19,7 +21,8 @@ const initialState = {
 	user: null,
 	fetchingProfile: true,
 	fetchingProfileError: false,
-	registeringUser: false
+	registeringUser: false,
+	initNoAccount: false
 };
 
 export function session(state = initialState, action) {
@@ -34,7 +37,8 @@ export function session(state = initialState, action) {
 				authenticating: false,
 				authenticated: true,
 				fetchingProfileError: false,
-				user: action.profile
+				user: action.profile,
+				initNoAccount: false
 			});
 		case LOGIN_ERROR:
 			return Object.assign({}, state, {
@@ -54,7 +58,8 @@ export function session(state = initialState, action) {
 				fetchingProfileError: false,
 				fetchingProfile: false,
 				user: action.profile,
-				authenticated: true
+				authenticated: true,
+				initNoAccount: false
 			});
 		case FETCHING_PROFILE_ERROR:
 			return Object.assign({}, state, {
@@ -74,7 +79,19 @@ export function session(state = initialState, action) {
 			return Object.assign({}, state, {
 				registeringUser: false,
 				user: action.user,
-				authenticated: true
+				authenticated: true,
+				initNoAccount: false
+			});
+		case INIT_NO_ACCOUNT:
+			return Object.assign({}, state, {
+				initNoAccount: true,
+				authenticated: true,
+				fetchingProfile: false
+			});
+		case CLEAR_SESSION_NO_ACCOUNT:
+			return Object.assign({}, state, {
+				initNoAccount: false,
+				authenticated: false
 			});
 		default:
 			return Object.assign({}, state);

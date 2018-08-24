@@ -13,7 +13,8 @@ import {
 	SafeAreaView,
 	KeyboardAvoidingView,
 	Keyboard,
-	TouchableWithoutFeedback
+	TouchableWithoutFeedback,
+	Dimensions
 } from 'react-native';
 
 import Button from '../components/Button';
@@ -205,6 +206,9 @@ class LoginScreen extends Component {
 	}
 }
 
+const {height, width} = Dimensions.get('window');
+const aspectRatio = height/width;
+
 
 const styles = StyleSheet.create({
 	backgroundImage: {
@@ -213,14 +217,14 @@ const styles = StyleSheet.create({
 		flexDirection: 'column'
 	},
 	appHeaderImage: {
-		flex: 2,
+		flex: aspectRatio < 1.6 ? 1 : 2,
 		alignSelf: 'stretch',
 		height: undefined,
 		width: '98%'
 	},
 	container: {
-		flex: 1,
-		flexDirection: 'column'
+		flexGrow: 1,
+		flexDirection: 'column',
 	},
 	inputContainer: {
 		flex: 2,

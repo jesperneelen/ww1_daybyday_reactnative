@@ -1,4 +1,5 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
 import Splash from '../ui/screens/Splash';
@@ -30,7 +31,9 @@ const AuthenticatedStack = StackNavigator({
 			},
 			headerTitleStyle: {
 				fontSize: normalize(16),
-				color: '#FFFFFF'
+				color: '#FFFFFF',
+				alignSelf: Platform.OS === 'android' ? 'flex-start' : null,
+				marginHorizontal: Platform.OS === 'android' ? 0 : null
 			}
 		})
 	},
@@ -46,7 +49,9 @@ const AuthenticatedStack = StackNavigator({
 			},
 			headerTitleStyle: {
 				fontSize: normalize(13),
-				color: '#FFFFFF'
+				color: '#FFFFFF',
+				alignSelf: Platform.OS === 'android' ? 'flex-start' : null,
+				marginHorizontal: Platform.OS === 'android' ? 0 : null
 			}
 		})
 	},
@@ -62,7 +67,9 @@ const AuthenticatedStack = StackNavigator({
 			},
 			headerTitleStyle: {
 				fontSize: normalize(16),
-				color: '#FFFFFF'
+				color: '#FFFFFF',
+				alignSelf: Platform.OS === 'android' ? 'flex-start' : null,
+				marginHorizontal: Platform.OS === 'android' ? 0 : null
 			}
 		})
 	}

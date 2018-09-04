@@ -182,18 +182,18 @@ class FilteredEvents extends Component {
 		return (
 			<View style={[styles.ScreenContainer, loading ? styles.LoadingContainer : null]}>
 				{
-					loading ?
+					!!loading ?
 						<ActivityIndicator animating={true} size="large" />
 						: <FilteredEventList filteredEvents={filteredEvents}
-																 activeEventIndex={activeEventIndex}
-																 removeFromFavourites={this.removeFromFavourites}
-																 addToFavourites={this.addToFavourites}
-																 onTagPress={this.onTagPress}
-																 onMoreInfoPress={this.onMoreInfoPress}
-																 onSetActiveEventPress={this.setFilterEventAsActiveEvent}
-																 showFavouriteOnMap={this.showFavouriteOnMap}
-																 filteredEventsParams={filteredEventsParams}
-																 pushingOrRemovingFavourite={pushingOrRemovingFavourite} />
+											 activeEventIndex={activeEventIndex}
+											 removeFromFavourites={this.removeFromFavourites}
+											 addToFavourites={this.addToFavourites}
+											 onTagPress={this.onTagPress}
+											 onMoreInfoPress={this.onMoreInfoPress}
+											 onSetActiveEventPress={this.setFilterEventAsActiveEvent}
+											 showFavouriteOnMap={this.showFavouriteOnMap}
+											 filteredEventsParams={filteredEventsParams}
+											 pushingOrRemovingFavourite={pushingOrRemovingFavourite} />
 				}
 			</View>
 		);

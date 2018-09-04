@@ -55,7 +55,7 @@ export default class EventItem extends Component {
 				<View style={styles.EventItemContainer}>
 					{children}
 
-					<Text style={styles.Description}>{Description}</Text>,
+					<Text style={styles.Description}>{Description}</Text>
 
 					<View style={styles.TagContainer}>
 						{
@@ -71,6 +71,7 @@ export default class EventItem extends Component {
 								: null
 						}
 					</View>
+
 					{
 						actionsType === 'button' && actions && actions.length > 0 && Array.isArray(actions) ?
 							<ActionButton spacing={1} offsetY={15} offsetX={5} activeOpacity={.6} outRangeScale={1} size={normalize(31)}

@@ -74,6 +74,7 @@ class LoginScreen extends Component {
 	}
 
 	loginWithFacebook() {
+		//this.openURL('http://10.2.2.2:3002/v1/auth/facebook');
 		//this.openURL('http://localhost:3002/v1/auth/facebook');
 		this.openURL('https://ww1-admin-api.herokuapp.com/v1/auth/facebook');
 		//this.openURL('http://192.168.0.211:3002/v1/auth/facebook');
@@ -90,7 +91,9 @@ class LoginScreen extends Component {
 		}
 		// Or Linking.openURL on Android
 		else {
-			Linking.openURL(url);
+			Linking.openURL(url).catch((error) => {
+				console.log(error);
+			});
 		}
 	}
 
@@ -164,22 +167,22 @@ class LoginScreen extends Component {
 		return (
 			<ImageBackground source={require('../../../assets/login.png')} style={styles.backgroundImage}>
 				<SafeAreaView style={styles.container}>
-					<KeyboardAvoidingView behavior="padding" enabled style={styles.container}>
+					<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null} enabled style={styles.container}>
 						<TouchableWithoutFeedback style={styles.container} onPress={() => Keyboard.dismiss()}>
 							<View style={styles.container}>
 								<Image source={require('../../../assets/WO1_header.png')} style={styles.appHeaderImage} resizeMode="contain" />
 
 								<View style={styles.inputContainer}>
 									<Input placeholder="Email address" onChange={(text, valid) => this.onChangeText(text, valid, 'email')}
-												 validations={{required: true, format: 'email'}} isSubmitted={saving} keyboardType="email-address"
-												 iconName={'ios-mail'} iconType={'ionicon'} withIcon={true} returnKeyType="next" autoCapitalize="none"
-												 onSubmitEditing={() => this.pwdInput && this.pwdInput.txtInput && this.pwdInput.txtInput.focus()} />
+										   validations={{required: true, format: 'email'}} isSubmitted={saving} keyboardType="email-address"
+										   iconName={'ios-mail'} iconType={'ionicon'} withIcon={true} returnKeyType="next" autoCapitalize="none"
+										   onSubmitEditing={() => this.pwdInput && this.pwdInput.txtInput && this.pwdInput.txtInput.focus()} />
 
 									<Input ref={(pwdInput) => this.pwdInput = pwdInput}
-												 placeholder="Password" onChange={(text, valid) => this.onChangeText(text, valid, 'password')}
-												 secureTextEntry={true} validations={{required: true}} isSubmitted={saving}
-												 iconName={'ios-lock'} iconType={'ionicon'} withIcon={true} returnKeyType="go"
-												 onSubmitEditing={() => this.onLoginPressed()} />
+										   placeholder="Password" onChange={(text, valid) => this.onChangeText(text, valid, 'password')}
+										   secureTextEntry={true} validations={{required: true}} isSubmitted={saving}
+										   iconName={'ios-lock'} iconType={'ionicon'} withIcon={true} returnKeyType="go"
+										   onSubmitEditing={() => this.onLoginPressed()} />
 								</View>
 
 								<View style={styles.actionContainer}>
@@ -220,7 +223,8 @@ const styles = StyleSheet.create({
 		flex: aspectRatio < 1.6 ? 1 : 2,
 		alignSelf: 'stretch',
 		height: undefined,
-		width: '98%'
+		width: '98%',
+		marginTop: 5
 	},
 	container: {
 		flexGrow: 1,

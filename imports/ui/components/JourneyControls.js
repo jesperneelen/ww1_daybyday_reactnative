@@ -5,6 +5,7 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 	ProgressViewIOS,
+	ProgressBarAndroid,
 	Platform,
 	Modal,
 	Picker
@@ -151,7 +152,7 @@ class JourneyControls extends Component {
 				{
 					Platform.OS === 'ios' ?
 						<ProgressViewIOS progress={timePassed/parseInt(interval)} progressTintColor={'#1CB417'} trackTintColor={'#FFFFFF'} style={styles.ProgressView} />
-						: null
+						: <ProgressBarAndroid styleAttr="Horizontal" indeterminate={false} progress={timePassed/parseInt(interval)} color={'#1CB417'} style={styles.ProgressView}/>
 				}
 
 				<View style={styles.ControlsContainer}>
@@ -194,11 +195,11 @@ class JourneyControls extends Component {
 						</TouchableOpacity>
 					</View>
 
-					<Modal animationType={'fade'} transparent={true} visible={intervalModalVisible}>
+					<Modal animationType={'fade'} transparent={true} visible={intervalModalVisible} onRequestClose={() => {console.log('Modal has been closed.')}}>
 						<View style={styles.ModalContainer}>
 							<View style={styles.ModalInnerContainer}>
-								<Picker itemStyle={{color: '#FFF'}} selectedValue={this.state.interval}
-												onValueChange={(itemValue, itemIndex) => this.setState(() => ({interval: itemValue}))}>
+								<Picker itemStyle={{color: '#FFF'}} selectedValue={this.state.interval} style={{color: '#FFF'}}
+										onValueChange={(itemValue, itemIndex) => this.setState(() => ({interval: itemValue}))}>
 									<Picker.Item label="10 seconds" value="10000" />
 									<Picker.Item label="30 seconds" value="30000" />
 									<Picker.Item label="60 seconds" value="60000" />

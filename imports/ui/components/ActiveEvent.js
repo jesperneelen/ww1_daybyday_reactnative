@@ -277,7 +277,7 @@ class ActiveEvent extends Component {
 
 				{
 					activeEvent ?
-						<Modal animationType={'fade'} transparent={true} visible={this.state.modalVisible}>
+						<Modal animationType={'fade'} transparent={true} visible={this.state.modalVisible} onRequestClose={() => {console.log('Modal has been closed.')}}>
 							<View style={styles.ModalContainer}>
 								<View style={styles.ModalInnerContainer}>
 									<ScrollView>
@@ -307,7 +307,7 @@ class ActiveEvent extends Component {
 
 				{
 					hasSideEvent && sideEvent && sideEvent.Type === 'Year Change' ?
-						<Modal animationType={'fade'} transparent={true} visible={this.state.showYearChange}>
+						<Modal animationType={'fade'} transparent={true} visible={this.state.showYearChange} onRequestClose={() => {console.log('Modal has been closed.')}}>
 							<View style={styles.ModalContainer}>
 								<View style={styles.ModalInnerContainer}>
 									<Text style={styles.Title}>{sideEvent && sideEvent.Title}</Text>
@@ -322,7 +322,7 @@ class ActiveEvent extends Component {
 						: null
 				}
 
-				<Modal animationType={'fade'} transparent={true} visible={this.state.showSignInModal}>
+				<Modal animationType={'fade'} transparent={true} visible={this.state.showSignInModal} onRequestClose={() => {console.log('Modal has been closed.')}}>
 					<View style={styles.ModalContainer}>
 						<View style={styles.ModalInnerContainer}>
 							<ScrollView>

@@ -128,23 +128,23 @@ export default class Input extends Component {
 					<Icon type={iconType} name={iconName} color={'white'} size={27} />
 
 					<TextInput ref={(txtInput) => this.txtInput = txtInput}
-										 style={[styles.input, {borderBottomWidth: 0, flex: 1, ...extraStyle}]}
-										 placeholder={placeholder ? placeholder : 'Enter text here ...'}
-										 autoFocus={autoFocus} editable={editable} returnKeyType={returnKeyType}
-										 keyboardType={keyboardType} secureTextEntry={secureTextEntry} autoCapitalize={autoCapitalize}
-										 value={value} defaultValue={defaultValue} placeholderTextColor={'#FFF'}
-										 onChangeText={this.onChange} onFocus={this.onFocus} onBlur={this.onBlur}
-										 onSubmitEditing={onSubmitEditing} />
+							   style={[styles.input, {borderBottomWidth: 0, flex: 1, ...extraStyle}]}
+							   placeholder={placeholder ? placeholder : 'Enter text here ...'}
+							   autoFocus={autoFocus} editable={editable} returnKeyType={returnKeyType}
+							   keyboardType={keyboardType} secureTextEntry={secureTextEntry} autoCapitalize={autoCapitalize}
+							   value={value} defaultValue={defaultValue} placeholderTextColor={'#FFF'}
+							   onChangeText={this.onChange} onFocus={this.onFocus} onBlur={this.onBlur}
+							   onSubmitEditing={onSubmitEditing} underlineColorAndroid={'transparent'} />
 				</View>
 			);
 		}
 
 		return (
 			<TextInput style={[styles.input, styleOnFocus, styleOnError, {marginTop: noMarginTop ? 0 : 10, paddingRight: 10, ...extraStyle}]}
-								 placeholder={placeholder ? placeholder : 'Enter text here ...'}
-								 autoFocus={autoFocus} editable={editable} keyboardType={keyboardType} secureTextEntry={secureTextEntry}
-								 value={value} defaultValue={defaultValue} placeholderTextColor={'#FFF'}
-								 onChangeText={this.onChange} onFocus={this.onFocus} onBlur={this.onBlur} />
+					   placeholder={placeholder ? placeholder : 'Enter text here ...'}
+					   autoFocus={autoFocus} editable={editable} keyboardType={keyboardType} secureTextEntry={secureTextEntry}
+					   value={value} defaultValue={defaultValue} placeholderTextColor={'#FFF'}
+					   onChangeText={this.onChange} onFocus={this.onFocus} onBlur={this.onBlur} underlineColorAndroid={'transparent'} />
 		);
 	}
 }

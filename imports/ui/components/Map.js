@@ -236,7 +236,8 @@ const styles = StyleSheet.create({
 		alignItems: 'stretch'
 	},
 	map: {
-		flex: 1
+		flex: 1,
+		...StyleSheet.absoluteFillObject
 	},
 	actionButtonIcon: {
 		fontSize: normalize(22),
